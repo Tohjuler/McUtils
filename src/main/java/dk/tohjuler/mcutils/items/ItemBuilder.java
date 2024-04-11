@@ -1,5 +1,6 @@
 package dk.tohjuler.mcutils.items;
 
+import com.cryptomorin.xseries.XMaterial;
 import dev.triumphteam.gui.components.GuiAction;
 import dev.triumphteam.gui.components.util.ItemNbt;
 import dev.triumphteam.gui.guis.GuiItem;
@@ -13,12 +14,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -87,6 +90,15 @@ public class ItemBuilder {
     }
 
     /**
+     * Create a new ItemBuilder, from a {@link XMaterial}
+     *
+     * @param xMaterial the xMaterial
+     */
+    public ItemBuilder(XMaterial xMaterial) {
+        this.item = xMaterial.parseItem();
+    }
+
+    /**
      * Build the item, why do I even explain this?
      *
      * @return the built item
@@ -116,20 +128,28 @@ public class ItemBuilder {
         return dev.triumphteam.gui.builder.item.ItemBuilder.from(this.item).asGuiItem(action);
     }
 
+    /**
+     * Apply placeholders to the item
+     * This requires PlaceholderAPI to be installed
+     * Applies to:
+     * - Display name
+     * - Lore
+     *
+     * @param p the player to apply the placeholders for
+     * @return the itembuilder
+     */
     public ItemBuilder applyPlaceholder(Player p) {
-        ItemBuilder ib = this;
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
             Bukkit.getServer().getLogger().warning("PlaceholderAPI is not installed, placeholders will not work.");
-            return ib;
+            return this;
         }
-        ib = modifyMeta(meta -> {
+        return modifyMeta(meta -> {
             if (meta.hasDisplayName())
                 meta.setDisplayName(PlaceholderAPI.setPlaceholders(p, meta.getDisplayName()));
             if (meta.hasLore())
                 meta.setLore(meta.getLore().stream().map(s -> PlaceholderAPI.setPlaceholders(p, s)).collect(Collectors.toList()));
             return meta;
         });
-        return ib;
     }
 
     /**
@@ -439,6 +459,39 @@ public class ItemBuilder {
     }
 
     /**
+     * Set a NBT tag on the item
+     *
+     * @param keu the key
+     * @param value the value
+     * @return the itembuilder
+     */
+    public ItemBuilder setTag(String keu, String value) {
+        this.item = ItemNbt.setString(this.item, keu, value);
+        return this;
+    }
+
+    /**
+     * Get the tag of the item
+     *
+     * @param key the key
+     * @return the value
+     */
+    public String getTag(String key) {
+        return ItemNbt.getString(this.item, key);
+    }
+
+    /**
+     * Remove a tag from the item
+     *
+     * @param key the key
+     * @return the itembuilder
+     */
+    public ItemBuilder removeTag(String key) {
+        this.item = ItemNbt.removeTag(this.item, key);
+        return this;
+    }
+
+    /**
      * Modify the item, using a function
      * Allows for more advanced modifications
      *
@@ -464,5 +517,63 @@ public class ItemBuilder {
 
     private String colorize(String paramString) {
         return ChatColor.translateAlternateColorCodes('&', paramString);
+    }
+
+    /**
+     * Serialize the item to a base64 string
+     *
+     * @return the base64 string
+     */
+    public String serialize() {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+
+            // Write the size of the inventory
+            dataOutput.writeInt(1);
+
+            dataOutput.writeObject(item);
+
+            // Serialize that array
+            dataOutput.close();
+            return Base64.getEncoder().encodeToString(outputStream.toByteArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Deserialize an item from a base64 itemstack
+     * Skull values DOES NOT WORK, it needs to be serialized from {@link #serialize()}
+     *
+     * @param base64 the base64 string
+     * @return the itembuilder
+     */
+    public ItemBuilder deserialize(String base64) {
+        try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(base64));
+            BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+            ItemStack[] items = new ItemStack[dataInput.readInt()];
+
+            item = (ItemStack) dataInput.readObject();
+
+            dataInput.close();
+        } catch (ClassNotFoundException | IOException e) {
+            new RuntimeException("Unable to deserialize item", e).printStackTrace();
+        }
+
+        return this;
+    }
+
+    /**
+     * Create a new ItemBuilder from a base64 itemstack
+     * Skull values DOES NOT WORK, it needs to be serialized from {@link #serialize()}
+     *
+     * @param base64 the base64 string
+     * @return the itembuilder
+     */
+    public static ItemBuilder fromBase64(String base64) {
+        return new ItemBuilder(Material.AIR).deserialize(base64);
     }
 }
