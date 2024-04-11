@@ -1,4 +1,4 @@
-package dk.tohjuler.mcutils.other;
+package dk.tohjuler.mcutils.strings;
 
 import net.md_5.bungee.api.ChatColor;
 

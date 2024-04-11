@@ -8,6 +8,13 @@
     <artifactId>McUtils</artifactId>
     <version>1.0</version>
 
+    <developers>
+        <developer>
+            <name>Tohjuler</name>
+            <url>tohjuler.dk</url>
+        </developer>
+    </developers>
+
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
@@ -22,6 +29,10 @@
         <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -54,5 +65,19 @@
             <version>2.11.4</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>tohjuler-repository-releases</id>
+            <name>Tohjuler's Repository</name>
+            <url>https://repo.tohjuler.dk/releases</url>
+        </repository>
+    </distributionManagement>
 </project>

@@ -1,10 +1,9 @@
-package dk.tohjuler.mcutils.other;
+package dk.tohjuler.mcutils.config;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-import org.yaml.snakeyaml.reader.StreamReader;
 
 import java.io.*;
 import java.net.URL;

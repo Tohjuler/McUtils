@@ -1,11 +1,14 @@
-package dk.tohjuler.mcutils.lang;
+package dk.tohjuler.mcutils.config;
 
-import dk.tohjuler.mcutils.other.ColorUtils;
-import dk.tohjuler.mcutils.other.ConfigurationFile;
+import dk.tohjuler.mcutils.strings.ColorUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.Map;
 
 public class Lang {
     @Getter
@@ -16,7 +19,7 @@ public class Lang {
      * Load a lang file, create it if it doesn't exist
      * Check if all keys are present in the lang file
      *
-     * @param plugin The plugin which should own this file
+     * @param plugin       The plugin which should own this file
      * @param resourcePath The path to the file
      */
     public Lang(JavaPlugin plugin, String resourcePath) {
@@ -50,12 +53,56 @@ public class Lang {
     }
 
     /**
+     * Replace the placeholders from the config
+     *
+     * @param str the string to replace in
+     * @return the replaced string
+     */
+    public String replaceVars(String str) {
+        str = replaceFromCf(str, "vars");
+        str = replaceFromCf(str, "placeholders");
+        return str;
+    }
+
+    /**
+     * Replace from a map from the config
+     *
+     * @param str the string replace in
+     * @param key the key of the map
+     * @return the replaced string
+     */
+    public String replaceFromCf(String str, String key) {
+        if (!langFile.cf().contains(key)) return str;
+        for (String cfKey : langFile.cf().getConfigurationSection(key).getKeys(false))
+            str = str.replace(cfKey, langFile.cf().getString(cfKey));
+        return str;
+    }
+
+    /**
+     * Send a message to a CommandSender
+     *
+     * @param sender  The CommandSender to send the message to
+     * @param key     The key to get
+     * @param replace Map of placeholders to be replaced
+     */
+    public void send(CommandSender sender, String key, @NotNull Map<String, String> replace) {
+        String str = get(key);
+        for (Map.Entry<String, String> e : replace.entrySet())
+            str = str.replace(e.getKey(), e.getValue());
+
+        sender.sendMessage(
+                replaceVars(str)
+        );
+    }
+
+    /**
      * Send a message to a CommandSender
      *
      * @param sender The CommandSender to send the message to
-     * @param key The key to get
+     * @param key    The key to get
      */
     public void send(CommandSender sender, String key) {
-        sender.sendMessage(get(key));
+        send(sender, key, Collections.emptyMap());
     }
+
 }
