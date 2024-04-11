@@ -317,7 +317,7 @@ public class ItemBuilder {
      *
      * @param replace     the text to replace
      * @param replaceWith the text to replace it with, multiple lines
-     * @return
+     * @return the itembuilder
      */
     public ItemBuilder replaceLore(String replace, List<String> replaceWith) {
         ItemMeta itemMeta = this.item.getItemMeta();
@@ -343,7 +343,7 @@ public class ItemBuilder {
      *
      * @param replace     the text to replace
      * @param replaceWith the text to replace it with, multiple lines
-     * @return
+     * @return the itembuilder
      */
     public ItemBuilder replaceLore(String replace, String... replaceWith) {
         ItemMeta itemMeta = this.item.getItemMeta();
@@ -378,7 +378,7 @@ public class ItemBuilder {
     public ItemBuilder addLore(Collection<String> lines) {
         ItemMeta itemMeta = this.item.getItemMeta();
         if (itemMeta.getLore() == null)
-            itemMeta.setLore(new ArrayList());
+            itemMeta.setLore(new ArrayList<>());
         List<String> list = itemMeta.getLore();
         for (String str : lines)
             list.add(colorize(str));
@@ -396,7 +396,7 @@ public class ItemBuilder {
     public ItemBuilder addLore(String... lore) {
         ItemMeta itemMeta = this.item.getItemMeta();
         if (itemMeta.getLore() == null)
-            itemMeta.setLore(new ArrayList());
+            itemMeta.setLore(new ArrayList<>());
         List<String> list = itemMeta.getLore();
         if (list == null) list = new ArrayList<>();
         byte b = 0;

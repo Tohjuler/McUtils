@@ -75,7 +75,7 @@ public class ConfigurationFile {
     }
 
     public void saveResource(String resourcePath, boolean replace, File dataFolder, ClassLoader cl) {
-        if (resourcePath != null && !resourcePath.equals("")) {
+        if (resourcePath != null && !resourcePath.isEmpty()) {
             resourcePath = resourcePath.replace('\\', '/');
             InputStream in = this.getResource(resourcePath, cl);
             if (in == null) {
