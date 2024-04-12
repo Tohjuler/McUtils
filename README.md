@@ -15,7 +15,9 @@
  - Money Formatting Utils
  - Json Wrapper for easier handling of json data
  - Lang Config Utils
- - Chat Input Handler
+ - Chat Utils
+   - Chat Input Handler
+   - Message Utils
  - Static Gui Base
 
 ## JavaDocs
