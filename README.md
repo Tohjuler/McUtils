@@ -9,11 +9,13 @@
    - ItemBuilder
    - SkullCreator
    - InventoryUtils
+   - YamlItem
  - Progress Utils
  - Money Formatting Utils
  - Json Wrapper for easier handling of json data
  - Lang Config Utils
  - Chat Input Handler
+ - Static Gui Base
 
 ## JavaDocs
 You can find the JavaDocs for this library [here](https://tohjuler.github.io/McUtils/).
