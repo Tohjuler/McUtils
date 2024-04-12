@@ -576,4 +576,27 @@ public class ItemBuilder {
     public static ItemBuilder fromBase64(String base64) {
         return new ItemBuilder(Material.AIR).deserialize(base64);
     }
+
+    // Getters
+
+    public Material getMaterial() {
+        return item.getType();
+    }
+
+    public short getData() {
+        return item.getDurability();
+    }
+
+    public Map<Enchantment, Integer> getEnchantments() {
+        return item.getEnchantments();
+    }
+
+    public List<ItemFlag> getItemFlags() {
+        if (!item.hasItemMeta()) return Collections.emptyList();
+        return new ArrayList<>(item.getItemMeta().getItemFlags());
+    }
+
+    public boolean isUnstackable() {
+        return ItemNbt.getString(item, "unstackable") != null;
+    }
 }
