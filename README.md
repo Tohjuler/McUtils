@@ -15,6 +15,9 @@
  - Lang Config Utils
  - Chat Input Handler
 
+## JavaDocs
+You can find the JavaDocs for this library [here](https://tohjuler.github.io/McUtils/).
+
 ## Maven
 You can use this library in your project by adding the following repository and dependency to your `pom.xml`:
 <br/>
