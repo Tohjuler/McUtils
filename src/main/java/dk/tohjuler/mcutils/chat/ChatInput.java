@@ -36,11 +36,10 @@ public class ChatInput implements Listener {
      * The default cancel words are "cancel" and "exit"
      *
      * @param p The player to add the input to
-     * @param message The message to send to the player
      * @param onComplete The consumer to run when the player has completed the input
      * @param onCancel The consumer to run when the player has canceled the input
      */
-    public static void add(Player p, String message, Consumer<String> onComplete, Consumer<Player> onCancel) {
+    public static void add(Player p, Consumer<String> onComplete, Consumer<Player> onCancel) {
         p.closeInventory();
 
         inputMap.put(p.getUniqueId(), new ChatInputEvent(onComplete, onCancel));
