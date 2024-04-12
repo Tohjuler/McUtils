@@ -10,6 +10,7 @@
    - SkullCreator
    - InventoryUtils
    - YamlItem
+   - ItemStack Serializer to base64
  - Progress Utils
  - Money Formatting Utils
  - Json Wrapper for easier handling of json data

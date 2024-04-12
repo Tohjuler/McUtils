@@ -14,13 +14,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.util.io.BukkitObjectInputStream;
-import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -525,50 +520,25 @@ public class ItemBuilder {
      * @return the base64 string
      */
     public String serialize() {
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
-
-            // Write the size of the inventory
-            dataOutput.writeInt(1);
-
-            dataOutput.writeObject(item);
-
-            // Serialize that array
-            dataOutput.close();
-            return Base64.getEncoder().encodeToString(outputStream.toByteArray());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return ItemStackBase64.itemStackToBase64(this.item);
     }
 
     /**
      * Deserialize an item from a base64 itemstack
-     * Skull values DOES NOT WORK, it needs to be serialized from {@link #serialize()}
+     * Skull values DOES NOT WORK, it needs to be serialized from {@link #serialize()} or {@link ItemStackBase64#itemStackToBase64(ItemStack)}
      *
      * @param base64 the base64 string
      * @return the itembuilder
      */
     public ItemBuilder deserialize(String base64) {
-        try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(base64));
-            BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
-            ItemStack[] items = new ItemStack[dataInput.readInt()];
-
-            item = (ItemStack) dataInput.readObject();
-
-            dataInput.close();
-        } catch (ClassNotFoundException | IOException e) {
-            new RuntimeException("Unable to deserialize item", e).printStackTrace();
-        }
+        item = ItemStackBase64.itemStackFromBase64(base64);
 
         return this;
     }
 
     /**
      * Create a new ItemBuilder from a base64 itemstack
-     * Skull values DOES NOT WORK, it needs to be serialized from {@link #serialize()}
+     * Skull values DOES NOT WORK, it needs to be serialized from {@link #serialize()} or {@link ItemStackBase64#itemStackToBase64(ItemStack)}
      *
      * @param base64 the base64 string
      * @return the itembuilder
