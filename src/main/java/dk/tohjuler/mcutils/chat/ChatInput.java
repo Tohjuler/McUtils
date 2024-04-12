@@ -18,7 +18,7 @@ public class ChatInput implements Listener {
     private final JavaPlugin plugin;
     @Getter
     @Setter
-    private List<String> cancelWords = new ArrayList<>(Arrays.asList(
+    private static List<String> cancelWords = new ArrayList<>(Arrays.asList(
             "cancel",
             "exit"
     ));
