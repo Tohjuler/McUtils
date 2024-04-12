@@ -4,9 +4,9 @@ import com.cryptomorin.xseries.XMaterial;
 import dev.triumphteam.gui.components.GuiAction;
 import dev.triumphteam.gui.components.util.ItemNbt;
 import dev.triumphteam.gui.guis.GuiItem;
+import dk.tohjuler.mcutils.strings.ColorUtils;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -159,6 +159,29 @@ public class ItemBuilder {
     }
 
     /**
+     * Transform the item to a different type
+     * This will keep the amount, display name, lore, enchantments, unstackable status and item flags
+     * <p>
+     * @param item the item to transform
+     * @return the itembuilder
+     */
+    public ItemBuilder applyType(ItemStack item) {
+        ItemBuilder newItem = new ItemBuilder(item)
+                .setAmount(this.getAmount())
+                .setDisplayName(this.getDisplayName())
+                .setLore(this.getLore())
+                .addItemFlags(this.getItemFlags().toArray(new ItemFlag[0]));
+
+        if (this.isUnstackable())
+            newItem.nonStackable();
+        if (getEnchantments() != null && !getEnchantments().isEmpty())
+            getEnchantments().forEach(newItem::addEnchantment);
+
+        this.item = newItem.build();
+        return this;
+    }
+
+    /**
      * Get the item amount
      *
      * @return the item amount
@@ -233,7 +256,7 @@ public class ItemBuilder {
     public ItemBuilder replaceDisplayName(String replace, String replaceWith) {
         ItemMeta itemMeta = this.item.getItemMeta();
         if (itemMeta.hasDisplayName()) {
-            itemMeta.setDisplayName(itemMeta.getDisplayName().replace(replace, colorize(replaceWith)));
+            itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll(replace, colorize(replaceWith)));
             this.item.setItemMeta(itemMeta);
         }
         return this;
@@ -299,7 +322,7 @@ public class ItemBuilder {
             ArrayList<String> arrayList = new ArrayList<>();
             for (String str : itemMeta.getLore()) {
                 if (str == null) continue;
-                arrayList.add(str.replace(replace, colorize(replaceWith)));
+                arrayList.add(str.replaceAll(replace, colorize(replaceWith)));
             }
             itemMeta.setLore(arrayList);
             this.item.setItemMeta(itemMeta);
@@ -510,8 +533,8 @@ public class ItemBuilder {
         return this;
     }
 
-    private String colorize(String paramString) {
-        return ChatColor.translateAlternateColorCodes('&', paramString);
+    private String colorize(String str) {
+        return ColorUtils.colorize(str);
     }
 
     /**
@@ -545,6 +568,15 @@ public class ItemBuilder {
      */
     public static ItemBuilder fromBase64(String base64) {
         return new ItemBuilder(Material.AIR).deserialize(base64);
+    }
+
+    public ItemBuilder clone() {
+        try {
+            return (ItemBuilder) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return this;
+        }
     }
 
     // Getters
