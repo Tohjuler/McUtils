@@ -4,6 +4,8 @@ import com.cryptomorin.xseries.XMaterial;
 import dev.triumphteam.gui.components.GuiAction;
 import dev.triumphteam.gui.components.util.ItemNbt;
 import dev.triumphteam.gui.guis.GuiItem;
+import dk.tohjuler.mcutils.gui.Storage;
+import dk.tohjuler.mcutils.gui.utils.Replacer;
 import dk.tohjuler.mcutils.strings.ColorUtils;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
@@ -162,6 +164,7 @@ public class ItemBuilder {
      * Transform the item to a different type
      * This will keep the amount, display name, lore, enchantments, unstackable status and item flags
      * <p>
+     *
      * @param item the item to transform
      * @return the itembuilder
      */
@@ -231,6 +234,29 @@ public class ItemBuilder {
      */
     public ItemBuilder replaceLoreAndDisplayName(String replace, String replaceWith) {
         return replaceLore(replace, colorize(replaceWith)).replaceDisplayName(replace, colorize(replaceWith));
+    }
+
+    /**
+     * Replace placeholders from gui, in the lore and display name
+     * This should only be used by the GUI API
+     * <p>
+     *
+     * @param regex   the regex to replace
+     * @param storage the storage to replace from
+     * @param func    the function to replace with
+     * @return the itembuilder
+     */
+    public ItemBuilder replaceAllFromGui(String regex, Storage storage, Function<Replacer.ReplaceEvent, String> func) {
+        if (getDisplayName() != null)
+            setDisplayName(Replacer.replaceInString(getDisplayName(), regex, storage, func));
+        if (getLore() != null)
+            setLore(
+                    getLore().stream()
+                            .map(s -> Replacer.replaceInString(s, regex, storage, func))
+                            .collect(Collectors.toList())
+            );
+
+        return this;
     }
 
     /**
@@ -479,7 +505,7 @@ public class ItemBuilder {
     /**
      * Set a NBT tag on the item
      *
-     * @param keu the key
+     * @param keu   the key
      * @param value the value
      * @return the itembuilder
      */

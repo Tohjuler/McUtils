@@ -4,6 +4,8 @@ import com.cryptomorin.xseries.XMaterial;
 import dev.triumphteam.gui.guis.BaseGui;
 import dk.tohjuler.mcutils.config.ConfigurationFile;
 import dk.tohjuler.mcutils.enums.FillType;
+import dk.tohjuler.mcutils.gui.items.Item;
+import dk.tohjuler.mcutils.gui.items.StaticItem;
 import dk.tohjuler.mcutils.gui.utils.Replacer;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import dk.tohjuler.mcutils.items.YamlItem;
@@ -14,14 +16,12 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 @Getter
 public abstract class Gui {
@@ -54,6 +54,7 @@ public abstract class Gui {
      * <p>
      *
      * @param folder The folder to load the gui from
+     * @since 1.5
      */
     public void load(File folder) {
         File file = new File(folder, id + ".yml");
@@ -106,6 +107,7 @@ public abstract class Gui {
      * <p>
      *
      * @param folder The folder to save the gui to
+     * @since 1.5
      */
     public void save(File folder) {
         File file = new File(folder, id + ".yml");
@@ -120,16 +122,20 @@ public abstract class Gui {
         if (items.isEmpty()) init();
 
         for (Item item : items) {
-            if (item.isStaticItem()) continue;
+            // Don't save static items
+            if (item instanceof StaticItem) continue;
+
             String path = "items." + item.getId();
-            if (item.getSlot() == -1)
+            if (item.getSlot() == -1 || item.getAsList() != null)
                 path = "noSlot-items." + item.getId();
             else
                 cf.cf().set(path + ".slot", item.getSlot());
 
             YamlItem.saveItem(cf, item.getItem(), path);
-            if (item.stringMaterial != null)
-                cf.cf().set(path + ".material", "adv:" + item.stringMaterial);
+            if (item.getStringMaterial() != null)
+                cf.cf().set(path + ".material", "adv:" + item.getStringMaterial());
+            if (item.getAsList() != null)
+                cf.cf().set(path + ".Note", "This item is a listed item.");
         }
 
         storage.save(cf, "vars");
@@ -139,6 +145,8 @@ public abstract class Gui {
     /**
      * Initialize the default items.
      * Will be overwritten by the config later.
+     *
+     * @since 1.5
      */
     public abstract void init();
 
@@ -147,6 +155,7 @@ public abstract class Gui {
      * <p>
      *
      * @param p Yes, I use p for player
+     * @since 1.5
      */
     public void open(Player p) {
         dev.triumphteam.gui.guis.Gui gui = dev.triumphteam.gui.guis.Gui
@@ -160,6 +169,20 @@ public abstract class Gui {
 
         items.forEach(item -> {
             if (item.getShow() == null || item.getShow().test(p)) {
+                // Static items
+                if (item instanceof StaticItem) {
+                    if (item.getSlot() == -1)
+                        gui.addItem(((StaticItem) item).getItem(p).buildAsGuiItem(
+                                e -> item.call(p, e)
+                        ));
+                    else
+                        gui.setItem(item.getSlot(), ((StaticItem) item).getItem(p).buildAsGuiItem(
+                                e -> item.call(p, e)
+                        ));
+                    return;
+                }
+
+                // Normal items
                 ItemBuilder ib = item.getItem().clone();
                 ib = ib.applyPlaceholder(p);
                 if (item.getStringMaterial() != null)
@@ -169,12 +192,26 @@ public abstract class Gui {
                             ).orElse(XMaterial.STONE).parseItem()
                     );
                 if (item.getReplacer() != null)
-                    item.getReplacer().replaceCall(ib, p);
+                    item.getReplacer().replaceCall(storage, ib, p);
 
                 if (item.getSlot() == -1)
-                    gui.addItem(ib.buildAsGuiItem());
-                else
-                    gui.setItem(item.getSlot(), ib.buildAsGuiItem());
+                    gui.addItem(ib.buildAsGuiItem(
+                            e -> item.call(p, e)
+                    ));
+                else if (item.getAsList() != null) {
+                    List<Replacer> replacers = item.getAsList().call(p);
+                    for (Replacer replacer : replacers) {
+                        ItemBuilder newIB = ib.clone();
+                        if (replacer.getPlayer() != null) newIB.applyPlaceholder(replacer.getPlayer());
+                        replacer.replaceCall(storage, newIB, p);
+                        gui.setItem(item.getSlot(), newIB.buildAsGuiItem(
+                                e -> item.call(p, e)
+                        ));
+                    }
+                } else
+                    gui.setItem(item.getSlot(), ib.buildAsGuiItem(
+                            e -> item.call(p, e)
+                    ));
             }
         });
 
@@ -195,7 +232,7 @@ public abstract class Gui {
      * @param item The item to set
      * @since 1.5
      */
-    protected void setItem(Item item) {
+    public void setItem(Item item) {
         if (item.getSlot() != -1 && items.stream().anyMatch(i -> i.getSlot() == item.getSlot()))
             items.removeIf(i -> i.getSlot() == item.getSlot());
 
@@ -229,120 +266,18 @@ public abstract class Gui {
         return new Item(this, id, -1, item);
     }
 
-    @Getter
-    public static class Item {
-        private final Gui gui;
-        private final String id;
-
-        @Setter
-        private int slot;
-        @Setter
-        private ItemBuilder item;
-        private Predicate<Player> show;
-        private boolean staticItem;
-
-        @Setter
-        private String stringMaterial;
-
-        private Consumer<InventoryClickEvent> clickAction;
-        private Replacer replacer;
-
-        public Item(Gui gui, String id, int slot, ItemBuilder item) {
-            this.gui = gui;
-            this.id = id;
-            this.slot = slot;
-            this.item = item;
-        }
-
-        /**
-         * Use a string as a material.
-         * Placeholders from the replacer or PlaceholderAPI will be applied.
-         * The string material will override the item material.
-         * Example: "%player_uuid%" can be used to get the player's skull as the item.
-         * <p>
-         *
-         * @param stringMaterial The string material
-         * @return The item
-         * @since 1.5
-         */
-        public Item stringMaterial(String stringMaterial) {
-            this.stringMaterial = stringMaterial;
-            return this;
-        }
-
-        /**
-         * Set a condition for the item to be shown.
-         * <p>
-         *
-         * @param show The condition for the item to be shown
-         * @return The item
-         * @since 1.5
-         */
-        public Item show(Predicate<Player> show) {
-            this.show = show;
-            return this;
-        }
-
-        /**
-         * Make the item static.
-         * Meaning it won't be saved to the config.
-         * <p>
-         *
-         * @return The item
-         * @since 1.5
-         */
-        public Item staticItem() {
-            this.staticItem = true;
-            return this;
-        }
-
-        /**
-         * Set the click action for the item.
-         * <p>
-         *
-         * @param clickAction The action to run when the item is clicked
-         * @return The item
-         * @since 1.5
-         */
-        public Item clickAction(Consumer<InventoryClickEvent> clickAction) {
-            this.clickAction = clickAction;
-            return this;
-        }
-
-        /**
-         * Alias for {@link #clickAction(Consumer)}
-         * <p>
-         *
-         * @param clickAction The action to run when the item is clicked
-         * @return The item
-         * @since 1.5
-         */
-        public Item onClick(Consumer<InventoryClickEvent> clickAction) {
-            this.clickAction = clickAction;
-            return this;
-        }
-
-        /**
-         * Add a replacer to the item.
-         * <p>
-         *
-         * @param replacer The replacer to add
-         * @return The item
-         * @since 1.5
-         */
-        public Item replacer(Replacer replacer) {
-            this.replacer = replacer;
-            return this;
-        }
-
-        /**
-         * Add the item to the gui.
-         *
-         * @since 1.5
-         */
-        public void add() {
-            gui.setItem(this);
-        }
+    /**
+     * Create a new static item.
+     * Use -1 as the slot to add the item to the gui without a slot.
+     * <p>
+     *
+     * @param slot The slot of the item
+     * @param func The function to get the item
+     * @return The item
+     * @since 1.5
+     */
+    protected StaticItem staticItem(int slot, Function<Player, ItemBuilder> func) {
+        return new StaticItem(this, slot, func);
     }
 
     private void fillGui(BaseGui gui) {

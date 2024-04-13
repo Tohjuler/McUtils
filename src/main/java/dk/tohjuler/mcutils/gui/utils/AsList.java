@@ -1,5 +1,6 @@
 package dk.tohjuler.mcutils.gui.utils;
 
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
  * <p>
  * @param <T> The type of the list
  */
+@Getter
 public abstract class AsList<T> {
     private final List<T> list;
 
@@ -26,7 +28,11 @@ public abstract class AsList<T> {
      * @since 1.5.0
      */
     public List<Replacer> call(Player p) {
-        return list.stream().map(value -> handle(value, p)).collect(Collectors.toList());
+        return list.stream().map(value -> {
+            Replacer replacer = handle(value, p);
+            if (value instanceof Player) replacer.setPlayer((Player) value);
+            return replacer;
+        }).collect(Collectors.toList());
     }
 
     /**
