@@ -108,9 +108,10 @@ public class ExampleGui extends ConfigBasedGui {
                         );
                     }
                 }
-        ).clickAction((player, clickEvent) -> {
-            player.sendMessage("You clicked the player info item");
-            clickEvent.setCancelled(false); // The event is cancelled by default
+        ).clickAction((p, e) -> {
+            p.sendMessage("You clicked the player info item!");
+            e.getEvent().setCancelled(false); // Event is cancelled by default
+            e.getGui(); // Access the gui, used for getting items in the gui or updating the gui
         }).add();
 
         // Example on an Item that has a condition to be shown

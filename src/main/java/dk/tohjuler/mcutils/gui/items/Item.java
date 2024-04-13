@@ -56,7 +56,7 @@ public class Item<T extends BaseGui> {
      * @return The item
      * @since 1.5
      */
-    public Item stringMaterial(String stringMaterial) {
+    public Item<T> stringMaterial(String stringMaterial) {
         this.stringMaterial = stringMaterial;
         return this;
     }
@@ -69,7 +69,7 @@ public class Item<T extends BaseGui> {
      * @return The item
      * @since 1.5
      */
-    public Item show(Predicate<Player> show) {
+    public Item<T> show(Predicate<Player> show) {
         this.show = show;
         return this;
     }
@@ -81,7 +81,7 @@ public class Item<T extends BaseGui> {
      * @param asList The list to use
      * @return The item
      */
-    public Item asList(AsList<?> asList) {
+    public Item<T> asList(AsList<?> asList) {
         this.asList = asList;
         return this;
     }
@@ -94,7 +94,7 @@ public class Item<T extends BaseGui> {
      * @return The item
      * @since 1.5
      */
-    public Item clickAction(BiConsumer<Player, WrappedInventoryClickEvent<T>> clickAction) {
+    public Item<T> clickAction(BiConsumer<Player, WrappedInventoryClickEvent<T>> clickAction) {
         this.clickAction = clickAction;
         return this;
     }
@@ -107,7 +107,7 @@ public class Item<T extends BaseGui> {
      * @return The item
      * @since 1.5
      */
-    public Item onClick(BiConsumer<Player, WrappedInventoryClickEvent<T>> clickAction) {
+    public Item<T> onClick(BiConsumer<Player, WrappedInventoryClickEvent<T>> clickAction) {
         this.clickAction = clickAction;
         return this;
     }
@@ -120,7 +120,7 @@ public class Item<T extends BaseGui> {
      * @return The item
      * @since 1.5
      */
-    public Item replacer(Replacer replacer) {
+    public Item<T> replacer(Replacer replacer) {
         this.replacer = replacer;
         return this;
     }
