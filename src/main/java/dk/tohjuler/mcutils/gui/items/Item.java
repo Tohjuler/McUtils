@@ -161,7 +161,7 @@ public class Item<T extends BaseGui> {
         ItemBuilder newItem = item.clone();
         newItem = newItem.applyPlaceholder(player);
         if (getReplacer() != null)
-            getReplacer().replaceCall(storage, newItem, player);
+            newItem = getReplacer().replaceCall(storage, newItem, player);
 
         if (stringMaterial == null) return newItem.buildAsGuiItem(call);
 
