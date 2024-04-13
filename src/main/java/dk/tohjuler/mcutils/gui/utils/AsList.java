@@ -38,6 +38,7 @@ public abstract class AsList<T> {
 
     /**
      * Get calls for every value in the list
+     * If the {@link T} is a player, that players given in {@link #getList(Player)} will be used in the {@link Replacer#replace(Player)}
      * <p>
      * @param value The value to get the calls for
      * @param p The player to get the calls for

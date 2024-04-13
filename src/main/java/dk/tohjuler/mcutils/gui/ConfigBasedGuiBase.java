@@ -196,7 +196,8 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                                         replacer.getPlayer() != null
                                                 ? replacer.getPlayer()
                                                 : p,
-                                        e -> item.call(p, gui, e)
+                                        e -> item.call(p, gui, e),
+                                        replacer
                                 ));
                 } else
                     gui.setItem(item.getSlot(), item.build(storage, p,

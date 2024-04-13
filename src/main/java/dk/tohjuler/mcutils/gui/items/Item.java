@@ -151,11 +151,13 @@ public class Item<T extends BaseGui> {
      * Build the item as a GuiItem.
      * <p>
      *
-     * @param call The action to run when the item is clicked
+     * @param storage  The storage to use
+     * @param call     the callback to run when the item is clicked
+     * @param replacer The replacer to use
      * @return The item as a GuiItem
      * @since 1.5.1
      */
-    public GuiItem build(Storage storage, Player player, GuiAction<InventoryClickEvent> call) {
+    public GuiItem build(Storage storage, Player player, GuiAction<InventoryClickEvent> call, Replacer replacer) {
         ItemBuilder newItem = item.clone();
         newItem = newItem.applyPlaceholder(player);
         if (getReplacer() != null)
@@ -174,6 +176,19 @@ public class Item<T extends BaseGui> {
 
             return newItem.applyType(SkullCreator.skullFromBase64(mat)).buildAsGuiItem(call);
         }
+    }
+
+    /**
+     * Build the item as a GuiItem.
+     * <p>
+     *
+     * @param storage The storage to use
+     * @param call    the callback to run when the item is clicked
+     * @return The item as a GuiItem
+     * @since 1.5.1
+     */
+    public GuiItem build(Storage storage, Player player, GuiAction<InventoryClickEvent> call) {
+        return build(storage, player, call, replacer);
     }
 
     @Getter
