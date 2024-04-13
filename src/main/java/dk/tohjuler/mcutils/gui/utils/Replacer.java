@@ -30,7 +30,7 @@ public abstract class Replacer {
      */
     protected void replace(String regex, Function<ReplaceEvent, String> func) {
         if (item != null)
-            item.replaceAllFromGui(regex, storage, func);
+            item = item.replaceAllFromGui(regex, storage, func);
         else if (str != null) {
             str = replaceInString(str, regex, storage, func);
         }
