@@ -1,6 +1,5 @@
 package dk.tohjuler.mcutils.gui.utils;
 
-import dk.tohjuler.mcutils.gui.Storage;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,10 +56,11 @@ public abstract class Replacer {
      *
      * @since 1.5.0
      */
-    public void replaceCall(Storage storage, String str, Player p) {
+    public String replaceCall(Storage storage, String str, Player p) {
         this.storage = storage;
         this.str = str;
         replace(p);
+        return str;
     }
 
     public static String replaceInString(String str, String regex, Storage storage, Function<ReplaceEvent, String> func) {

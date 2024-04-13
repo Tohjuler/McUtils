@@ -1,4 +1,4 @@
-package dk.tohjuler.mcutils.gui;
+package dk.tohjuler.mcutils.gui.utils;
 
 import dk.tohjuler.mcutils.config.ConfigurationFile;
 

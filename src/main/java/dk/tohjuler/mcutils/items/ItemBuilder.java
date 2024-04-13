@@ -4,9 +4,10 @@ import com.cryptomorin.xseries.XMaterial;
 import dev.triumphteam.gui.components.GuiAction;
 import dev.triumphteam.gui.components.util.ItemNbt;
 import dev.triumphteam.gui.guis.GuiItem;
-import dk.tohjuler.mcutils.gui.Storage;
+import dk.tohjuler.mcutils.gui.utils.Storage;
 import dk.tohjuler.mcutils.gui.utils.Replacer;
 import dk.tohjuler.mcutils.strings.ColorUtils;
+import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
 
 public class ItemBuilder {
     private ItemStack item;
+    @Getter
+    private @Nullable String headBase64;
 
     /**
      * Create a new ItemBuilder, from a {@link ItemStack}
@@ -42,6 +46,7 @@ public class ItemBuilder {
      */
     public ItemBuilder(@NotNull String value) {
         this.item = SkullCreator.skullFromBase64(value);
+        this.headBase64 = value;
     }
 
     /**
@@ -157,6 +162,7 @@ public class ItemBuilder {
      */
     public ItemBuilder setType(Material material) {
         this.item.setType(material);
+        this.headBase64 = null;
         return this;
     }
 

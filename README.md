@@ -66,7 +66,7 @@ Example:
 ExampleGui.java
 
 ```java
-public class ExampleGui extends Gui {
+public class ExampleGui extends ConfigBasedGui {
     public ExampleGui() {
         super(
                 "example-gui", // Id of the gui
