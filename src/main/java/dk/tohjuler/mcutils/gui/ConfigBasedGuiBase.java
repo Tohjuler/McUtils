@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -111,6 +112,12 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      */
     public void save(File folder) {
         File file = new File(folder, id + ".yml");
+        try {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        } catch (IOException ex) {
+            new RuntimeException("Could not create file: " + file.getAbsolutePath(), ex).printStackTrace();
+        }
         ConfigurationFile cf = new ConfigurationFile(file);
 
         cf.cf().set("title", title);
@@ -274,6 +281,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
     /**
      * Create the base gui.
      * <p>
+     *
      * @return The base gui
      * @since 1.5
      */
