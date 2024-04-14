@@ -1,6 +1,7 @@
 package dk.tohjuler.mcutils.data;
 
 import lombok.Getter;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.concurrent.TimeUnit;
 
@@ -11,10 +12,12 @@ public abstract class DataModel<T, S> {
     private final int timeToSave;
     private final TimeUnit timeUnit;
 
-    public DataModel(String id, int timeToSave, TimeUnit timeUnit) {
+    public DataModel(String id, int timeToSave, TimeUnit timeUnit, JavaPlugin plugin) {
         this.id = id;
         this.timeToSave = timeToSave;
         this.timeUnit = timeUnit;
+
+        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, this::save, getSaveTime(), getSaveTime());
     }
 
     public long getSaveTime() {

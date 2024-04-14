@@ -136,7 +136,7 @@ public class ConfigurationFile {
 
     @SneakyThrows
     public ConfigurationFile(File file) {
-        this.file = null;
+        this.file = file;
         this.yamlConfiguration = new YamlConfiguration();
         this.yamlConfiguration.load(file);
     }

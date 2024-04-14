@@ -15,7 +15,6 @@ public class GuiManager {
         folder = new File(plugin.getDataFolder(), "guis");
         for (ConfigBasedGuiBase gui : guis) {
             this.guis.put(gui.getId(), gui);
-            gui.init();
             gui.load(folder);
         }
     }
@@ -23,9 +22,8 @@ public class GuiManager {
     public GuiManager(JavaPlugin plugin, File folder, ConfigBasedGuiBase... guis) {
         this.folder = folder;
         for (ConfigBasedGuiBase gui : guis) {
-            this.guis.put(gui.getId(), gui);
-            gui.init();
             gui.load(folder);
+            this.guis.put(gui.getId(), gui);
         }
     }
 

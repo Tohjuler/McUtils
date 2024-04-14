@@ -101,6 +101,18 @@ public class ItemBuilder {
     }
 
     /**
+     * Used to clone an itembuilder
+     * <p>
+     * @param item the item
+     * @param headBase64 the head base64
+     * @since 1.5.4
+     */
+    public ItemBuilder(ItemStack item, @Nullable String headBase64) {
+        this.item = item;
+        this.headBase64 = headBase64;
+    }
+
+    /**
      * Build the item, why do I even explain this?
      *
      * @return the built item
@@ -604,12 +616,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder clone() {
-        try {
-            return (ItemBuilder) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            return this;
-        }
+        return new ItemBuilder(this.item.clone(), this.headBase64);
     }
 
     // Getters

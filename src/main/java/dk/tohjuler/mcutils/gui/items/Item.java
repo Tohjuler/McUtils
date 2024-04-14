@@ -160,8 +160,8 @@ public class Item<T extends BaseGui> {
     public GuiItem build(Storage storage, Player player, GuiAction<InventoryClickEvent> call, Replacer replacer) {
         ItemBuilder newItem = item.clone();
         newItem = newItem.applyPlaceholder(player);
-        if (getReplacer() != null)
-            newItem = getReplacer().replaceCall(storage, newItem, player);
+        if (replacer != null)
+            newItem = replacer.replaceCall(storage, newItem, player);
 
         if (stringMaterial == null) return newItem.buildAsGuiItem(call);
 

@@ -38,8 +38,6 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
 
     private final List<Item<T>> items = new ArrayList<>();
 
-    // TODO: Implement pagination
-
     public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem) {
         this.id = id;
         this.title = title;
@@ -75,7 +73,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
             int slot = cf.cf().getInt("items." + key + ".slot");
             String mat = cf.cf().getString("items." + key + ".material");
 
-            Item<T> i = items.stream().findFirst().filter(i2 -> i2.getId().equals(key)).orElse(null);
+            Item<T> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
             if (i != null) {
                 if (mat.startsWith("adv:")) i.setStringMaterial(mat.substring(4));
                 i.setItem(item);
@@ -90,7 +88,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
             ItemBuilder item = YamlItem.loadItem(cf, "noSlot-items." + key);
             String mat = cf.cf().getString("noSlot-items." + key + ".material");
 
-            Item<T> i = items.stream().findFirst().filter(i2 -> i2.getId().equals(key)).orElse(null);
+            Item<T> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
             if (i != null) {
                 if (mat.startsWith("adv:")) i.setStringMaterial(mat.substring(4));
                 i.setItem(item);
@@ -126,8 +124,6 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         if (fillItem != null)
             YamlItem.saveItem(cf, fillItem, "fillItem");
 
-        if (items.isEmpty()) init();
-
         for (Item<T> item : items) {
             // Don't save static items
             if (item instanceof StaticItem) continue;
@@ -139,9 +135,9 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                 cf.cf().set(path + ".slot", item.getSlot());
 
             YamlItem.saveItem(cf, item.getItem(), path);
-            if (item.getStringMaterial() != null)
+            if (item.getStringMaterial() != null && !item.getStringMaterial().isEmpty())
                 cf.cf().set(path + ".material", "adv:" + item.getStringMaterial());
-            if (item.getItem().getHeadBase64() != null)
+            if (item.getItem().getHeadBase64() != null && !item.getItem().getHeadBase64().isEmpty())
                 cf.cf().set(path + ".material", "adv:" + item.getItem().getHeadBase64());
             if (item.getAsList() != null)
                 cf.cf().set(path + ".Note", "This item is a listed item.");
@@ -189,15 +185,10 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
 
                 // Normal items
 
-                if (item.getSlot() == -1)
-                    gui.addItem(item.build(storage, p,
-                            e -> item.call(p, gui, e)
-                    ));
-                else if (item.getAsList() != null) {
+                if (item.getAsList() != null) {
                     List<Replacer> replacers = item.getAsList().call(p);
                     for (Replacer replacer : replacers)
-                        gui.setItem(
-                                item.getSlot(),
+                        gui.addItem(
                                 item.build(
                                         storage,
                                         replacer.getPlayer() != null
@@ -206,7 +197,11 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                                         e -> item.call(p, gui, e),
                                         replacer
                                 ));
-                } else
+                } else if (item.getSlot() == -1)
+                    gui.addItem(item.build(storage, p,
+                            e -> item.call(p, gui, e)
+                    ));
+                else
                     gui.setItem(item.getSlot(), item.build(storage, p,
                             e -> item.call(p, gui, e)
                     ));

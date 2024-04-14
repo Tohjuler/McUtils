@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -20,17 +21,25 @@ public class JsonModel<T> extends DataModel<T, T> {
 
     private T data;
     private Function<Object, T> serializer = null;
+    private Type type;
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().create();
 
     public JsonModel(String id, int timeToSave, TimeUnit timeUnit, JavaPlugin plugin) {
-        super(id, timeToSave, timeUnit);
+        super(id, timeToSave, timeUnit, plugin);
         this.plugin = plugin;
         load();
     }
 
+    public JsonModel(String id, int timeToSave, TimeUnit timeUnit, Type type, JavaPlugin plugin) {
+        super(id, timeToSave, timeUnit, plugin);
+        this.plugin = plugin;
+        this.type = type;
+        load();
+    }
+
     public JsonModel(String id, int timeToSave, TimeUnit timeUnit, Function<Object, T> serializer, JavaPlugin plugin) {
-        super(id, timeToSave, timeUnit);
+        super(id, timeToSave, timeUnit, plugin);
         this.serializer = serializer;
         this.plugin = plugin;
         load();
@@ -57,7 +66,13 @@ public class JsonModel<T> extends DataModel<T, T> {
         try {
             if (!file.exists()) return false;
             BufferedReader reader = Files.newBufferedReader(file.toPath());
-            data = gson.fromJson(reader, new TypeToken<T>() {}.getType());
+            data = gson.fromJson(
+                    reader,
+                    type != null
+                            ? type
+                            : new TypeToken<T>(getClass()) {
+                    }.getType()
+            );
 
             if (serializer != null) data = serializer.apply(data);
             return true;
