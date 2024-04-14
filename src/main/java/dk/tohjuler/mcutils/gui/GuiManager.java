@@ -8,20 +8,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GuiManager {
-    private final Map<String, ConfigBasedGuiBase> guis = new HashMap<>();
+    private final Map<String, ConfigBasedGuiBase<?>> guis = new HashMap<>();
     private final File folder;
 
-    public GuiManager(JavaPlugin plugin, ConfigBasedGuiBase... guis) {
+    public GuiManager(JavaPlugin plugin, ConfigBasedGuiBase<?>... guis) {
         folder = new File(plugin.getDataFolder(), "guis");
-        for (ConfigBasedGuiBase gui : guis) {
+        for (ConfigBasedGuiBase<?> gui : guis) {
             this.guis.put(gui.getId(), gui);
             gui.load(folder);
         }
     }
 
-    public GuiManager(JavaPlugin plugin, File folder, ConfigBasedGuiBase... guis) {
+    public GuiManager(JavaPlugin plugin, File folder, ConfigBasedGuiBase<?>... guis) {
         this.folder = folder;
-        for (ConfigBasedGuiBase gui : guis) {
+        for (ConfigBasedGuiBase<?> gui : guis) {
             gui.load(folder);
             this.guis.put(gui.getId(), gui);
         }
@@ -49,7 +49,7 @@ public class GuiManager {
      * @since 1.5.0
      */
     public void open(Player p, Class<?> gui) {
-        for (ConfigBasedGuiBase g : guis.values())
+        for (ConfigBasedGuiBase<?> g : guis.values())
             if (g.getClass().equals(gui)) {
                 g.open(p);
                 return;
