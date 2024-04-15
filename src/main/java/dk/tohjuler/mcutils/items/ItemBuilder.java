@@ -271,7 +271,7 @@ public class ItemBuilder {
             setLore(
                     getLore().stream()
                             .map(s -> Replacer.replaceInString(s, regex, storage, func))
-                            .flatMap(s -> Arrays.stream(s.split("\n")))
+                            .flatMap(s -> Arrays.stream(s.split("\\n")))
                             .collect(Collectors.toList())
             );
 
