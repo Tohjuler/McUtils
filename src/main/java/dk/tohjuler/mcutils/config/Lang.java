@@ -21,6 +21,7 @@ public class Lang {
      *
      * @param plugin       The plugin which should own this file
      * @param resourcePath The path to the file
+     * @since 1.0.0
      */
     public Lang(JavaPlugin plugin, String resourcePath) {
         // Yes, I know that it will still run the check even if the file is just created
@@ -28,12 +29,30 @@ public class Lang {
 
         defaultLang = new ConfigurationFile(plugin.getResource(resourcePath));
 
+        boolean needSave = false;
         for (String key : defaultLang.cf().getKeys(false))
             if (!langFile.cf().contains(key)) {
                 langFile.cf().set(key, defaultLang.cf().get(key));
+                needSave = true;
             }
 
-        langFile.save();
+        if (needSave) langFile.save();
+    }
+
+    /**
+     * Reload the lang file
+     * @since 1.6.0
+     */
+    public void reload() {
+        langFile.load();
+
+        boolean needSave = false;
+        for (String key : defaultLang.cf().getKeys(false))
+            if (!langFile.cf().contains(key)) {
+                langFile.cf().set(key, defaultLang.cf().get(key));
+                needSave = true;
+            }
+        if (needSave) langFile.save();
     }
 
     /**
@@ -42,6 +61,7 @@ public class Lang {
      *
      * @param key The key to get
      * @return The value of the key
+     * @since 1.0.0
      */
     public String get(String key) {
         if (!langFile.cf().contains(key)) {
@@ -57,6 +77,7 @@ public class Lang {
      *
      * @param str the string to replace in
      * @return the replaced string
+     * @since 1.0.0
      */
     public String replaceVars(String str) {
         str = replaceFromCf(str, "vars");
@@ -70,6 +91,7 @@ public class Lang {
      * @param str the string replace in
      * @param key the key of the map
      * @return the replaced string
+     * @since 1.0.0
      */
     public String replaceFromCf(String str, String key) {
         if (!langFile.cf().contains(key)) return str;
@@ -84,6 +106,7 @@ public class Lang {
      * @param sender  The CommandSender to send the message to
      * @param key     The key to get
      * @param replace Map of placeholders to be replaced
+     * @since 1.0.0
      */
     public void send(CommandSender sender, String key, @NotNull Map<String, String> replace) {
         String str = get(key);
@@ -100,6 +123,7 @@ public class Lang {
      *
      * @param sender The CommandSender to send the message to
      * @param key    The key to get
+     * @since 1.0.0
      */
     public void send(CommandSender sender, String key) {
         send(sender, key, Collections.emptyMap());

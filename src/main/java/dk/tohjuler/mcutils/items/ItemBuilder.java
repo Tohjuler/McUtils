@@ -103,7 +103,8 @@ public class ItemBuilder {
     /**
      * Used to clone an itembuilder
      * <p>
-     * @param item the item
+     *
+     * @param item       the item
      * @param headBase64 the head base64
      * @since 1.5.4
      */
@@ -272,6 +273,7 @@ public class ItemBuilder {
                     getLore().stream()
                             .map(s -> Replacer.replaceInString(s, regex, storage, func))
                             .flatMap(s -> Arrays.stream(s.split("\\n")))
+                            .flatMap(s -> Arrays.stream(s.split("%nl%")))
                             .collect(Collectors.toList())
             );
 
