@@ -56,13 +56,7 @@ public class JsonModel<T> extends DataModel<T, T> {
     }
 
     @Override
-    public boolean load() {
-        File dataFolder = new File(plugin.getDataFolder(), "data");
-
-        if (!dataFolder.exists()) return false;
-
-        File file = new File(dataFolder, getId() + ".json");
-
+    public boolean loadFrom(File file) {
         try {
             if (!file.exists()) return false;
             BufferedReader reader = Files.newBufferedReader(file.toPath());
@@ -82,6 +76,50 @@ public class JsonModel<T> extends DataModel<T, T> {
         }
     }
 
+    /**
+     * Loads the data from `data/{id}.json`
+     * <p>
+     * @return true if the data was loaded successfully
+     * @since 1.0.0
+     */
+    @Override
+    public boolean load() {
+        File dataFolder = new File(plugin.getDataFolder(), "data");
+        if (!dataFolder.exists()) return false;
+
+        File file = new File(dataFolder, getId() + ".json");
+
+        return loadFrom(file);
+    }
+
+    /**
+     * Saves the data to a file
+     * <p>
+     * @param file The file to save to
+     * @return true if the data was saved successfully
+     * @since 1.0.0
+     */
+    @Override
+    public boolean saveTo(File file) {
+        try {
+            file.createNewFile();
+            Writer writer = new FileWriter(file, false);
+            gson.toJson(data, writer);
+            writer.flush();
+            writer.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Saves the data to `data/{id}.json`
+     * <p>
+     * @return true if the data was saved successfully
+     * @since 1.0.0
+     */
     @Override
     public boolean save() {
         File dataFolder = new File(plugin.getDataFolder(), "data");
@@ -94,16 +132,6 @@ public class JsonModel<T> extends DataModel<T, T> {
 
         File file = new File(dataFolder, getId() + ".json");
 
-        try {
-            file.createNewFile();
-            Writer writer = new FileWriter(file, false);
-            gson.toJson(data, writer);
-            writer.flush();
-            writer.close();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+        return saveTo(file);
     }
 }
