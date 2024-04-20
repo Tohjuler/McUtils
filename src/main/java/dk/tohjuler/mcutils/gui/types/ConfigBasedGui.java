@@ -6,6 +6,7 @@ import dk.tohjuler.mcutils.gui.ConfigBasedGuiBase;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import dk.tohjuler.mcutils.strings.ColorUtils;
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ConfigBasedGui extends ConfigBasedGuiBase<Gui> {
@@ -14,11 +15,11 @@ public abstract class ConfigBasedGui extends ConfigBasedGuiBase<Gui> {
     }
 
     @Override
-    protected Gui createGui() {
+    protected Gui createGui(Player p) {
         return Gui.gui()
                 .title(Component.text(
                         ColorUtils.colorize(
-                                getTitle()
+                                getTitle(p)
                         )
                 ))
                 .rows(getRows())

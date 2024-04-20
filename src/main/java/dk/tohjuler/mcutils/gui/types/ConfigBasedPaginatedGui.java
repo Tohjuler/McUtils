@@ -7,6 +7,7 @@ import dk.tohjuler.mcutils.gui.ConfigBasedGuiBase;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import dk.tohjuler.mcutils.strings.ColorUtils;
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ConfigBasedPaginatedGui extends ConfigBasedGuiBase<PaginatedGui> {
@@ -18,11 +19,11 @@ public abstract class ConfigBasedPaginatedGui extends ConfigBasedGuiBase<Paginat
     }
 
     @Override
-    protected PaginatedGui createGui() {
+    protected PaginatedGui createGui(Player p) {
         return Gui.paginated()
                 .title(Component.text(
                         ColorUtils.colorize(
-                                getTitle()
+                                getTitle(p)
                         )
                 ))
                 .pageSize(pageSize)

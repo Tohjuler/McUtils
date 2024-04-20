@@ -15,6 +15,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.function.Function;
 @Getter
 public abstract class ConfigBasedGuiBase<T extends BaseGui> {
     private final String id;
+    private final @Nullable String category;
     @Setter
     private @NotNull String title;
     @Setter
@@ -34,9 +36,22 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
     @Setter
     private ItemBuilder fillItem;
 
+    @Setter
+    private Replacer titleReplacer;
+
     private final Storage storage = new Storage();
 
     private final List<Item<T>> items = new ArrayList<>();
+
+    public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem, String category) {
+        this.id = id;
+        this.title = title;
+        this.rows = rows;
+        this.fillType = fillType;
+        this.fillItem = fillItem;
+        this.category = category;
+        init();
+    }
 
     public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem) {
         this.id = id;
@@ -44,6 +59,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         this.rows = rows;
         this.fillType = fillType;
         this.fillItem = fillItem;
+        this.category = null;
         init();
     }
 
@@ -56,6 +72,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @since 1.5
      */
     public void load(File folder) {
+        if (category != null) folder = new File(folder, category);
         File file = new File(folder, id + ".yml");
         if (!file.exists()) {
             save(folder);
@@ -109,6 +126,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @since 1.5
      */
     public void save(File folder) {
+        if (category != null) folder = new File(folder, category);
         File file = new File(folder, id + ".yml");
         try {
             file.getParentFile().mkdirs();
@@ -163,7 +181,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @since 1.5
      */
     public void open(Player p) {
-        T gui = createGui();
+        T gui = createGui(p);
 
         fillGui(gui);
         gui.setDefaultClickAction(e -> e.setCancelled(true));
@@ -205,7 +223,16 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                     gui.setItem(item.getSlot(), item.build(storage, p,
                             e -> item.call(p, gui, e)
                     ));
-            }
+            } else if (item.getFallbackItem() != null) // Fallback items
+                if (item.getSlot() == -1)
+                    gui.addItem(item.buildFallback(storage, p,
+                            e -> item.call(p, gui, e)
+                    ));
+                else
+                    gui.setItem(item.getSlot(), item.buildFallback(storage, p,
+                            e -> item.call(p, gui, e)
+                    ));
+
         });
 
         gui.open(p);
@@ -277,10 +304,23 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * Create the base gui.
      * <p>
      *
+     * @param p The player to create the gui for
      * @return The base gui
      * @since 1.5
      */
-    protected abstract T createGui();
+    protected abstract T createGui(Player p);
+
+    /**
+     * Get the title of the gui.
+     * <p>
+     *
+     * @param p The player to get the title for
+     * @return The title
+     * @since 1.10.0
+     */
+    protected String getTitle(Player p) {
+        return titleReplacer != null ? titleReplacer.replaceCall(storage, title, p) : title;
+    }
 
     private void fillGui(BaseGui gui) {
         switch (fillType) {

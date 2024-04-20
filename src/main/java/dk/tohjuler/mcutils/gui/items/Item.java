@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -29,6 +30,7 @@ public class Item<T extends BaseGui> {
     private int slot;
     @Setter
     private ItemBuilder item;
+    private @Nullable ItemBuilder fallbackItem;
     private Predicate<Player> show;
     private AsList<?> asList;
 
@@ -126,6 +128,21 @@ public class Item<T extends BaseGui> {
     }
 
     /**
+     * Set the fallback item for the item.
+     * The fallback item will be used if the item is not shown.
+     * A fallback item DOES NOT support asList or when the item is static.
+     * <p>
+     *
+     * @param fallbackItem The fallback item
+     * @return The item
+     * @since 1.10.0
+     */
+    public Item<T> fallbackItem(ItemBuilder fallbackItem) {
+        this.fallbackItem = fallbackItem;
+        return this;
+    }
+
+    /**
      * Add the item to the gui.
      *
      * @since 1.5
@@ -157,8 +174,10 @@ public class Item<T extends BaseGui> {
      * @return The item as a GuiItem
      * @since 1.5.1
      */
-    public GuiItem build(Storage storage, Player player, GuiAction<InventoryClickEvent> call, Replacer replacer) {
-        ItemBuilder newItem = item.clone();
+    public GuiItem build(Storage storage, Player player, GuiAction<InventoryClickEvent> call, Replacer replacer, boolean fallback) {
+        ItemBuilder newItem = fallback && fallbackItem != null
+                ? fallbackItem.clone()
+                : item.clone();
         newItem = newItem.applyPlaceholder(player);
         if (replacer != null)
             newItem = replacer.replaceCall(storage, newItem, player);
@@ -188,7 +207,20 @@ public class Item<T extends BaseGui> {
      * @since 1.5.1
      */
     public GuiItem build(Storage storage, Player player, GuiAction<InventoryClickEvent> call) {
-        return build(storage, player, call, replacer);
+        return build(storage, player, call, replacer, false);
+    }
+
+    /**
+     * Build the fallback item as a GuiItem.
+     * <p>
+     *
+     * @param storage The storage to use
+     * @param call    the callback to run when the item is clicked
+     * @return The item as a GuiItem
+     * @since 1.10.0
+     */
+    public GuiItem buildFallback(Storage storage, Player player, GuiAction<InventoryClickEvent> call) {
+        return build(storage, player, call, replacer, true);
     }
 
     @Getter
