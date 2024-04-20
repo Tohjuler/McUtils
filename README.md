@@ -24,6 +24,13 @@
     - Static Gui Base
     - Config System (More info [here](#gui-config-system))
 
+## External Libraries
+
+Here is a list of external libraries that comes with this library:
+- [TaskChain](https://github.com/aikar/TaskChain)
+- [XSeries](https://github.com/CryptoMorin/XSeries)
+- [Triumph Gui](https://github.com/TriumphTeam/triumph-gui)
+
 ## JavaDocs
 
 You can find the JavaDocs for this library [here](https://tohjuler.github.io/McUtils/).

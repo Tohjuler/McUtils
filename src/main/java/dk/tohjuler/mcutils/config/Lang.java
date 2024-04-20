@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Lang {
@@ -41,6 +42,7 @@ public class Lang {
 
     /**
      * Reload the lang file
+     *
      * @since 1.6.0
      */
     public void reload() {
@@ -60,16 +62,44 @@ public class Lang {
      * If the key doesn't exist, it will be created with the default value
      *
      * @param key The key to get
+     * @param replace Map of placeholders to be replaced
      * @return The value of the key
-     * @since 1.0.0
+     * @since 1.9.0
      */
-    public String get(String key) {
+    public String get(String key, Map<String, String> replace) {
         if (!langFile.cf().contains(key)) {
             langFile.cf().set(key, defaultLang.cf().get(key));
             langFile.save();
             Bukkit.getServer().getLogger().warning("Missing key in lang file, setting it with the default. Key: " + key);
         }
-        return ColorUtils.colorize(langFile.cf().getString(key));
+
+        String str = langFile.cf().getString(key);
+        for (Map.Entry<String, String> e : replace.entrySet())
+            str = str.replace(e.getKey(), e.getValue());
+
+        return ColorUtils.colorize(
+                replaceVars(
+                        str
+                )
+        );
+    }
+
+    /**
+     * Get a string from the lang file
+     * Replace with string pairs. Ex: get("key", "placeholder1", "value1", "placeholder2", "value2")
+     * <p>
+     * @param key The key to get
+     * @param replace The placeholders to replace
+     * @return The value of the key
+     * @since 1.0.0
+     */
+    public String get(String key, String... replace) {
+        if (replace.length == 0) return get(key, Collections.emptyMap());
+
+        if (replace.length % 2 != 0) throw new IllegalArgumentException("replace must be a multiple of 2");
+        Map<String, String> map = new HashMap<>();
+        for (int i = 0; i < replace.length; i += 2) map.put(replace[i], replace[i + 1]);
+        return get(key, map);
     }
 
     /**
@@ -109,12 +139,8 @@ public class Lang {
      * @since 1.0.0
      */
     public void send(CommandSender sender, String key, @NotNull Map<String, String> replace) {
-        String str = get(key);
-        for (Map.Entry<String, String> e : replace.entrySet())
-            str = str.replace(e.getKey(), e.getValue());
-
         sender.sendMessage(
-                replaceVars(str)
+                get(key, replace)
         );
     }
 
@@ -127,6 +153,21 @@ public class Lang {
      */
     public void send(CommandSender sender, String key) {
         send(sender, key, Collections.emptyMap());
+    }
+
+    /**
+     * Send a message to a CommandSender
+     * Replace with string pairs. Ex: send(sender, "key", "placeholder1", "value1", "placeholder2", "value2")
+     * <p>
+     * @param sender The CommandSender to send the message to
+     * @param key The key to get
+     * @param replace The placeholders to replace
+     * @since 1.9.0
+     */
+    public void send(CommandSender sender, String key, String... replace) {
+        sender.sendMessage(
+                get(key, replace)
+        );
     }
 
 }
