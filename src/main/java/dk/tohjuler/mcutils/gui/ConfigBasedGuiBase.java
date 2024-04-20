@@ -50,7 +50,6 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         this.fillType = fillType;
         this.fillItem = fillItem;
         this.category = category;
-        init();
     }
 
     public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem) {
@@ -60,7 +59,6 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         this.fillType = fillType;
         this.fillItem = fillItem;
         this.category = null;
-        init();
     }
 
     /**
@@ -85,7 +83,9 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         fillType = FillType.valueOf(cf.cf().getString("fillType"));
         fillItem = YamlItem.loadItem(cf, "fillItem");
 
+        List<String> keys = new ArrayList<>();
         cf.cf().getConfigurationSection("items").getKeys(false).forEach(key -> {
+            keys.add(key);
             ItemBuilder item = YamlItem.loadItem(cf, "items." + key);
             int slot = cf.cf().getInt("items." + key + ".slot");
             String mat = cf.cf().getString("items." + key + ".material");
@@ -95,6 +95,9 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                 if (mat.startsWith("adv:")) i.setStringMaterial(mat.substring(4));
                 i.setItem(item);
                 i.setSlot(slot);
+
+                if (cf.cf().isSet("items." + key + ".fallback"))
+                    i.setFallbackItem(YamlItem.loadItem(cf, "items." + key + ".fallback"));
             } else
                 item(key, slot, item)
                         .stringMaterial(mat.startsWith("adv:") ? mat.substring(4) : null)
@@ -102,6 +105,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         });
 
         cf.cf().getConfigurationSection("noSlot-items").getKeys(false).forEach(key -> {
+            if (keys.contains(key)) return;
             ItemBuilder item = YamlItem.loadItem(cf, "noSlot-items." + key);
             String mat = cf.cf().getString("noSlot-items." + key + ".material");
 
@@ -114,6 +118,9 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                         .stringMaterial(mat.startsWith("adv:") ? mat.substring(4) : null)
                         .add();
         });
+
+        // Remove any items that are not in the config
+        items.removeIf(i -> !keys.contains(i.getId()));
 
         storage.load(cf, "vars");
     }
@@ -135,6 +142,9 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
             new RuntimeException("Could not create file: " + file.getAbsolutePath(), ex).printStackTrace();
         }
         ConfigurationFile cf = new ConfigurationFile(file);
+
+        items.clear();
+        init();
 
         cf.cf().set("title", title);
         cf.cf().set("rows", rows);
@@ -159,6 +169,8 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                 cf.cf().set(path + ".material", "adv:" + item.getItem().getHeadBase64());
             if (item.getAsList() != null)
                 cf.cf().set(path + ".Note", "This item is a listed item.");
+            if (item.getFallbackItem() != null)
+                YamlItem.saveItem(cf, item.getFallbackItem(), path + ".fallback");
         }
 
         storage.save(cf, "vars");

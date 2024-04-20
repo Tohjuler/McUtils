@@ -30,6 +30,7 @@ public class Item<T extends BaseGui> {
     private int slot;
     @Setter
     private ItemBuilder item;
+    @Setter
     private @Nullable ItemBuilder fallbackItem;
     private Predicate<Player> show;
     private AsList<?> asList;
