@@ -213,7 +213,8 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                                                 ? replacer.getPlayer()
                                                 : p,
                                         e -> item.call(p, gui, e),
-                                        replacer
+                                        replacer,
+                                        false
                                 ));
                 } else if (item.getSlot() == -1)
                     gui.addItem(item.build(storage, p,
