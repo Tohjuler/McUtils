@@ -52,6 +52,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         this.fillType = fillType;
         this.fillItem = fillItem;
         this.category = category;
+        init();
     }
 
     public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem) {
@@ -61,6 +62,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         this.fillType = fillType;
         this.fillItem = fillItem;
         this.category = null;
+        init();
     }
 
     /**
@@ -118,7 +120,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         if (cf.cf().isSet("noSlot-items"))
             cf.cf().getConfigurationSection("noSlot-items").getKeys(false).forEach(key -> {
                 try {
-                    if (keys.contains(key)) return;
+                    keys.add(key);
                     ItemBuilder item = YamlItem.loadItem(cf, "noSlot-items." + key);
                     String mat = cf.cf().getString("noSlot-items." + key + ".material");
 

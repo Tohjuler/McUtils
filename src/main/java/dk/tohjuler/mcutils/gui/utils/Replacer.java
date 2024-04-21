@@ -31,9 +31,8 @@ public abstract class Replacer {
     protected void replace(String regex, Function<ReplaceEvent, String> func) {
         if (item != null)
             item = item.replaceAllFromGui(regex, storage, func);
-        else if (str != null) {
+        else if (str != null)
             str = replaceInString(str, regex, storage, func);
-        }
     }
 
     /**
@@ -66,8 +65,9 @@ public abstract class Replacer {
     public ItemBuilder replaceCall(Storage storage, ItemBuilder item, Player p) {
         this.storage = storage;
         this.item = item;
+        this.str = null;
         replace(p);
-        return item;
+        return this.item;
     }
 
     /**
@@ -82,8 +82,9 @@ public abstract class Replacer {
     public String replaceCall(Storage storage, String str, Player p) {
         this.storage = storage;
         this.str = str;
+        this.item = null;
         replace(p);
-        return str;
+        return this.str;
     }
 
     /**

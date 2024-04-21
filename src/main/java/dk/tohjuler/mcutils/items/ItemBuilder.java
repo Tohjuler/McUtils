@@ -154,10 +154,8 @@ public class ItemBuilder {
      * @return the itembuilder
      */
     public ItemBuilder applyPlaceholder(Player p) {
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
-            Bukkit.getServer().getLogger().warning("PlaceholderAPI is not installed, placeholders will not work.");
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null)
             return this;
-        }
         return modifyMeta(meta -> {
             if (meta.hasDisplayName())
                 meta.setDisplayName(PlaceholderAPI.setPlaceholders(p, meta.getDisplayName()));

@@ -22,6 +22,9 @@ public class Init {
             plugin.getServer().getPluginManager().registerEvents(new HeadDatabaseListener(), plugin);
         else plugin.getLogger().warning("HeadDatabase not found, HeadFonts will not work");
         plugin.getServer().getPluginManager().registerEvents(new ChatInput(plugin), plugin);
+
+        if (plugin.getServer().getPluginManager().getPlugin("PlaceholderAPI") == null)
+            plugin.getLogger().warning("PlaceholderAPI not found, placeholders will not work");
         return true;
     }
 }

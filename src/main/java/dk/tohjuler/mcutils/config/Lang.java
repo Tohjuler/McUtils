@@ -127,7 +127,7 @@ public class Lang {
         if (str == null) return str;
         if (!langFile.cf().isSet(key)) return str;
         for (String cfKey : langFile.cf().getConfigurationSection(key).getKeys(false))
-            str = str.replace(cfKey, langFile.cf().getString(cfKey, "NULL"));
+            str = str.replace(cfKey, langFile.cf().getString(key+"."+cfKey, "NULL"));
         return str;
     }
 
