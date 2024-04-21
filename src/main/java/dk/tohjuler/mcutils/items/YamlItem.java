@@ -39,6 +39,7 @@ public class YamlItem {
      * @return The loaded item
      */
     public static ItemBuilder loadItem(@NotNull ConfigurationFile cf, @NotNull String baseKey) {
+        if (!cf.cf().isSet(baseKey)) return null;
         ItemBuilder item = new ItemBuilder(
                 XMaterial.matchXMaterial(cf.cf().getString(baseKey + ".material"))
                         .orElse(XMaterial.STONE)

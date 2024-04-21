@@ -48,6 +48,7 @@ public class Storage {
 
     public void load(ConfigurationFile cf, String path) {
         vars.clear();
-        cf.cf().getConfigurationSection(path).getKeys(false).forEach(key -> vars.put(key, cf.cf().get(path + "." + key)));
+        if (cf.cf().isSet(path))
+            cf.cf().getConfigurationSection(path).getKeys(false).forEach(key -> vars.put(key, cf.cf().get(path + "." + key)));
     }
 }
