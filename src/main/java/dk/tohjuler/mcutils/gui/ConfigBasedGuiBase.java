@@ -80,46 +80,60 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         }
         ConfigurationFile cf = new ConfigurationFile(file);
 
-        title = cf.cf().getString("title");
-        rows = cf.cf().getInt("rows");
-        fillType = FillType.valueOf(cf.cf().getString("fillType"));
-        fillItem = YamlItem.loadItem(cf, "fillItem");
+        try {
+            title = cf.cf().getString("title");
+            rows = cf.cf().getInt("rows");
+            fillType = FillType.valueOf(cf.cf().getString("fillType"));
+            fillItem = YamlItem.loadItem(cf, "fillItem");
+        } catch (Exception ex) {
+            new RuntimeException("Could not load gui info: " + id, ex).printStackTrace();
+        }
 
         List<String> keys = new ArrayList<>();
-        cf.cf().getConfigurationSection("items").getKeys(false).forEach(key -> {
-            keys.add(key);
-            ItemBuilder item = YamlItem.loadItem(cf, "items." + key);
-            int slot = cf.cf().getInt("items." + key + ".slot");
-            String mat = cf.cf().getString("items." + key + ".material");
+        if (cf.cf().isSet("items"))
+            cf.cf().getConfigurationSection("items").getKeys(false).forEach(key -> {
+                try {
+                    keys.add(key);
+                    ItemBuilder item = YamlItem.loadItem(cf, "items." + key);
+                    int slot = cf.cf().getInt("items." + key + ".slot");
+                    String mat = cf.cf().getString("items." + key + ".material");
 
-            Item<T> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
-            if (i != null) {
-                if (mat.startsWith("adv:")) i.setStringMaterial(mat.substring(4));
-                i.setItem(item);
-                i.setSlot(slot);
+                    Item<T> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
+                    if (i != null) {
+                        if (mat.startsWith("adv:")) i.setStringMaterial(mat.substring(4));
+                        i.setItem(item);
+                        i.setSlot(slot);
 
-                if (cf.cf().isSet("items." + key + ".fallback"))
-                    i.setFallbackItem(YamlItem.loadItem(cf, "items." + key + ".fallback"));
-            } else
-                item(key, slot, item)
-                        .stringMaterial(mat.startsWith("adv:") ? mat.substring(4) : null)
-                        .add();
-        });
+                        if (cf.cf().isSet("items." + key + ".fallback"))
+                            i.setFallbackItem(YamlItem.loadItem(cf, "items." + key + ".fallback"));
+                    } else
+                        item(key, slot, item)
+                                .stringMaterial(mat.startsWith("adv:") ? mat.substring(4) : null)
+                                .add();
+                } catch (Exception ex) {
+                    new RuntimeException("Could not load item: " + key, ex).printStackTrace();
+                }
+            });
 
-        cf.cf().getConfigurationSection("noSlot-items").getKeys(false).forEach(key -> {
-            if (keys.contains(key)) return;
-            ItemBuilder item = YamlItem.loadItem(cf, "noSlot-items." + key);
-            String mat = cf.cf().getString("noSlot-items." + key + ".material");
+        if (cf.cf().isSet("noSlot-items"))
+            cf.cf().getConfigurationSection("noSlot-items").getKeys(false).forEach(key -> {
+                try {
+                    if (keys.contains(key)) return;
+                    ItemBuilder item = YamlItem.loadItem(cf, "noSlot-items." + key);
+                    String mat = cf.cf().getString("noSlot-items." + key + ".material");
 
-            Item<T> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
-            if (i != null) {
-                if (mat.startsWith("adv:")) i.setStringMaterial(mat.substring(4));
-                i.setItem(item);
-            } else
-                item(key, item)
-                        .stringMaterial(mat.startsWith("adv:") ? mat.substring(4) : null)
-                        .add();
-        });
+                    Item<T> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
+                    if (i != null) {
+                        if (mat.startsWith("adv:")) i.setStringMaterial(mat.substring(4));
+                        i.setItem(item);
+                    } else
+                        item(key, item)
+                                .stringMaterial(mat.startsWith("adv:") ? mat.substring(4) : null)
+                                .add();
+                } catch (Exception ex) {
+                    new RuntimeException("Could not load item: " + key, ex).printStackTrace();
+                }
+            });
 
         // Remove any items that are not in the config
         items.removeIf(i -> !keys.contains(i.getId()));
