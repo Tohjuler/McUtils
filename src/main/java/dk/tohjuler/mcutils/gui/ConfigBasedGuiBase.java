@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Getter
@@ -193,6 +194,20 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @since 1.5
      */
     public void open(Player p) {
+        open(p, storage1 -> {});
+    }
+
+    /**
+     * What do you think this does?
+     * <p>
+     *
+     * @param p Yes, I use p for player
+     * @param initStorage A callback to set up the local storage
+     * @since 1.11.0
+     */
+    public void open(Player p, Consumer<Storage> initStorage) {
+        Storage localStorage = new Storage(storage);
+        initStorage.accept(localStorage);
         T gui = createGui(p);
 
         fillGui(gui);
@@ -220,7 +235,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                     for (Replacer replacer : replacers)
                         gui.addItem(
                                 item.build(
-                                        storage,
+                                        localStorage,
                                         replacer.getPlayer() != null
                                                 ? replacer.getPlayer()
                                                 : p,
@@ -229,20 +244,20 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                                         false
                                 ));
                 } else if (item.getSlot() == -1)
-                    gui.addItem(item.build(storage, p,
+                    gui.addItem(item.build(localStorage, p,
                             e -> item.call(p, gui, e)
                     ));
                 else
-                    gui.setItem(item.getSlot(), item.build(storage, p,
+                    gui.setItem(item.getSlot(), item.build(localStorage, p,
                             e -> item.call(p, gui, e)
                     ));
             } else if (item.getFallbackItem() != null) // Fallback items
                 if (item.getSlot() == -1)
-                    gui.addItem(item.buildFallback(storage, p,
+                    gui.addItem(item.buildFallback(localStorage, p,
                             e -> item.call(p, gui, e)
                     ));
                 else
-                    gui.setItem(item.getSlot(), item.buildFallback(storage, p,
+                    gui.setItem(item.getSlot(), item.buildFallback(localStorage, p,
                             e -> item.call(p, gui, e)
                     ));
 
