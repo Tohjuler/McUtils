@@ -124,9 +124,10 @@ public class Lang {
      * @since 1.0.0
      */
     public String replaceFromCf(String str, String key) {
-        if (!langFile.cf().contains(key)) return str;
+        if (str == null) return str;
+        if (!langFile.cf().isSet(key)) return str;
         for (String cfKey : langFile.cf().getConfigurationSection(key).getKeys(false))
-            str = str.replace(cfKey, langFile.cf().getString(cfKey));
+            str = str.replace(cfKey, langFile.cf().getString(cfKey, "NULL"));
         return str;
     }
 

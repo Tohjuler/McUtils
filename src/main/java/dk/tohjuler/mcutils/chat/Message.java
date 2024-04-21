@@ -63,11 +63,11 @@ public class Message {
 
     public static void sendNoPrefix(Player p, String... messages) {
         for (String s : messages)
-            p.sendMessage(s);
+            p.sendMessage(ColorUtils.colorize(s));
     }
 
     public static void sendNoPrefix(CommandSender sender, String... messages) {
         for (String s : messages)
-            sender.sendMessage(s);
+            sender.sendMessage(ColorUtils.colorize(s));
     }
 }
