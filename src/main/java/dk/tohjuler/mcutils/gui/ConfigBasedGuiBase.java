@@ -5,6 +5,7 @@ import dk.tohjuler.mcutils.config.ConfigurationFile;
 import dk.tohjuler.mcutils.enums.FillType;
 import dk.tohjuler.mcutils.gui.items.Item;
 import dk.tohjuler.mcutils.gui.items.StaticItem;
+import dk.tohjuler.mcutils.gui.utils.AsList;
 import dk.tohjuler.mcutils.gui.utils.Replacer;
 import dk.tohjuler.mcutils.gui.utils.Storage;
 import dk.tohjuler.mcutils.items.ItemBuilder;
@@ -194,14 +195,15 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @since 1.5
      */
     public void open(Player p) {
-        open(p, storage1 -> {});
+        open(p, storage1 -> {
+        });
     }
 
     /**
      * What do you think this does?
      * <p>
      *
-     * @param p Yes, I use p for player
+     * @param p           Yes, I use p for player
      * @param initStorage A callback to set up the local storage
      * @since 1.11.0
      */
@@ -231,16 +233,22 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                 // Normal items
 
                 if (item.getAsList() != null) {
-                    List<Replacer> replacers = item.getAsList().call(p);
-                    for (Replacer replacer : replacers)
+                    List<AsList.Holder<T>> items = item.getAsList().call(p);
+                    for (AsList.Holder<T> listItem : items)
                         gui.addItem(
                                 item.build(
                                         localStorage,
-                                        replacer.getPlayer() != null
-                                                ? replacer.getPlayer()
+                                        listItem.getReplacer().getPlayer() != null
+                                                ? listItem.getReplacer().getPlayer()
                                                 : p,
-                                        e -> item.call(p, gui, e),
-                                        replacer,
+                                        e -> listItem.getCallback().accept(
+                                                p,
+                                                new Item.WrappedInventoryClickEvent<T>(
+                                                        gui,
+                                                        e
+                                                )
+                                        ),
+                                        listItem.getReplacer(),
                                         false
                                 ));
                 } else if (item.getSlot() == -1)

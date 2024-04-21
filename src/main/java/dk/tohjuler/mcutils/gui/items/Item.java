@@ -33,7 +33,7 @@ public class Item<T extends BaseGui> {
     @Setter
     private @Nullable ItemBuilder fallbackItem;
     private Predicate<Player> show;
-    private AsList<?> asList;
+    private AsList<?, T> asList;
 
     @Setter
     private String stringMaterial;
@@ -84,13 +84,14 @@ public class Item<T extends BaseGui> {
      * @param asList The list to use
      * @return The item
      */
-    public Item<T> asList(AsList<?> asList) {
+    public Item<T> asList(AsList<?, T> asList) {
         this.asList = asList;
         return this;
     }
 
     /**
      * Set the click action for the item.
+     * If a {@link AsList} is in use, then the callback in the asList will be used instead.
      * <p>
      *
      * @param clickAction The action to run when the item is clicked
