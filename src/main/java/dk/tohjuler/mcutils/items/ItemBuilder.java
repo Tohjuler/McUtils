@@ -272,6 +272,7 @@ public class ItemBuilder {
                             .map(s -> Replacer.replaceInString(s, regex, storage, func))
                             .flatMap(s -> Arrays.stream(s.split("\\n")))
                             .flatMap(s -> Arrays.stream(s.split("%nl%")))
+                            .filter(s -> !s.startsWith("/**")) // Ignore lines starting with /**
                             .collect(Collectors.toList())
             );
 
