@@ -12,6 +12,9 @@ import java.util.*;
 
 public class HeadDatabaseListener implements Listener {
 
+    /**
+     * Special characters to chars map
+     */
     private static final Map<String, Character> charNameMap = new HashMap<>();
 
     static {
@@ -43,16 +46,35 @@ public class HeadDatabaseListener implements Listener {
         charNameMap.put("round bracket (closed)", ')');
     }
 
+    /**
+     * Supported fonts
+     */
     private static final List<String> fonts = Arrays.asList(
-        "Blue",
-        "Yellow",
-        "White",
-        "Red",
-        "Purple",
-        "Cyan",
-        "Lime",
-        "Pink",
-        "Orange"
+            "Blue",
+            "Yellow",
+            "White",
+            "Red",
+            "Purple",
+            "Cyan",
+            "Lime",
+            "Pink",
+            "Orange",
+            "Dirt",
+            "Chat",
+            "Oak",
+            "Mangrove Planks",
+            "Smooth Sandstone",
+            "Redstone Block"
+    );
+
+    /**
+     * Used to replace names with spaces so the char can be found.
+     */
+    private static final List<String> nameReplacer = Arrays.asList(
+            "Oak Wood",
+            "Mangrove Plank",
+            "Smooth Sandstone",
+            "Redstone Block"
     );
 
     @EventHandler
@@ -65,7 +87,8 @@ public class HeadDatabaseListener implements Listener {
                     String type = str.substring(6, str.length() - 1);
                     if (str.toLowerCase().contains("font") && !heads.contains(str) && fonts.contains(type))
                         heads.add(str);
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
         }
         for (String head : heads) {
@@ -73,14 +96,21 @@ public class HeadDatabaseListener implements Listener {
             for (Head head2 : api.getHeads(CategoryEnum.ALPHABET)) {
                 if (head2.tags.contains(head) && !head2.tags.contains("Exclusive"))
                     try {
-                        String charr = head2.name.split(" ", 2)[1].toLowerCase();
+                        String name = head2.name;
+                        for (String replacer : nameReplacer)
+                            name = name.replace(replacer, "here");
+                        String charr = name.split(" ", 2)[1].toLowerCase();
                         if (charr.length() == 1) {
                             HeadFonts.addChar(type, charr.charAt(0), head2.getHead(), head2.b64);
                             continue;
                         }
                         if (charNameMap.containsKey(charr))
                             HeadFonts.addChar(type, charNameMap.get(charr), head2.getHead(), head2.b64);
-                    } catch (Exception ignored) {}
+
+                        int number = Integer.parseInt(charr);
+                        HeadFonts.addNumber(type, number, head2.getHead(), head2.b64);
+                    } catch (Exception ignored) {
+                    }
             }
         }
     }
