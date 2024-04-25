@@ -61,7 +61,7 @@ public class Lang {
      * Get a string from the lang file
      * If the key doesn't exist, it will be created with the default value
      *
-     * @param key The key to get
+     * @param key     The key to get
      * @param replace Map of placeholders to be replaced
      * @return The value of the key
      * @since 1.9.0
@@ -88,7 +88,8 @@ public class Lang {
      * Get a string from the lang file
      * Replace with string pairs. Ex: get("key", "placeholder1", "value1", "placeholder2", "value2")
      * <p>
-     * @param key The key to get
+     *
+     * @param key     The key to get
      * @param replace The placeholders to replace
      * @return The value of the key
      * @since 1.0.0
@@ -127,7 +128,7 @@ public class Lang {
         if (str == null) return str;
         if (!langFile.cf().isSet(key)) return str;
         for (String cfKey : langFile.cf().getConfigurationSection(key).getKeys(false))
-            str = str.replace(cfKey, langFile.cf().getString(key+"."+cfKey, "NULL"));
+            str = str.replace(cfKey, langFile.cf().getString(key + "." + cfKey, "NULL"));
         return str;
     }
 
@@ -140,9 +141,9 @@ public class Lang {
      * @since 1.0.0
      */
     public void send(CommandSender sender, String key, @NotNull Map<String, String> replace) {
-        sender.sendMessage(
-                get(key, replace)
-        );
+        String msg = get(key, replace);
+        for (String s : msg.split("\n\\|%nl%"))
+            sender.sendMessage(s);
     }
 
     /**
@@ -160,15 +161,16 @@ public class Lang {
      * Send a message to a CommandSender
      * Replace with string pairs. Ex: send(sender, "key", "placeholder1", "value1", "placeholder2", "value2")
      * <p>
-     * @param sender The CommandSender to send the message to
-     * @param key The key to get
+     *
+     * @param sender  The CommandSender to send the message to
+     * @param key     The key to get
      * @param replace The placeholders to replace
      * @since 1.9.0
      */
     public void send(CommandSender sender, String key, String... replace) {
-        sender.sendMessage(
-                get(key, replace)
-        );
+        String msg = get(key, replace);
+        for (String s : msg.split("\n\\|%nl%"))
+            sender.sendMessage(s);
     }
 
 }
