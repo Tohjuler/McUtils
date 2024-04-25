@@ -237,11 +237,11 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                 if (item instanceof StaticItem) {
                     if (item.getSlot() == -1)
                         gui.addItem(((StaticItem<T>) item).getItem(p).buildAsGuiItem(
-                                e -> item.call(p, gui, e)
+                                e -> item.call(p, gui, e, localStorage)
                         ));
                     else
                         gui.setItem(item.getSlot(), ((StaticItem<T>) item).getItem(p).buildAsGuiItem(
-                                e -> item.call(p, gui, e)
+                                e -> item.call(p, gui, e, localStorage)
                         ));
                     return;
                 }
@@ -259,9 +259,11 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                                                 : p,
                                         e -> listItem.getCallback().accept(
                                                 p,
-                                                new Item.WrappedInventoryClickEvent<T>(
+                                                new Item.WrappedInventoryClickEvent<>(
                                                         gui,
-                                                        e
+                                                        e,
+                                                        item,
+                                                        localStorage
                                                 )
                                         ),
                                         listItem.getReplacer(),
@@ -269,20 +271,20 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                                 ));
                 } else if (item.getSlot() == -1)
                     gui.addItem(item.build(localStorage, p,
-                            e -> item.call(p, gui, e)
+                            e -> item.call(p, gui, e, localStorage)
                     ));
                 else
                     gui.setItem(item.getSlot(), item.build(localStorage, p,
-                            e -> item.call(p, gui, e)
+                            e -> item.call(p, gui, e, localStorage)
                     ));
             } else if (item.getFallbackItem() != null) // Fallback items
                 if (item.getSlot() == -1)
                     gui.addItem(item.buildFallback(localStorage, p,
-                            e -> item.call(p, gui, e)
+                            e -> item.call(p, gui, e, localStorage)
                     ));
                 else
                     gui.setItem(item.getSlot(), item.buildFallback(localStorage, p,
-                            e -> item.call(p, gui, e)
+                            e -> item.call(p, gui, e, localStorage)
                     ));
 
         });

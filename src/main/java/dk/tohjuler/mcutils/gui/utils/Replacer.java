@@ -60,6 +60,7 @@ public abstract class Replacer {
      * @param storage The storage to use
      * @param item    The item to replace in
      * @param p       The player to replace for
+     * @return The item with the replaced strings
      * @since 1.5.0
      */
     public ItemBuilder replaceCall(Storage storage, ItemBuilder item, Player p) {
@@ -77,6 +78,7 @@ public abstract class Replacer {
      * @param storage The storage to use
      * @param str     The string to replace in
      * @param p       The player to replace for
+     * @return The string with the replaced strings
      * @since 1.5.0
      */
     public String replaceCall(Storage storage, String str, Player p) {

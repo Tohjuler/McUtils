@@ -157,13 +157,15 @@ public class Item<T extends BaseGui> {
      * Used to call the click action.
      * <p>
      *
-     * @param player The player who clicked the item
-     * @param event  The event
+     * @param player       The player who clicked the item
+     * @param gui          The gui
+     * @param event        The event
+     * @param localStorage The local storage
      * @since 1.5
      */
-    public void call(Player player, T gui, InventoryClickEvent event) {
+    public void call(Player player, T gui, InventoryClickEvent event, Storage localStorage) {
         if (clickAction != null)
-            clickAction.accept(player, new WrappedInventoryClickEvent<>(gui, event));
+            clickAction.accept(player, new WrappedInventoryClickEvent<>(gui, event, this, localStorage));
     }
 
     /**
@@ -171,8 +173,10 @@ public class Item<T extends BaseGui> {
      * <p>
      *
      * @param storage  The storage to use
+     * @param player   The player to use
      * @param call     the callback to run when the item is clicked
      * @param replacer The replacer to use
+     * @param fallback If the fallback item should be used
      * @return The item as a GuiItem
      * @since 1.5.1
      */
@@ -204,6 +208,7 @@ public class Item<T extends BaseGui> {
      * <p>
      *
      * @param storage The storage to use
+     * @param player The player to use
      * @param call    the callback to run when the item is clicked
      * @return The item as a GuiItem
      * @since 1.5.1
@@ -217,6 +222,7 @@ public class Item<T extends BaseGui> {
      * <p>
      *
      * @param storage The storage to use
+     * @param player The player to use
      * @param call    the callback to run when the item is clicked
      * @return The item as a GuiItem
      * @since 1.10.0
@@ -225,14 +231,58 @@ public class Item<T extends BaseGui> {
         return build(storage, player, call, replacer, true);
     }
 
-    @Getter
+    /**
+     * Wrapped event for the InventoryClickEvent.
+     * Adding access to the gui, local storage and some utils.
+     * <p>
+     *
+     * @param <T> The type of the gui
+     * @since 1.5
+     */
     public static class WrappedInventoryClickEvent<T extends BaseGui> {
+        private final Item<T> item;
+        @Getter
         private final T gui;
+        @Getter
         private final InventoryClickEvent event;
+        @Getter
+        private final Storage localStorage;
 
-        public WrappedInventoryClickEvent(T gui, InventoryClickEvent event) {
+        private AsList.Holder<T> holder;
+
+        public WrappedInventoryClickEvent(T gui, InventoryClickEvent event, Item<T> item, Storage localStorage) {
             this.gui = gui;
             this.event = event;
+            this.localStorage = localStorage;
+            this.item = item;
+        }
+
+        public WrappedInventoryClickEvent(AsList.Holder<T> holder, Storage localStorage, InventoryClickEvent event, T gui, Item<T> item) {
+            this.holder = holder;
+            this.localStorage = localStorage;
+            this.event = event;
+            this.gui = gui;
+            this.item = item;
+        }
+
+        // Utils
+
+        /**
+         * Refresh the clicked item in the gui.
+         *
+         * @since 1.13.0
+         */
+        public void refreshItem() {
+            gui.updateItem(
+                    event.getSlot(),
+                    item.build(
+                            localStorage,
+                            (Player) event.getWhoClicked(),
+                            e -> item.call((Player) e.getWhoClicked(), gui, e, localStorage),
+                            holder != null ? holder.getReplacer() : item.replacer,
+                            false
+                    )
+            );
         }
     }
 }
