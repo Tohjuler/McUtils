@@ -307,9 +307,6 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @since 1.5
      */
     public void setItem(Item<T> item) {
-        if (item.getSlot() != -1 && items.stream().anyMatch(i -> i.getSlot() == item.getSlot()))
-            items.removeIf(i -> i.getSlot() == item.getSlot());
-
         items.add(item);
     }
 
