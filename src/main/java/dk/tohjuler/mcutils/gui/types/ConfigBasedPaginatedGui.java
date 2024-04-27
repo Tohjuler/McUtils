@@ -18,6 +18,11 @@ public abstract class ConfigBasedPaginatedGui extends ConfigBasedGuiBase<Paginat
         this.pageSize = pageSize;
     }
 
+    public ConfigBasedPaginatedGui(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem, String category, int pageSize) {
+        super(id, title, rows, fillType, fillItem, category);
+        this.pageSize = pageSize;
+    }
+
     @Override
     protected PaginatedGui createGui(Player p) {
         return Gui.paginated()

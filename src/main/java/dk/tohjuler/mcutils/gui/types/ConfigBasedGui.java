@@ -14,6 +14,10 @@ public abstract class ConfigBasedGui extends ConfigBasedGuiBase<Gui> {
         super(id, title, rows, fillType, fillItem);
     }
 
+    public ConfigBasedGui(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem, String category) {
+        super(id, title, rows, fillType, fillItem, category);
+    }
+
     @Override
     protected Gui createGui(Player p) {
         return Gui.gui()
