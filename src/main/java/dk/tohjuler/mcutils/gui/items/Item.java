@@ -5,9 +5,10 @@ import dev.triumphteam.gui.components.GuiAction;
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dk.tohjuler.mcutils.gui.ConfigBasedGuiBase;
-import dk.tohjuler.mcutils.gui.utils.Storage;
 import dk.tohjuler.mcutils.gui.utils.AsList;
 import dk.tohjuler.mcutils.gui.utils.Replacer;
+import dk.tohjuler.mcutils.gui.utils.SlotParser;
+import dk.tohjuler.mcutils.gui.utils.Storage;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import dk.tohjuler.mcutils.items.SkullCreator;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -27,7 +29,7 @@ public class Item<T extends BaseGui> {
     private final String id;
 
     @Setter
-    private int slot;
+    private String slot;
     @Setter
     private ItemBuilder item;
     @Setter
@@ -42,6 +44,13 @@ public class Item<T extends BaseGui> {
     private Replacer replacer;
 
     public Item(ConfigBasedGuiBase<T> gui, String id, int slot, ItemBuilder item) {
+        this.gui = gui;
+        this.id = id;
+        this.slot = slot+"";
+        this.item = item;
+    }
+
+    public Item(ConfigBasedGuiBase<T> gui, String id, String slot, ItemBuilder item) {
         this.gui = gui;
         this.id = id;
         this.slot = slot;
@@ -142,6 +151,26 @@ public class Item<T extends BaseGui> {
     public Item<T> fallbackItem(ItemBuilder fallbackItem) {
         this.fallbackItem = fallbackItem;
         return this;
+    }
+
+    /**
+     * Parse the slot string to a list of slots.
+     * <p>
+     * @return The list of slots
+     * @since 1.15.0
+     */
+    public List<Integer> parseSlot() {
+        return SlotParser.parseSlotString(slot);
+    }
+
+    /**
+     * Parse the slot string to a single slot.
+     * <p>
+     * @return The slot
+     * @since 1.15.0
+     */
+    public int parseSlotFirst() {
+        return SlotParser.parseSlotString(slot).get(0);
     }
 
     /**

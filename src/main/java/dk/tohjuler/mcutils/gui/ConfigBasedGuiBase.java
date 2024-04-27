@@ -104,7 +104,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                     if (i != null) {
                         if (mat.startsWith("adv:")) i.setStringMaterial(mat.substring(4));
                         i.setItem(item);
-                        i.setSlot(slot);
+                        i.setSlot(slot + "");
 
                         if (cf.cf().isSet("items." + key + ".fallback"))
                             i.setFallbackItem(YamlItem.loadItem(cf, "items." + key + ".fallback"));
@@ -175,7 +175,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
             if (item instanceof StaticItem) continue;
 
             String path = "items." + item.getId();
-            if (item.getSlot() == -1 || item.getAsList() != null)
+            if (item.parseSlotFirst() == -1 || item.getAsList() != null)
                 path = "noSlot-items." + item.getId();
             else
                 cf.cf().set(path + ".slot", item.getSlot());
@@ -235,14 +235,15 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
             if (item.getShow() == null || item.getShow().test(p)) {
                 // Static items
                 if (item instanceof StaticItem) {
-                    if (item.getSlot() == -1)
+                    if (item.parseSlotFirst() == -1)
                         gui.addItem(((StaticItem<T>) item).getItem(p).buildAsGuiItem(
                                 e -> item.call(p, gui, e, localStorage)
                         ));
                     else
-                        gui.setItem(item.getSlot(), ((StaticItem<T>) item).getItem(p).buildAsGuiItem(
-                                e -> item.call(p, gui, e, localStorage)
-                        ));
+                        for (int slot : item.parseSlot())
+                            gui.setItem(slot, ((StaticItem<T>) item).getItem(p).buildAsGuiItem(
+                                    e -> item.call(p, gui, e, localStorage)
+                            ));
                     return;
                 }
 
@@ -269,23 +270,25 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                                         listItem.getReplacer(),
                                         false
                                 ));
-                } else if (item.getSlot() == -1)
+                } else if (item.parseSlotFirst() == -1)
                     gui.addItem(item.build(localStorage, p,
                             e -> item.call(p, gui, e, localStorage)
                     ));
                 else
-                    gui.setItem(item.getSlot(), item.build(localStorage, p,
-                            e -> item.call(p, gui, e, localStorage)
-                    ));
+                    for (int slot : item.parseSlot())
+                        gui.setItem(slot, item.build(localStorage, p,
+                                e -> item.call(p, gui, e, localStorage)
+                        ));
             } else if (item.getFallbackItem() != null) // Fallback items
-                if (item.getSlot() == -1)
+                if (item.parseSlotFirst() == -1)
                     gui.addItem(item.buildFallback(localStorage, p,
                             e -> item.call(p, gui, e, localStorage)
                     ));
                 else
-                    gui.setItem(item.getSlot(), item.buildFallback(localStorage, p,
-                            e -> item.call(p, gui, e, localStorage)
-                    ));
+                    for (int slot : item.parseSlot())
+                        gui.setItem(slot, item.buildFallback(localStorage, p,
+                                e -> item.call(p, gui, e, localStorage)
+                        ));
 
         });
 
@@ -321,6 +324,20 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @since 1.5
      */
     protected Item<T> item(String id, int slot, ItemBuilder item) {
+        return new Item<>(this, id, slot, item);
+    }
+
+    /**
+     * Create a new item.
+     * <p>
+     *
+     * @param id   The id of the item
+     * @param slot The slot of the item
+     * @param item The item
+     * @return The item
+     * @since 1.15.0
+     */
+    protected Item<T> item(String id, String slot, ItemBuilder item) {
         return new Item<>(this, id, slot, item);
     }
 
@@ -373,7 +390,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         return titleReplacer != null ? titleReplacer.replaceCall(storage, title, p) : title;
     }
 
-    private void fillGui(BaseGui gui) {
+    protected void fillGui(BaseGui gui) {
         switch (fillType) {
             case ALL:
                 gui.getFiller().fill(fillItem.buildAsGuiItem());
