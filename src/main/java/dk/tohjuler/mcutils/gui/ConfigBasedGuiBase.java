@@ -97,14 +97,14 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                 try {
                     keys.add(key);
                     ItemBuilder item = YamlItem.loadItem(cf, "items." + key);
-                    int slot = cf.cf().getInt("items." + key + ".slot");
+                    String slot = cf.cf().getString("items." + key + ".slot");
                     String mat = cf.cf().getString("items." + key + ".material");
 
                     Item<T> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
                     if (i != null) {
                         if (mat.startsWith("adv:")) i.setStringMaterial(mat.substring(4));
                         i.setItem(item);
-                        i.setSlot(slot + "");
+                        i.setSlot(slot);
 
                         if (cf.cf().isSet("items." + key + ".fallback"))
                             i.setFallbackItem(YamlItem.loadItem(cf, "items." + key + ".fallback"));
