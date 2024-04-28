@@ -170,7 +170,12 @@ public class Item<T extends BaseGui> {
      * @since 1.15.0
      */
     public int parseSlotFirst() {
-        return SlotParser.parseSlotString(slot).get(0);
+        List<Integer> slots = parseSlot();
+        if (slots.isEmpty()) {
+            new RuntimeException("Invalid slot string: " + slot).printStackTrace();
+            return 0;
+        }
+        return slots.get(0);
     }
 
     /**

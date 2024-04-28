@@ -18,7 +18,7 @@ public class SlotParser {
                     }
             }
             return slots;
-        } else if (str.contains("-"))
+        } else if (str.contains("-") && !str.startsWith("-"))
             return parseRange(str);
         else if (str.contains(","))
             return parseList(str);
