@@ -151,7 +151,6 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @since 1.5
      */
     public void save(File folder) {
-        if (category != null) folder = new File(folder, category);
         File file = new File(folder, id + ".yml");
         try {
             file.getParentFile().mkdirs();

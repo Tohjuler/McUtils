@@ -29,7 +29,7 @@ public class SlotParser {
             }
 
         new RuntimeException("Invalid slot string: " + str).printStackTrace();
-        return Collections.emptyList();
+        return Collections.singletonList(0);
     }
 
     private static List<Integer> parseList(String str) {
