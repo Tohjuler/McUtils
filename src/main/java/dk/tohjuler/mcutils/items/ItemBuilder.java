@@ -4,7 +4,6 @@ import com.cryptomorin.xseries.XMaterial;
 import dev.triumphteam.gui.components.GuiAction;
 import dev.triumphteam.gui.components.util.ItemNbt;
 import dev.triumphteam.gui.guis.GuiItem;
-import dk.tohjuler.mcutils.gui.utils.Storage;
 import dk.tohjuler.mcutils.gui.utils.Replacer;
 import dk.tohjuler.mcutils.strings.ColorUtils;
 import lombok.Getter;
@@ -259,17 +258,16 @@ public class ItemBuilder {
      * <p>
      *
      * @param regex   the regex to replace
-     * @param storage the storage to replace from
      * @param func    the function to replace with
      * @return the itembuilder
      */
-    public ItemBuilder replaceAllFromGui(String regex, Storage storage, Function<Replacer.ReplaceEvent, String> func) {
+    public ItemBuilder replaceAllFromGui(String regex, Function<String, String> func) {
         if (getDisplayName() != null)
-            setDisplayName(Replacer.replaceInString(getDisplayName(), regex, storage, func));
+            setDisplayName(Replacer.replaceInString(getDisplayName(), regex, func));
         if (getLore() != null)
             setLore(
                     getLore().stream()
-                            .map(s -> Replacer.replaceInString(s, regex, storage, func))
+                            .map(s -> Replacer.replaceInString(s, regex, func))
                             .flatMap(s -> Arrays.stream(s.split("\\n")))
                             .flatMap(s -> Arrays.stream(s.split("%nl%")))
                             .filter(s -> !s.startsWith("/**")) // Ignore lines starting with /**

@@ -32,7 +32,7 @@ public abstract class ConfigBasedPaginatedGui extends ConfigBasedGuiBase<Paginat
                         )
                 ))
                 .pageSize(pageSize)
-                .rows(getRows())
+                .rows(rows)
                 .create();
     }
 }

@@ -25,24 +25,27 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@Getter
 public abstract class ConfigBasedGuiBase<T extends BaseGui> {
+    @Getter
     private final String id;
+    @Getter
     private final @Nullable String category;
+
     @Setter
-    private @NotNull String title;
+    protected @NotNull String title;
     @Setter
-    private int rows;
+    protected int rows;
     @Setter
-    private @NotNull FillType fillType;
+    protected @NotNull FillType fillType;
     @Setter
-    private ItemBuilder fillItem;
+    protected ItemBuilder fillItem;
 
     @Setter
     private Replacer titleReplacer;
 
     private final Storage storage = new Storage();
 
+    @Getter
     private final List<Item<T>> items = new ArrayList<>();
 
     public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem, String category) {
@@ -63,6 +66,17 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         this.fillItem = fillItem;
         this.category = null;
         init();
+    }
+
+    /**
+     * Used to set up the storage.
+     * ONLY call this in the constructor.
+     * <p>
+     * @param initStorage The callback to set up the storage
+     * @since 1.16.0
+     */
+    protected void setupStorage(Consumer<Storage> initStorage) {
+        initStorage.accept(storage);
     }
 
     /**
@@ -249,7 +263,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                 // Normal items
 
                 if (item.getAsList() != null) {
-                    List<AsList.Holder<T>> items = item.getAsList().call(p);
+                    List<AsList.Holder<T>> items = item.getAsList().call(p, localStorage);
                     for (AsList.Holder<T> listItem : items)
                         gui.addItem(
                                 item.build(

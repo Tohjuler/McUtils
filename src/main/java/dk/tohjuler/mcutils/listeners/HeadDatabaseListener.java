@@ -79,6 +79,7 @@ public class HeadDatabaseListener implements Listener {
 
     @EventHandler
     public void onDatabaseLoad(DatabaseLoadEvent paramDatabaseLoadEvent) {
+        int addedChars = 0;
         HeadDatabaseAPI api = new HeadDatabaseAPI();
         List<String> heads = new ArrayList<>();
         for (Head head : api.getHeads(CategoryEnum.ALPHABET)) {
@@ -96,6 +97,7 @@ public class HeadDatabaseListener implements Listener {
             for (Head head2 : api.getHeads(CategoryEnum.ALPHABET)) {
                 if (head2.tags.contains(head) && !head2.tags.contains("Exclusive"))
                     try {
+                        addedChars++;
                         String name = head2.name;
                         for (String replacer : nameReplacer)
                             name = name.replace(replacer, "here");
@@ -113,5 +115,6 @@ public class HeadDatabaseListener implements Listener {
                     }
             }
         }
+        System.out.println("Loaded " + addedChars + " chars from HeadDatabase");
     }
 }

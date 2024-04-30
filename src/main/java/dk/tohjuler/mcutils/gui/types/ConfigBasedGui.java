@@ -26,7 +26,7 @@ public abstract class ConfigBasedGui extends ConfigBasedGuiBase<Gui> {
                                 getTitle(p)
                         )
                 ))
-                .rows(getRows())
+                .rows(rows)
                 .create();
     }
 }

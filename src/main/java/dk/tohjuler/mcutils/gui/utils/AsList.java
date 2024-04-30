@@ -29,11 +29,12 @@ public abstract class AsList<T, GUI extends BaseGui> {
      * <p>
      *
      * @param p The player to call the method on
+     * @param localStorage The local storage
      * @return The list with the method called on each value
      * @since 1.5.0
      */
-    public List<Holder<GUI>> call(Player p) {
-        list = getList(p);
+    public List<Holder<GUI>> call(Player p, Storage localStorage) {
+        list = getList(p, localStorage);
         if (list == null || list.isEmpty()) return Collections.emptyList();
 
         return list.stream().map(value -> {
@@ -45,7 +46,7 @@ public abstract class AsList<T, GUI extends BaseGui> {
 
     /**
      * Get calls for every value in the list
-     * If the {@link T} is a player, that players given in {@link #getList(Player)} will be used in the {@link Replacer#replace(Player)}
+     * If the {@link T} is a player, that players given in {@link #getList(Player, Storage)} will be used in the {@link Replacer#replace(Player, Storage)}
      * <p>
      *
      * @param value The value to get the calls for
@@ -60,10 +61,11 @@ public abstract class AsList<T, GUI extends BaseGui> {
      * <p>
      *
      * @param p The player to get the list for
+     * @param localStorage The local storage
      * @return The list of values
      * @since 1.5.1
      */
-    public abstract List<T> getList(Player p);
+    public abstract List<T> getList(Player p, Storage localStorage);
 
     /**
      * The action to run when the item is clicked
