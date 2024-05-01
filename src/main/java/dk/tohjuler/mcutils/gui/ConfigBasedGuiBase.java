@@ -277,7 +277,8 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                                                         gui,
                                                         e,
                                                         item,
-                                                        localStorage
+                                                        localStorage,
+                                                        listItem
                                                 )
                                         ),
                                         listItem.getReplacer(),

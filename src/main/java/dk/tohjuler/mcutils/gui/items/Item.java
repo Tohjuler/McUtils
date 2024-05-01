@@ -46,7 +46,7 @@ public class Item<T extends BaseGui> {
     public Item(ConfigBasedGuiBase<T> gui, String id, int slot, ItemBuilder item) {
         this.gui = gui;
         this.id = id;
-        this.slot = slot+"";
+        this.slot = slot + "";
         this.item = item;
     }
 
@@ -156,6 +156,7 @@ public class Item<T extends BaseGui> {
     /**
      * Parse the slot string to a list of slots.
      * <p>
+     *
      * @return The list of slots
      * @since 1.15.0
      */
@@ -166,6 +167,7 @@ public class Item<T extends BaseGui> {
     /**
      * Parse the slot string to a single slot.
      * <p>
+     *
      * @return The slot
      * @since 1.15.0
      */
@@ -242,7 +244,7 @@ public class Item<T extends BaseGui> {
      * <p>
      *
      * @param storage The storage to use
-     * @param player The player to use
+     * @param player  The player to use
      * @param call    the callback to run when the item is clicked
      * @return The item as a GuiItem
      * @since 1.5.1
@@ -256,7 +258,7 @@ public class Item<T extends BaseGui> {
      * <p>
      *
      * @param storage The storage to use
-     * @param player The player to use
+     * @param player  The player to use
      * @param call    the callback to run when the item is clicked
      * @return The item as a GuiItem
      * @since 1.10.0
@@ -291,12 +293,12 @@ public class Item<T extends BaseGui> {
             this.item = item;
         }
 
-        public WrappedInventoryClickEvent(AsList.Holder<T> holder, Storage localStorage, InventoryClickEvent event, T gui, Item<T> item) {
-            this.holder = holder;
-            this.localStorage = localStorage;
-            this.event = event;
+        public WrappedInventoryClickEvent(T gui, InventoryClickEvent event, Item<T> item, Storage localStorage, AsList.Holder<T> holder) {
             this.gui = gui;
+            this.event = event;
+            this.localStorage = localStorage;
             this.item = item;
+            this.holder = holder;
         }
 
         // Utils
@@ -312,8 +314,18 @@ public class Item<T extends BaseGui> {
                     item.build(
                             localStorage,
                             (Player) event.getWhoClicked(),
-                            e -> item.call((Player) e.getWhoClicked(), gui, e, localStorage),
-                            holder != null ? holder.getReplacer() : item.replacer,
+                            e -> {
+                                if (holder != null)
+                                    holder.getCallback().accept(
+                                            (Player) e.getWhoClicked(),
+                                            this
+                                    );
+                                else
+                                    item.call((Player) e.getWhoClicked(), gui, e, localStorage);
+                            },
+                            holder != null
+                                    ? holder.getReplacer()
+                                    : item.replacer,
                             false
                     )
             );
