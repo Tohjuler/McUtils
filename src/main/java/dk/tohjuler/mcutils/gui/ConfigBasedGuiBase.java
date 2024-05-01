@@ -245,7 +245,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         gui.setDefaultClickAction(e -> e.setCancelled(true));
 
         items.forEach(item -> {
-            if (item.getShow() == null || item.getShow().test(p)) {
+            if (item.checkShow(p, localStorage)) {
                 // Static items
                 if (item instanceof StaticItem) {
                     if (item.parseSlotFirst() == -1)

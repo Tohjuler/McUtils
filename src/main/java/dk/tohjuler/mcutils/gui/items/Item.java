@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 @Getter
@@ -35,6 +36,7 @@ public class Item<T extends BaseGui> {
     @Setter
     private @Nullable ItemBuilder fallbackItem;
     private Predicate<Player> show;
+    private BiPredicate<Player, Storage> showWithStorage;
     private AsList<?, T> asList;
 
     @Setter
@@ -83,6 +85,19 @@ public class Item<T extends BaseGui> {
      */
     public Item<T> show(Predicate<Player> show) {
         this.show = show;
+        return this;
+    }
+
+    /**
+     * Set a condition for the item to be shown.
+     * <p>
+     *
+     * @param show The condition for the item to be shown
+     * @return The item
+     * @since 1.16.2
+     */
+    public Item<T> show(BiPredicate<Player, Storage> show) {
+        this.showWithStorage = show;
         return this;
     }
 
@@ -265,6 +280,21 @@ public class Item<T extends BaseGui> {
      */
     public GuiItem buildFallback(Storage storage, Player player, GuiAction<InventoryClickEvent> call) {
         return build(storage, player, call, replacer, true);
+    }
+
+    /**
+     * Check if the item should be shown.
+     * <p>
+     * @param player The player to check
+     * @param storage The storage to check
+     * @return If the item should be shown
+     * @since 1.16.2
+     */
+    public boolean checkShow(Player player, Storage storage) {
+        if (show == null && showWithStorage == null) return true;
+        if (show != null && showWithStorage == null) return show.test(player);
+        if (show == null) return showWithStorage.test(player, storage);
+        return show.test(player) && showWithStorage.test(player, storage);
     }
 
     /**
