@@ -13,7 +13,10 @@ public class GuiManager {
     private final Map<String, ConfigBasedGuiBase<?>> guis = new HashMap<>();
     private final File folder;
 
+    private final JavaPlugin plugin;
+
     public GuiManager(JavaPlugin plugin, ConfigBasedGuiBase<?>... guis) {
+        this.plugin = plugin;
         folder = new File(plugin.getDataFolder(), "guis");
         for (ConfigBasedGuiBase<?> gui : guis) {
             this.guis.put(gui.getId(), gui);
@@ -22,6 +25,7 @@ public class GuiManager {
     }
 
     public GuiManager(JavaPlugin plugin, File folder, ConfigBasedGuiBase<?>... guis) {
+        this.plugin = plugin;
         this.folder = folder;
         for (ConfigBasedGuiBase<?> gui : guis) {
             gui.load(folder);
@@ -68,6 +72,7 @@ public class GuiManager {
      */
     public void open(Player p, String id, Consumer<Storage> initStorage) {
         if (!guis.containsKey(id)) {
+            plugin.getLogger().warning("No gui with id " + id + " found");
             return;
         }
         guis.get(id).open(p, initStorage);
@@ -87,6 +92,7 @@ public class GuiManager {
                 g.open(p, initStorage);
                 return;
             }
+        plugin.getLogger().warning("No gui with class " + gui.getName() + " found");
     }
 
     /**

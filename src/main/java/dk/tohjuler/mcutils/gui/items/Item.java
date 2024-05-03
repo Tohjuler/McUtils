@@ -348,7 +348,13 @@ public class Item<T extends BaseGui> {
                                 if (holder != null)
                                     holder.getCallback().accept(
                                             (Player) e.getWhoClicked(),
-                                            this
+                                            new WrappedInventoryClickEvent<>(
+                                                    gui,
+                                                    e,
+                                                    item,
+                                                    localStorage,
+                                                    holder
+                                            )
                                     );
                                 else
                                     item.call((Player) e.getWhoClicked(), gui, e, localStorage);
