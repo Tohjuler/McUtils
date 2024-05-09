@@ -1,6 +1,5 @@
 package dk.tohjuler.mcutils.items;
 
-import com.cryptomorin.xseries.XMaterial;
 import dk.tohjuler.mcutils.config.ConfigurationFile;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -40,11 +39,8 @@ public class YamlItem {
      */
     public static ItemBuilder loadItem(@NotNull ConfigurationFile cf, @NotNull String baseKey) {
         if (!cf.cf().isSet(baseKey)) return null;
-        ItemBuilder item = new ItemBuilder(
-                XMaterial.matchXMaterial(cf.cf().getString(baseKey + ".material"))
-                        .orElse(XMaterial.STONE)
-                        .parseItem()
-        );
+        ItemBuilder item = ItemBuilder.fromString(cf.cf().getString(baseKey + ".material"));
+
         item.setAmount(cf.cf().getInt(baseKey + ".amount"));
         if (cf.cf().contains(baseKey + ".name"))
             item.setDisplayName(cf.cf().getString(baseKey + ".name"));

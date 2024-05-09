@@ -15,6 +15,7 @@ import lombok.Setter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,6 +73,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * Used to set up the storage.
      * ONLY call this in the constructor.
      * <p>
+     *
      * @param initStorage The callback to set up the storage
      * @since 1.16.0
      */
@@ -242,7 +244,8 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         T gui = createGui(p);
 
         fillGui(gui);
-        gui.setDefaultClickAction(e -> e.setCancelled(true));
+        gui.setCloseGuiAction(e -> onClose(p, gui, localStorage));
+        gui.setDefaultClickAction(e -> defaultClick(p, gui, e, localStorage));
 
         items.forEach(item -> {
             if (item.checkShow(p, localStorage)) {
@@ -282,30 +285,36 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                                                 )
                                         ),
                                         listItem.getReplacer(),
+                                        gui,
                                         false
                                 ));
                 } else if (item.parseSlotFirst() == -1)
                     gui.addItem(item.build(localStorage, p,
-                            e -> item.call(p, gui, e, localStorage)
+                            e -> item.call(p, gui, e, localStorage),
+                            gui
                     ));
                 else
                     for (int slot : item.parseSlot())
                         gui.setItem(slot, item.build(localStorage, p,
-                                e -> item.call(p, gui, e, localStorage)
+                                e -> item.call(p, gui, e, localStorage),
+                            gui
                         ));
             } else if (item.getFallbackItem() != null) // Fallback items
                 if (item.parseSlotFirst() == -1)
                     gui.addItem(item.buildFallback(localStorage, p,
-                            e -> item.call(p, gui, e, localStorage)
+                            e -> item.call(p, gui, e, localStorage),
+                            gui
                     ));
                 else
                     for (int slot : item.parseSlot())
                         gui.setItem(slot, item.buildFallback(localStorage, p,
-                                e -> item.call(p, gui, e, localStorage)
+                                e -> item.call(p, gui, e, localStorage),
+                            gui
                         ));
 
         });
 
+        onCreate(p, gui, localStorage);
         gui.open(p);
     }
 
@@ -403,6 +412,49 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
     protected String getTitle(Player p) {
         return titleReplacer != null ? titleReplacer.replaceCall(storage, title, p) : title;
     }
+
+    // Events
+
+    /**
+     * Called right before opening the gui.
+     * <p>
+     *
+     * @param player       The player that is opening the gui.
+     * @param gui          The gui that is being opened.
+     * @param localStorage The storage that is being used.
+     * @since 1.17.0
+     */
+    public void onCreate(Player player, T gui, Storage localStorage) {
+    }
+
+    /**
+     * Called when the gui is closed.
+     * <p>
+     *
+     * @param player       The player that is closing the gui.
+     * @param gui          The gui that is being closed.
+     * @param localStorage The storage that is being used.
+     * @since 1.17.0
+     */
+    public void onClose(Player player, T gui, Storage localStorage) {
+    }
+
+    /**
+     * Called when a player clicks in the gui.
+     * Remember if there is a click action on the item, then it will also be called.
+     * <p>
+     *
+     * @param player       The player that clicked.
+     * @param gui          The gui that was clicked in.
+     * @param event        The event that was triggered.
+     * @param localStorage The storage that is being used.
+     * @since 1.17.0
+     */
+    public void defaultClick(Player player, T gui, InventoryClickEvent event, Storage localStorage) {
+        event.setCancelled(true);
+    }
+
+    // Internal Utils
 
     protected void fillGui(BaseGui gui) {
         switch (fillType) {

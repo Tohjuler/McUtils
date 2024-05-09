@@ -5,6 +5,7 @@ import dev.triumphteam.gui.components.GuiAction;
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dk.tohjuler.mcutils.gui.ConfigBasedGuiBase;
+import dk.tohjuler.mcutils.gui.handler.ItemEventHandler;
 import dk.tohjuler.mcutils.gui.utils.AsList;
 import dk.tohjuler.mcutils.gui.utils.Replacer;
 import dk.tohjuler.mcutils.gui.utils.SlotParser;
@@ -44,6 +45,7 @@ public class Item<T extends BaseGui> {
 
     private BiConsumer<Player, WrappedInventoryClickEvent<T>> clickAction;
     private Replacer replacer;
+    private ItemEventHandler<T> eventHandler;
 
     public Item(ConfigBasedGuiBase<T> gui, String id, int slot, ItemBuilder item) {
         this.gui = gui;
@@ -72,6 +74,19 @@ public class Item<T extends BaseGui> {
      */
     public Item<T> stringMaterial(String stringMaterial) {
         this.stringMaterial = stringMaterial;
+        return this;
+    }
+
+    /**
+     * Set the event handler for the item.
+     * <p>
+     *
+     * @param eventHandler The event handler to use
+     * @return The item
+     * @since 1.17.0
+     */
+    public Item<T> eventHandler(ItemEventHandler<T> eventHandler) {
+        this.eventHandler = eventHandler;
         return this;
     }
 
@@ -227,11 +242,13 @@ public class Item<T extends BaseGui> {
      * @param player   The player to use
      * @param call     the callback to run when the item is clicked
      * @param replacer The replacer to use
+     * @param gui      The gui to use
      * @param fallback If the fallback item should be used
      * @return The item as a GuiItem
      * @since 1.5.1
      */
-    public GuiItem build(Storage storage, Player player, GuiAction<InventoryClickEvent> call, Replacer replacer, boolean fallback) {
+    public GuiItem build(Storage storage, Player player, GuiAction<InventoryClickEvent> call, Replacer replacer, T gui, boolean fallback) {
+        GuiItem guiItem;
         ItemBuilder newItem = fallback && fallbackItem != null
                 ? fallbackItem.clone()
                 : item.clone();
@@ -239,19 +256,34 @@ public class Item<T extends BaseGui> {
         if (replacer != null)
             newItem = replacer.replaceCall(storage, newItem, player);
 
-        if (stringMaterial == null) return newItem.buildAsGuiItem(call);
+        if (eventHandler != null)
+            call = e -> eventHandler.onClick(player, new WrappedInventoryClickEvent<>(
+                    gui,
+                    e,
+                    this,
+                    storage
+            ));
 
-        String mat = replacer != null ? replacer.replaceCall(storage, stringMaterial, player) : stringMaterial;
-        try {
-            UUID uuid = UUID.fromString(mat);
-            return newItem.applyType(SkullCreator.skullFromUuid(uuid)).buildAsGuiItem(call);
-        } catch (IllegalArgumentException ignore) {
+        if (stringMaterial == null)
+            guiItem = newItem.buildAsGuiItem(call);
+        else {
+            String mat = replacer != null ? replacer.replaceCall(storage, stringMaterial, player) : stringMaterial;
+            try {
+                UUID uuid = UUID.fromString(mat);
+                guiItem = newItem.applyType(SkullCreator.skullFromUuid(uuid)).buildAsGuiItem(call);
+            } catch (IllegalArgumentException ignore) {
 
-            Optional<XMaterial> xMat = XMaterial.matchXMaterial(mat);
-            if (xMat.isPresent()) return newItem.applyType(xMat.get().parseItem()).buildAsGuiItem(call);
-
-            return newItem.applyType(SkullCreator.skullFromBase64(mat)).buildAsGuiItem(call);
+                Optional<XMaterial> xMat = XMaterial.matchXMaterial(mat);
+                if (xMat.isPresent())
+                    guiItem = newItem.applyType(xMat.get().parseItem()).buildAsGuiItem(call);
+                else
+                    guiItem = newItem.applyType(SkullCreator.skullFromBase64(mat)).buildAsGuiItem(call);
+            }
         }
+
+        if (eventHandler != null)
+            eventHandler.onCreate(player, gui, guiItem.getItemStack());
+        return guiItem;
     }
 
     /**
@@ -261,11 +293,12 @@ public class Item<T extends BaseGui> {
      * @param storage The storage to use
      * @param player  The player to use
      * @param call    the callback to run when the item is clicked
+     * @param gui     The gui to use
      * @return The item as a GuiItem
      * @since 1.5.1
      */
-    public GuiItem build(Storage storage, Player player, GuiAction<InventoryClickEvent> call) {
-        return build(storage, player, call, replacer, false);
+    public GuiItem build(Storage storage, Player player, GuiAction<InventoryClickEvent> call, T gui) {
+        return build(storage, player, call, replacer, gui, false);
     }
 
     /**
@@ -275,17 +308,19 @@ public class Item<T extends BaseGui> {
      * @param storage The storage to use
      * @param player  The player to use
      * @param call    the callback to run when the item is clicked
+     * @param gui     The gui to use
      * @return The item as a GuiItem
      * @since 1.10.0
      */
-    public GuiItem buildFallback(Storage storage, Player player, GuiAction<InventoryClickEvent> call) {
-        return build(storage, player, call, replacer, true);
+    public GuiItem buildFallback(Storage storage, Player player, GuiAction<InventoryClickEvent> call, T gui) {
+        return build(storage, player, call, replacer, gui, true);
     }
 
     /**
      * Check if the item should be shown.
      * <p>
-     * @param player The player to check
+     *
+     * @param player  The player to check
      * @param storage The storage to check
      * @return If the item should be shown
      * @since 1.16.2
@@ -362,6 +397,7 @@ public class Item<T extends BaseGui> {
                             holder != null
                                     ? holder.getReplacer()
                                     : item.replacer,
+                            gui,
                             false
                     )
             );

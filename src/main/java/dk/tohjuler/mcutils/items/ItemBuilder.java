@@ -39,7 +39,7 @@ public class ItemBuilder {
     }
 
     /**
-     * Create a new ItemBuilder, from a base64 string
+     * Create a new ItemBuilder, from a head value
      *
      * @param value the base64 string
      */
@@ -612,6 +612,28 @@ public class ItemBuilder {
      */
     public static ItemBuilder fromBase64(String base64) {
         return new ItemBuilder(Material.AIR).deserialize(base64);
+    }
+
+    /**
+     * Create a new ItemBuilder from a string.
+     * Valid types:
+     * - Material name
+     * - Base64 skull value
+     * - UUID of a player
+     * <p>
+     * @param mat the string
+     * @return the itembuilder
+     * @since 1.17.0
+     */
+    public static ItemBuilder fromString(String mat) {
+        try {
+            return new ItemBuilder(UUID.fromString(mat));
+        } catch (IllegalArgumentException e) {
+            if (mat.length() > 100) // Head
+                return new ItemBuilder(mat);
+            else
+                return new ItemBuilder(XMaterial.matchXMaterial(mat).orElse(XMaterial.STONE).parseItem());
+        }
     }
 
     public ItemBuilder clone() {
