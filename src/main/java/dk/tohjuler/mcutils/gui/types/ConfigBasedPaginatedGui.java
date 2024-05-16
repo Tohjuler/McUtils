@@ -10,6 +10,7 @@ import dk.tohjuler.mcutils.strings.ColorUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class ConfigBasedPaginatedGui extends ConfigBasedGuiBase<PaginatedGui, Storage> {
     private final int pageSize;
@@ -35,5 +36,11 @@ public abstract class ConfigBasedPaginatedGui extends ConfigBasedGuiBase<Paginat
                 .pageSize(pageSize)
                 .rows(rows)
                 .create();
+    }
+
+    @Override
+    protected Storage createStorage(@Nullable Storage parent) {
+        if (parent == null) return new Storage();
+        return new Storage(parent);
     }
 }

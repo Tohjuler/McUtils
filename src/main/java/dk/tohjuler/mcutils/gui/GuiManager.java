@@ -1,7 +1,6 @@
 package dk.tohjuler.mcutils.gui;
 
 import dk.tohjuler.mcutils.gui.utils.IStorage;
-import dk.tohjuler.mcutils.gui.utils.Storage;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,7 +36,8 @@ public class GuiManager {
     /**
      * Get a gui by id
      * <p>
-     * @param p The player to get the gui for
+     *
+     * @param p  The player to get the gui for
      * @param id The id of the gui
      * @since 1.5.0
      */
@@ -51,7 +51,8 @@ public class GuiManager {
     /**
      * Open a gui, by class
      * <p>
-     * @param p The player to open the gui for
+     *
+     * @param p   The player to open the gui for
      * @param gui The class of the gui to open
      * @since 1.5.0
      */
@@ -66,31 +67,39 @@ public class GuiManager {
     /**
      * Get a gui by id
      * <p>
-     * @param p The player to get the gui for
-     * @param id The id of the gui
+     *
+     * @param <S>         The type of the storage
+     * @param p           The player to get the gui for
+     * @param id          The id of the gui
      * @param initStorage A callback to initialize the storage
      * @since 1.11.0
      */
-    public void open(Player p, String id, Consumer<? extends IStorage> initStorage) {
+    public <S extends IStorage> void open(Player p, String id, Consumer<S> initStorage) {
         if (!guis.containsKey(id)) {
             plugin.getLogger().warning("No gui with id " + id + " found");
             return;
         }
-        guis.get(id).open(p, initStorage);
+        @SuppressWarnings("unchecked")
+        Consumer<IStorage> i = (Consumer<IStorage>) initStorage;
+        guis.get(id).open(p, i);
     }
 
     /**
      * Open a gui, by class
      * <p>
-     * @param p The player to open the gui for
-     * @param gui The class of the gui to open
+     *
+     * @param <S>         The type of the storage
+     * @param p           The player to open the gui for
+     * @param gui         The class of the gui to open
      * @param initStorage A callback to initialize the storage
      * @since 1.11.0
      */
-    public void open(Player p, Class<? extends ConfigBasedGuiBase<?, ?>> gui, Consumer<? extends IStorage> initStorage) {
+    public <S extends IStorage> void open(Player p, Class<? extends ConfigBasedGuiBase<?, S>> gui, Consumer<S> initStorage) {
         for (ConfigBasedGuiBase<?, ? extends IStorage> g : guis.values())
             if (g.getClass().equals(gui)) {
-                g.open(p, initStorage);
+                @SuppressWarnings("unchecked")
+                Consumer<IStorage> i = (Consumer<IStorage>) initStorage;
+                g.open(p, i);
                 return;
             }
         plugin.getLogger().warning("No gui with class " + gui.getName() + " found");
@@ -98,6 +107,7 @@ public class GuiManager {
 
     /**
      * Reload all guis
+     *
      * @since 1.5.0
      */
     public void reload() {

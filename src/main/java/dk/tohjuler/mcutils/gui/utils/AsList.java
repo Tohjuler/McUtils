@@ -46,7 +46,7 @@ public abstract class AsList<T, GUI extends BaseGui, S extends IStorage> {
 
     /**
      * Get calls for every value in the list
-     * If the {@link T} is a player, that players given in {@link #getList(Player, S)} will be used in the {@link Replacer#replace(Player, S)}
+     * If the {@link T} is a player, that player will be used in {@link #getList(Player, IStorage)} and {@link Replacer#replace(Player, IStorage)}
      * <p>
      *
      * @param value The value to get the calls for

@@ -248,7 +248,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * @param initStorage A callback to set up the local storage
      * @since 1.11.0
      */
-    public void open(Player p, Consumer<S> initStorage) {
+    public void open(Player p, Consumer<IStorage> initStorage) {
         S localStorage = createStorage(storage);
         initStorage.accept(localStorage);
         T gui = createGui(p);
