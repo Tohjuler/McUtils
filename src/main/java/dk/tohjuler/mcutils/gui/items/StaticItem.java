@@ -1,6 +1,7 @@
 package dk.tohjuler.mcutils.gui.items;
 
 import dev.triumphteam.gui.guis.BaseGui;
+import dk.tohjuler.mcutils.config.ConfigurationFile;
 import dk.tohjuler.mcutils.gui.ConfigBasedGuiBase;
 import dk.tohjuler.mcutils.gui.utils.IStorage;
 import dk.tohjuler.mcutils.items.ItemBuilder;
@@ -23,5 +24,39 @@ public class StaticItem<T extends BaseGui, S extends IStorage> extends Item<T, S
 
     public ItemBuilder getItem(Player p) {
         return func.apply(p);
+    }
+
+    @Override
+    public void setupGui(T gui, Player p, S localStorage) {
+        if (checkShow(p, localStorage)) {
+            if (parseSlotFirst() == -1)
+                gui.addItem(getItem(p).buildAsGuiItem(
+                        e -> call(p, gui, e, localStorage)
+                ));
+            else
+                for (int slot : parseSlot())
+                    gui.setItem(slot, getItem(p).buildAsGuiItem(
+                            e -> call(p, gui, e, localStorage)
+                    ));
+        } else if (getFallbackItem() != null) // Fallback items
+            if (parseSlotFirst() == -1)
+                gui.addItem(buildFallback(localStorage, p,
+                        e -> call(p, gui, e, localStorage),
+                        gui
+                ));
+            else
+                for (int slot : parseSlot())
+                    gui.setItem(slot, buildFallback(localStorage, p,
+                            e -> call(p, gui, e, localStorage),
+                            gui
+                    ));
+    }
+
+    @Override
+    public void save(ConfigurationFile cf) {
+    }
+
+    @Override
+    public void loadExtra(ConfigurationFile cf, String basePath) {
     }
 }

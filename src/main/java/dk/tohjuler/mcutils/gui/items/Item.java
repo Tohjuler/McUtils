@@ -4,11 +4,13 @@ import com.cryptomorin.xseries.XMaterial;
 import dev.triumphteam.gui.components.GuiAction;
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.GuiItem;
+import dk.tohjuler.mcutils.config.ConfigurationFile;
 import dk.tohjuler.mcutils.gui.ConfigBasedGuiBase;
 import dk.tohjuler.mcutils.gui.handler.ItemEventHandler;
 import dk.tohjuler.mcutils.gui.utils.*;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import dk.tohjuler.mcutils.items.SkullCreator;
+import dk.tohjuler.mcutils.items.YamlItem;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
@@ -23,7 +25,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 @Getter
-public class Item<T extends BaseGui, S extends IStorage> {
+public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> {
     private final ConfigBasedGuiBase<T, S> gui;
     private final String id;
 
@@ -33,16 +35,16 @@ public class Item<T extends BaseGui, S extends IStorage> {
     private ItemBuilder item;
     @Setter
     private @Nullable ItemBuilder fallbackItem;
-    private Predicate<Player> show;
-    private BiPredicate<Player, S> showWithStorage;
-    private AsList<?, T, S> asList;
+    protected Predicate<Player> show;
+    protected BiPredicate<Player, S> showWithStorage;
+    protected AsList<?, T, S> asList;
 
     @Setter
     private String stringMaterial;
 
-    private BiConsumer<Player, WrappedInventoryClickEvent<T, S>> clickAction;
-    private Replacer<S> replacer;
-    private ItemEventHandler<T, S> eventHandler;
+    protected BiConsumer<Player, WrappedInventoryClickEvent<T, S>> clickAction;
+    protected Replacer<S> replacer;
+    protected ItemEventHandler<T, S> eventHandler;
 
     public Item(ConfigBasedGuiBase<T, S> gui, String id, int slot, ItemBuilder item) {
         this.gui = gui;
@@ -327,6 +329,95 @@ public class Item<T extends BaseGui, S extends IStorage> {
         if (show != null && showWithStorage == null) return show.test(player);
         if (show == null) return showWithStorage.test(player, storage);
         return show.test(player) && showWithStorage.test(player, storage);
+    }
+
+    protected void handleAsList(T gui, Player p, S localStorage) {
+        List<AsList.Holder<T, S>> items = asList.call(p, localStorage);
+        for (AsList.Holder<T, S> listItem : items)
+            gui.addItem(
+                    build(
+                            localStorage,
+                            listItem.getReplacer().getPlayer() != null
+                                    ? listItem.getReplacer().getPlayer()
+                                    : p,
+                            e -> listItem.getCallback().accept(
+                                    p,
+                                    new Item.WrappedInventoryClickEvent<>(
+                                            gui,
+                                            e,
+                                            this,
+                                            localStorage,
+                                            listItem
+                                    )
+                            ),
+                            listItem.getReplacer(),
+                            gui,
+                            false
+                    ));
+    }
+
+    /**
+     * Used to set the item in the gui.
+     * <p>
+     *
+     * @param gui          The gui to add the item to
+     * @param p            The player
+     * @param localStorage The local storage
+     * @since 1.18.0
+     */
+    @Override
+    public void setupGui(T gui, Player p, S localStorage) {
+        if (checkShow(p, localStorage)) {
+            if (asList != null) {
+                handleAsList(gui, p, localStorage);
+            } else if (parseSlotFirst() == -1)
+                gui.addItem(build(localStorage, p,
+                        e -> call(p, gui, e, localStorage),
+                        gui
+                ));
+            else
+                for (int slot : parseSlot())
+                    gui.setItem(slot, build(localStorage, p,
+                            e -> call(p, gui, e, localStorage),
+                            gui
+                    ));
+        } else if (getFallbackItem() != null) // Fallback items
+            if (parseSlotFirst() == -1)
+                gui.addItem(buildFallback(localStorage, p,
+                        e -> call(p, gui, e, localStorage),
+                        gui
+                ));
+            else
+                for (int slot : parseSlot())
+                    gui.setItem(slot, buildFallback(localStorage, p,
+                            e -> call(p, gui, e, localStorage),
+                            gui
+                    ));
+    }
+
+    @Override
+    public void save(ConfigurationFile cf) {
+        String path = "items." + getId();
+        if (parseSlotFirst() == -1 || getAsList() != null)
+            path = "noSlot-items." + getId();
+        else
+            cf.cf().set(path + ".slot", getSlot());
+
+        YamlItem.saveItem(cf, getItem(), path);
+        if (getStringMaterial() != null && !getStringMaterial().isEmpty())
+            cf.cf().set(path + ".material", "adv:" + getStringMaterial());
+        if (getItem().getHeadBase64() != null && !getItem().getHeadBase64().isEmpty())
+            cf.cf().set(path + ".material", "adv:" + getItem().getHeadBase64());
+        if (getAsList() != null)
+            cf.cf().set(path + ".Note", "This item is a listed item.");
+        if (getFallbackItem() != null)
+            YamlItem.saveItem(cf, getFallbackItem(), path + ".fallback");
+    }
+
+    @Override
+    public void loadExtra(ConfigurationFile cf, String basePath) {
+        if (cf.cf().isSet(basePath + ".fallback"))
+            setFallbackItem(YamlItem.loadItem(cf, basePath + ".fallback"));
     }
 
     /**

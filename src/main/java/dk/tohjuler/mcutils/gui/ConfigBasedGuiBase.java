@@ -3,9 +3,9 @@ package dk.tohjuler.mcutils.gui;
 import dev.triumphteam.gui.guis.BaseGui;
 import dk.tohjuler.mcutils.config.ConfigurationFile;
 import dk.tohjuler.mcutils.enums.FillType;
+import dk.tohjuler.mcutils.gui.items.AsyncItem;
 import dk.tohjuler.mcutils.gui.items.Item;
 import dk.tohjuler.mcutils.gui.items.StaticItem;
-import dk.tohjuler.mcutils.gui.utils.AsList;
 import dk.tohjuler.mcutils.gui.utils.IStorage;
 import dk.tohjuler.mcutils.gui.utils.Replacer;
 import dk.tohjuler.mcutils.items.ItemBuilder;
@@ -122,8 +122,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
                         i.setItem(item);
                         i.setSlot(slot);
 
-                        if (cf.cf().isSet("items." + key + ".fallback"))
-                            i.setFallbackItem(YamlItem.loadItem(cf, "items." + key + ".fallback"));
+                        i.loadExtra(cf, "items." + key);
                     } else
                         item(key, slot, item)
                                 .stringMaterial(mat.startsWith("adv:") ? mat.substring(4) : null)
@@ -185,26 +184,8 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
         if (fillItem != null)
             YamlItem.saveItem(cf, fillItem, "fillItem");
 
-        for (Item<T, S> item : items) {
-            // Don't save static items
-            if (item instanceof StaticItem) continue;
-
-            String path = "items." + item.getId();
-            if (item.parseSlotFirst() == -1 || item.getAsList() != null)
-                path = "noSlot-items." + item.getId();
-            else
-                cf.cf().set(path + ".slot", item.getSlot());
-
-            YamlItem.saveItem(cf, item.getItem(), path);
-            if (item.getStringMaterial() != null && !item.getStringMaterial().isEmpty())
-                cf.cf().set(path + ".material", "adv:" + item.getStringMaterial());
-            if (item.getItem().getHeadBase64() != null && !item.getItem().getHeadBase64().isEmpty())
-                cf.cf().set(path + ".material", "adv:" + item.getItem().getHeadBase64());
-            if (item.getAsList() != null)
-                cf.cf().set(path + ".Note", "This item is a listed item.");
-            if (item.getFallbackItem() != null)
-                YamlItem.saveItem(cf, item.getFallbackItem(), path + ".fallback");
-        }
+        for (Item<T, S> item : items)
+            item.save(cf);
 
         storage.save(cf, "vars");
         cf.save();
@@ -214,6 +195,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * Create a new storage.
      * Default vars can be set here, {@link #setupStorage(Consumer)} can also be used in constructor.
      * <p>
+     *
      * @param parent The parent storage, called when a local storage is created.
      * @return The storage
      * @since 1.18.0
@@ -257,72 +239,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
         gui.setCloseGuiAction(e -> onClose(p, gui, localStorage));
         gui.setDefaultClickAction(e -> defaultClick(p, gui, e, localStorage));
 
-        items.forEach(item -> {
-            if (item.checkShow(p, localStorage)) {
-                // Static items
-                if (item instanceof StaticItem) {
-                    if (item.parseSlotFirst() == -1)
-                        gui.addItem(((StaticItem<T, S>) item).getItem(p).buildAsGuiItem(
-                                e -> item.call(p, gui, e, localStorage)
-                        ));
-                    else
-                        for (int slot : item.parseSlot())
-                            gui.setItem(slot, ((StaticItem<T, S>) item).getItem(p).buildAsGuiItem(
-                                    e -> item.call(p, gui, e, localStorage)
-                            ));
-                    return;
-                }
-
-                // Normal items
-
-                if (item.getAsList() != null) {
-                    List<AsList.Holder<T, S>> items = item.getAsList().call(p, localStorage);
-                    for (AsList.Holder<T, S> listItem : items)
-                        gui.addItem(
-                                item.build(
-                                        localStorage,
-                                        listItem.getReplacer().getPlayer() != null
-                                                ? listItem.getReplacer().getPlayer()
-                                                : p,
-                                        e -> listItem.getCallback().accept(
-                                                p,
-                                                new Item.WrappedInventoryClickEvent<>(
-                                                        gui,
-                                                        e,
-                                                        item,
-                                                        localStorage,
-                                                        listItem
-                                                )
-                                        ),
-                                        listItem.getReplacer(),
-                                        gui,
-                                        false
-                                ));
-                } else if (item.parseSlotFirst() == -1)
-                    gui.addItem(item.build(localStorage, p,
-                            e -> item.call(p, gui, e, localStorage),
-                            gui
-                    ));
-                else
-                    for (int slot : item.parseSlot())
-                        gui.setItem(slot, item.build(localStorage, p,
-                                e -> item.call(p, gui, e, localStorage),
-                            gui
-                        ));
-            } else if (item.getFallbackItem() != null) // Fallback items
-                if (item.parseSlotFirst() == -1)
-                    gui.addItem(item.buildFallback(localStorage, p,
-                            e -> item.call(p, gui, e, localStorage),
-                            gui
-                    ));
-                else
-                    for (int slot : item.parseSlot())
-                        gui.setItem(slot, item.buildFallback(localStorage, p,
-                                e -> item.call(p, gui, e, localStorage),
-                            gui
-                        ));
-
-        });
+        items.forEach(item -> item.setupGui(gui, p, localStorage));
 
         onCreate(p, gui, localStorage);
         gui.open(p);
@@ -399,6 +316,36 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      */
     protected StaticItem<T, S> staticItem(int slot, Function<Player, ItemBuilder> func) {
         return new StaticItem<>(this, slot, func);
+    }
+
+    /**
+     * Create a new async item.
+     * Use -1 as the slot to add the item to the gui without a slot.
+     * <p>
+     *
+     * @param id   The id of the item
+     * @param slot The slot of the item
+     * @param item The item
+     * @return The item
+     * @since 1.18.0
+     */
+    protected Item<T, S> asyncItem(String id, int slot, ItemBuilder item) {
+        return new AsyncItem<>(this, id, slot, item);
+    }
+
+    /**
+     * Create a new async item, from a string slot.
+     * Use -1 as the slot to add the item to the gui without a slot.
+     * <p>
+     *
+     * @param id   The id of the item
+     * @param slot The slot of the item
+     * @param item The item
+     * @return The item
+     * @since 1.18.0
+     */
+    protected Item<T, S> asyncItem(String id, String slot, ItemBuilder item) {
+        return new AsyncItem<>(this, id, slot, item);
     }
 
     /**
