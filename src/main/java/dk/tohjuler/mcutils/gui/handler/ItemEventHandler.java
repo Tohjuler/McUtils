@@ -2,6 +2,7 @@ package dk.tohjuler.mcutils.gui.handler;
 
 import dev.triumphteam.gui.guis.BaseGui;
 import dk.tohjuler.mcutils.gui.items.Item;
+import dk.tohjuler.mcutils.gui.utils.IStorage;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,7 +16,7 @@ import java.util.function.Function;
  *
  * @since 1.17.0
  */
-public abstract class ItemEventHandler<T extends BaseGui> {
+public abstract class ItemEventHandler<T extends BaseGui, S extends IStorage> {
 
     /**
      * Called when the item is created.
@@ -38,5 +39,5 @@ public abstract class ItemEventHandler<T extends BaseGui> {
      * @param wrappedEvent The event that was triggered.
      * @since 1.17.0
      */
-    public abstract void onClick(Player player, Item.WrappedInventoryClickEvent<T> wrappedEvent);
+    public abstract void onClick(Player player, Item.WrappedInventoryClickEvent<T, S> wrappedEvent);
 }

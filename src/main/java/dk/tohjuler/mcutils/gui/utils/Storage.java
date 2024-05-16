@@ -12,7 +12,7 @@ import java.util.Map;
  * Just remember that the original storage is not cloned it is just a reference to the storage from the gui.
  * So be careful when you change the original vars in the storage.
  */
-public class Storage {
+public class Storage implements IStorage {
     private final Map<String, Object> vars = new HashMap<>();
 
     public Storage(Storage storage) {

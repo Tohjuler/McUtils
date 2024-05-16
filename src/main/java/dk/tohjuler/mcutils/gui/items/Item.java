@@ -6,10 +6,7 @@ import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dk.tohjuler.mcutils.gui.ConfigBasedGuiBase;
 import dk.tohjuler.mcutils.gui.handler.ItemEventHandler;
-import dk.tohjuler.mcutils.gui.utils.AsList;
-import dk.tohjuler.mcutils.gui.utils.Replacer;
-import dk.tohjuler.mcutils.gui.utils.SlotParser;
-import dk.tohjuler.mcutils.gui.utils.Storage;
+import dk.tohjuler.mcutils.gui.utils.*;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import dk.tohjuler.mcutils.items.SkullCreator;
 import lombok.Getter;
@@ -26,8 +23,8 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 @Getter
-public class Item<T extends BaseGui> {
-    private final ConfigBasedGuiBase<T> gui;
+public class Item<T extends BaseGui, S extends IStorage> {
+    private final ConfigBasedGuiBase<T, S> gui;
     private final String id;
 
     @Setter
@@ -37,24 +34,24 @@ public class Item<T extends BaseGui> {
     @Setter
     private @Nullable ItemBuilder fallbackItem;
     private Predicate<Player> show;
-    private BiPredicate<Player, Storage> showWithStorage;
-    private AsList<?, T> asList;
+    private BiPredicate<Player, S> showWithStorage;
+    private AsList<?, T, S> asList;
 
     @Setter
     private String stringMaterial;
 
-    private BiConsumer<Player, WrappedInventoryClickEvent<T>> clickAction;
-    private Replacer replacer;
-    private ItemEventHandler<T> eventHandler;
+    private BiConsumer<Player, WrappedInventoryClickEvent<T, S>> clickAction;
+    private Replacer<S> replacer;
+    private ItemEventHandler<T, S> eventHandler;
 
-    public Item(ConfigBasedGuiBase<T> gui, String id, int slot, ItemBuilder item) {
+    public Item(ConfigBasedGuiBase<T, S> gui, String id, int slot, ItemBuilder item) {
         this.gui = gui;
         this.id = id;
         this.slot = slot + "";
         this.item = item;
     }
 
-    public Item(ConfigBasedGuiBase<T> gui, String id, String slot, ItemBuilder item) {
+    public Item(ConfigBasedGuiBase<T, S> gui, String id, String slot, ItemBuilder item) {
         this.gui = gui;
         this.id = id;
         this.slot = slot;
@@ -72,7 +69,7 @@ public class Item<T extends BaseGui> {
      * @return The item
      * @since 1.5
      */
-    public Item<T> stringMaterial(String stringMaterial) {
+    public Item<T, S> stringMaterial(String stringMaterial) {
         this.stringMaterial = stringMaterial;
         return this;
     }
@@ -85,7 +82,7 @@ public class Item<T extends BaseGui> {
      * @return The item
      * @since 1.17.0
      */
-    public Item<T> eventHandler(ItemEventHandler<T> eventHandler) {
+    public Item<T, S> eventHandler(ItemEventHandler<T, S> eventHandler) {
         this.eventHandler = eventHandler;
         return this;
     }
@@ -98,7 +95,7 @@ public class Item<T extends BaseGui> {
      * @return The item
      * @since 1.5
      */
-    public Item<T> show(Predicate<Player> show) {
+    public Item<T, S> show(Predicate<Player> show) {
         this.show = show;
         return this;
     }
@@ -111,7 +108,7 @@ public class Item<T extends BaseGui> {
      * @return The item
      * @since 1.16.2
      */
-    public Item<T> show(BiPredicate<Player, Storage> show) {
+    public Item<T, S> show(BiPredicate<Player, S> show) {
         this.showWithStorage = show;
         return this;
     }
@@ -123,7 +120,7 @@ public class Item<T extends BaseGui> {
      * @param asList The list to use
      * @return The item
      */
-    public Item<T> asList(AsList<?, T> asList) {
+    public Item<T, S> asList(AsList<?, T, S> asList) {
         this.asList = asList;
         return this;
     }
@@ -137,7 +134,7 @@ public class Item<T extends BaseGui> {
      * @return The item
      * @since 1.5
      */
-    public Item<T> clickAction(BiConsumer<Player, WrappedInventoryClickEvent<T>> clickAction) {
+    public Item<T, S> clickAction(BiConsumer<Player, WrappedInventoryClickEvent<T, S>> clickAction) {
         this.clickAction = clickAction;
         return this;
     }
@@ -150,7 +147,7 @@ public class Item<T extends BaseGui> {
      * @return The item
      * @since 1.5
      */
-    public Item<T> onClick(BiConsumer<Player, WrappedInventoryClickEvent<T>> clickAction) {
+    public Item<T, S> onClick(BiConsumer<Player, WrappedInventoryClickEvent<T, S>> clickAction) {
         this.clickAction = clickAction;
         return this;
     }
@@ -163,7 +160,7 @@ public class Item<T extends BaseGui> {
      * @return The item
      * @since 1.5
      */
-    public Item<T> replacer(Replacer replacer) {
+    public Item<T, S> replacer(Replacer<S> replacer) {
         this.replacer = replacer;
         return this;
     }
@@ -178,7 +175,7 @@ public class Item<T extends BaseGui> {
      * @return The item
      * @since 1.10.0
      */
-    public Item<T> fallbackItem(ItemBuilder fallbackItem) {
+    public Item<T, S> fallbackItem(ItemBuilder fallbackItem) {
         this.fallbackItem = fallbackItem;
         return this;
     }
@@ -229,7 +226,7 @@ public class Item<T extends BaseGui> {
      * @param localStorage The local storage
      * @since 1.5
      */
-    public void call(Player player, T gui, InventoryClickEvent event, Storage localStorage) {
+    public void call(Player player, T gui, InventoryClickEvent event, S localStorage) {
         if (clickAction != null)
             clickAction.accept(player, new WrappedInventoryClickEvent<>(gui, event, this, localStorage));
     }
@@ -247,7 +244,7 @@ public class Item<T extends BaseGui> {
      * @return The item as a GuiItem
      * @since 1.5.1
      */
-    public GuiItem build(Storage storage, Player player, GuiAction<InventoryClickEvent> call, Replacer replacer, T gui, boolean fallback) {
+    public GuiItem build(S storage, Player player, GuiAction<InventoryClickEvent> call, Replacer<S> replacer, T gui, boolean fallback) {
         GuiItem guiItem;
         ItemBuilder newItem = fallback && fallbackItem != null
                 ? fallbackItem.clone()
@@ -297,7 +294,7 @@ public class Item<T extends BaseGui> {
      * @return The item as a GuiItem
      * @since 1.5.1
      */
-    public GuiItem build(Storage storage, Player player, GuiAction<InventoryClickEvent> call, T gui) {
+    public GuiItem build(S storage, Player player, GuiAction<InventoryClickEvent> call, T gui) {
         return build(storage, player, call, replacer, gui, false);
     }
 
@@ -312,7 +309,7 @@ public class Item<T extends BaseGui> {
      * @return The item as a GuiItem
      * @since 1.10.0
      */
-    public GuiItem buildFallback(Storage storage, Player player, GuiAction<InventoryClickEvent> call, T gui) {
+    public GuiItem buildFallback(S storage, Player player, GuiAction<InventoryClickEvent> call, T gui) {
         return build(storage, player, call, replacer, gui, true);
     }
 
@@ -325,7 +322,7 @@ public class Item<T extends BaseGui> {
      * @return If the item should be shown
      * @since 1.16.2
      */
-    public boolean checkShow(Player player, Storage storage) {
+    public boolean checkShow(Player player, S storage) {
         if (show == null && showWithStorage == null) return true;
         if (show != null && showWithStorage == null) return show.test(player);
         if (show == null) return showWithStorage.test(player, storage);
@@ -340,25 +337,25 @@ public class Item<T extends BaseGui> {
      * @param <T> The type of the gui
      * @since 1.5
      */
-    public static class WrappedInventoryClickEvent<T extends BaseGui> {
-        private final Item<T> item;
+    public static class WrappedInventoryClickEvent<T extends BaseGui, S extends IStorage> {
+        private final Item<T, S> item;
         @Getter
         private final T gui;
         @Getter
         private final InventoryClickEvent event;
         @Getter
-        private final Storage localStorage;
+        private final S localStorage;
 
-        private AsList.Holder<T> holder;
+        private AsList.Holder<T, S> holder;
 
-        public WrappedInventoryClickEvent(T gui, InventoryClickEvent event, Item<T> item, Storage localStorage) {
+        public WrappedInventoryClickEvent(T gui, InventoryClickEvent event, Item<T, S> item, S localStorage) {
             this.gui = gui;
             this.event = event;
             this.localStorage = localStorage;
             this.item = item;
         }
 
-        public WrappedInventoryClickEvent(T gui, InventoryClickEvent event, Item<T> item, Storage localStorage, AsList.Holder<T> holder) {
+        public WrappedInventoryClickEvent(T gui, InventoryClickEvent event, Item<T, S> item, S localStorage, AsList.Holder<T, S> holder) {
             this.gui = gui;
             this.event = event;
             this.localStorage = localStorage;

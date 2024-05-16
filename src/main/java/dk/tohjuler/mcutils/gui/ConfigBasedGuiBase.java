@@ -6,8 +6,8 @@ import dk.tohjuler.mcutils.enums.FillType;
 import dk.tohjuler.mcutils.gui.items.Item;
 import dk.tohjuler.mcutils.gui.items.StaticItem;
 import dk.tohjuler.mcutils.gui.utils.AsList;
+import dk.tohjuler.mcutils.gui.utils.IStorage;
 import dk.tohjuler.mcutils.gui.utils.Replacer;
-import dk.tohjuler.mcutils.gui.utils.Storage;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import dk.tohjuler.mcutils.items.YamlItem;
 import lombok.Getter;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public abstract class ConfigBasedGuiBase<T extends BaseGui> {
+public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> {
     @Getter
     private final String id;
     @Getter
@@ -42,12 +42,12 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
     protected ItemBuilder fillItem;
 
     @Setter
-    private Replacer titleReplacer;
+    private Replacer<S> titleReplacer;
 
-    private final Storage storage = new Storage();
+    private final S storage = createStorage(null);
 
     @Getter
-    private final List<Item<T>> items = new ArrayList<>();
+    private final List<Item<T, S>> items = new ArrayList<>();
 
     public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem, String category) {
         this.id = id;
@@ -77,7 +77,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @param initStorage The callback to set up the storage
      * @since 1.16.0
      */
-    protected void setupStorage(Consumer<Storage> initStorage) {
+    protected void setupStorage(Consumer<S> initStorage) {
         initStorage.accept(storage);
     }
 
@@ -116,7 +116,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                     String slot = cf.cf().getString("items." + key + ".slot");
                     String mat = cf.cf().getString("items." + key + ".material");
 
-                    Item<T> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
+                    Item<T, S> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
                     if (i != null) {
                         if (mat.startsWith("adv:")) i.setStringMaterial(mat.substring(4));
                         i.setItem(item);
@@ -140,7 +140,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                     ItemBuilder item = YamlItem.loadItem(cf, "noSlot-items." + key);
                     String mat = cf.cf().getString("noSlot-items." + key + ".material");
 
-                    Item<T> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
+                    Item<T, S> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
                     if (i != null) {
                         if (mat.startsWith("adv:")) i.setStringMaterial(mat.substring(4));
                         i.setItem(item);
@@ -185,7 +185,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         if (fillItem != null)
             YamlItem.saveItem(cf, fillItem, "fillItem");
 
-        for (Item<T> item : items) {
+        for (Item<T, S> item : items) {
             // Don't save static items
             if (item instanceof StaticItem) continue;
 
@@ -209,6 +209,16 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
         storage.save(cf, "vars");
         cf.save();
     }
+
+    /**
+     * Create a new storage.
+     * Default vars can be set here, {@link #setupStorage(Consumer)} can also be used in constructor.
+     * <p>
+     * @param parent The parent storage, called when a local storage is created.
+     * @return The storage
+     * @since 1.18.0
+     */
+    protected abstract S createStorage(@Nullable S parent);
 
     /**
      * Initialize the default items.
@@ -238,8 +248,8 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @param initStorage A callback to set up the local storage
      * @since 1.11.0
      */
-    public void open(Player p, Consumer<Storage> initStorage) {
-        Storage localStorage = new Storage(storage);
+    public void open(Player p, Consumer<S> initStorage) {
+        S localStorage = createStorage(storage);
         initStorage.accept(localStorage);
         T gui = createGui(p);
 
@@ -252,12 +262,12 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                 // Static items
                 if (item instanceof StaticItem) {
                     if (item.parseSlotFirst() == -1)
-                        gui.addItem(((StaticItem<T>) item).getItem(p).buildAsGuiItem(
+                        gui.addItem(((StaticItem<T, S>) item).getItem(p).buildAsGuiItem(
                                 e -> item.call(p, gui, e, localStorage)
                         ));
                     else
                         for (int slot : item.parseSlot())
-                            gui.setItem(slot, ((StaticItem<T>) item).getItem(p).buildAsGuiItem(
+                            gui.setItem(slot, ((StaticItem<T, S>) item).getItem(p).buildAsGuiItem(
                                     e -> item.call(p, gui, e, localStorage)
                             ));
                     return;
@@ -266,8 +276,8 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
                 // Normal items
 
                 if (item.getAsList() != null) {
-                    List<AsList.Holder<T>> items = item.getAsList().call(p, localStorage);
-                    for (AsList.Holder<T> listItem : items)
+                    List<AsList.Holder<T, S>> items = item.getAsList().call(p, localStorage);
+                    for (AsList.Holder<T, S> listItem : items)
                         gui.addItem(
                                 item.build(
                                         localStorage,
@@ -332,7 +342,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @param item The item to set
      * @since 1.5
      */
-    public void setItem(Item<T> item) {
+    public void setItem(Item<T, S> item) {
         items.add(item);
     }
 
@@ -346,7 +356,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @return The item
      * @since 1.5
      */
-    protected Item<T> item(String id, int slot, ItemBuilder item) {
+    protected Item<T, S> item(String id, int slot, ItemBuilder item) {
         return new Item<>(this, id, slot, item);
     }
 
@@ -360,7 +370,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @return The item
      * @since 1.15.0
      */
-    protected Item<T> item(String id, String slot, ItemBuilder item) {
+    protected Item<T, S> item(String id, String slot, ItemBuilder item) {
         return new Item<>(this, id, slot, item);
     }
 
@@ -373,7 +383,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @return The item
      * @since 1.5
      */
-    protected Item<T> item(String id, ItemBuilder item) {
+    protected Item<T, S> item(String id, ItemBuilder item) {
         return new Item<>(this, id, -1, item);
     }
 
@@ -387,7 +397,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @return The item
      * @since 1.5
      */
-    protected StaticItem<T> staticItem(int slot, Function<Player, ItemBuilder> func) {
+    protected StaticItem<T, S> staticItem(int slot, Function<Player, ItemBuilder> func) {
         return new StaticItem<>(this, slot, func);
     }
 
@@ -424,7 +434,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @param localStorage The storage that is being used.
      * @since 1.17.0
      */
-    public void onCreate(Player player, T gui, Storage localStorage) {
+    public void onCreate(Player player, T gui, S localStorage) {
     }
 
     /**
@@ -436,7 +446,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @param localStorage The storage that is being used.
      * @since 1.17.0
      */
-    public void onClose(Player player, T gui, Storage localStorage) {
+    public void onClose(Player player, T gui, S localStorage) {
     }
 
     /**
@@ -450,7 +460,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui> {
      * @param localStorage The storage that is being used.
      * @since 1.17.0
      */
-    public void defaultClick(Player player, T gui, InventoryClickEvent event, Storage localStorage) {
+    public void defaultClick(Player player, T gui, InventoryClickEvent event, S localStorage) {
         event.setCancelled(true);
     }
 

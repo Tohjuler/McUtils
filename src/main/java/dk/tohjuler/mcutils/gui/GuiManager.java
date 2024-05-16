@@ -1,5 +1,6 @@
 package dk.tohjuler.mcutils.gui;
 
+import dk.tohjuler.mcutils.gui.utils.IStorage;
 import dk.tohjuler.mcutils.gui.utils.Storage;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,24 +11,24 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class GuiManager {
-    private final Map<String, ConfigBasedGuiBase<?>> guis = new HashMap<>();
+    private final Map<String, ConfigBasedGuiBase<?, ?>> guis = new HashMap<>();
     private final File folder;
 
     private final JavaPlugin plugin;
 
-    public GuiManager(JavaPlugin plugin, ConfigBasedGuiBase<?>... guis) {
+    public GuiManager(JavaPlugin plugin, ConfigBasedGuiBase<?, ?>... guis) {
         this.plugin = plugin;
         folder = new File(plugin.getDataFolder(), "guis");
-        for (ConfigBasedGuiBase<?> gui : guis) {
+        for (ConfigBasedGuiBase<?, ?> gui : guis) {
             this.guis.put(gui.getId(), gui);
             gui.load(folder);
         }
     }
 
-    public GuiManager(JavaPlugin plugin, File folder, ConfigBasedGuiBase<?>... guis) {
+    public GuiManager(JavaPlugin plugin, File folder, ConfigBasedGuiBase<?, ?>... guis) {
         this.plugin = plugin;
         this.folder = folder;
-        for (ConfigBasedGuiBase<?> gui : guis) {
+        for (ConfigBasedGuiBase<?, ?> gui : guis) {
             gui.load(folder);
             this.guis.put(gui.getId(), gui);
         }
@@ -54,8 +55,8 @@ public class GuiManager {
      * @param gui The class of the gui to open
      * @since 1.5.0
      */
-    public void open(Player p, Class<?> gui) {
-        for (ConfigBasedGuiBase<?> g : guis.values())
+    public void open(Player p, Class<? extends ConfigBasedGuiBase<?, ?>> gui) {
+        for (ConfigBasedGuiBase<?, ?> g : guis.values())
             if (g.getClass().equals(gui)) {
                 g.open(p);
                 return;
@@ -70,7 +71,7 @@ public class GuiManager {
      * @param initStorage A callback to initialize the storage
      * @since 1.11.0
      */
-    public void open(Player p, String id, Consumer<Storage> initStorage) {
+    public void open(Player p, String id, Consumer<? extends IStorage> initStorage) {
         if (!guis.containsKey(id)) {
             plugin.getLogger().warning("No gui with id " + id + " found");
             return;
@@ -86,8 +87,8 @@ public class GuiManager {
      * @param initStorage A callback to initialize the storage
      * @since 1.11.0
      */
-    public void open(Player p, Class<?> gui, Consumer<Storage> initStorage) {
-        for (ConfigBasedGuiBase<?> g : guis.values())
+    public void open(Player p, Class<? extends ConfigBasedGuiBase<?, ?>> gui, Consumer<? extends IStorage> initStorage) {
+        for (ConfigBasedGuiBase<?, ? extends IStorage> g : guis.values())
             if (g.getClass().equals(gui)) {
                 g.open(p, initStorage);
                 return;

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @since 1.5.0
  */
 @Getter
-public abstract class AsList<T, GUI extends BaseGui> {
+public abstract class AsList<T, GUI extends BaseGui, S extends IStorage> {
     private List<T> list;
 
     /**
@@ -33,20 +33,20 @@ public abstract class AsList<T, GUI extends BaseGui> {
      * @return The list with the method called on each value
      * @since 1.5.0
      */
-    public List<Holder<GUI>> call(Player p, Storage localStorage) {
+    public List<Holder<GUI, S>> call(Player p, S localStorage) {
         list = getList(p, localStorage);
         if (list == null || list.isEmpty()) return Collections.emptyList();
 
         return list.stream().map(value -> {
-            Replacer replacer = handle(value, p);
+            Replacer<S> replacer = handle(value, p);
             if (value instanceof Player) replacer.setPlayer((Player) value);
-            return new Holder<GUI>(() -> handle(value, p), (player, event) -> clickAction(player, event, value));
+            return new Holder<GUI, S>(() -> handle(value, p), (player, event) -> clickAction(player, event, value));
         }).collect(Collectors.toList());
     }
 
     /**
      * Get calls for every value in the list
-     * If the {@link T} is a player, that players given in {@link #getList(Player, Storage)} will be used in the {@link Replacer#replace(Player, Storage)}
+     * If the {@link T} is a player, that players given in {@link #getList(Player, S)} will be used in the {@link Replacer#replace(Player, S)}
      * <p>
      *
      * @param value The value to get the calls for
@@ -54,7 +54,7 @@ public abstract class AsList<T, GUI extends BaseGui> {
      * @return The replacer for the value
      * @since 1.5.0
      */
-    public abstract Replacer handle(T value, Player p);
+    public abstract Replacer<S> handle(T value, Player p);
 
     /**
      * Get the list of values
@@ -65,7 +65,7 @@ public abstract class AsList<T, GUI extends BaseGui> {
      * @return The list of values
      * @since 1.5.1
      */
-    public abstract List<T> getList(Player p, Storage localStorage);
+    public abstract List<T> getList(Player p, S localStorage);
 
     /**
      * The action to run when the item is clicked
@@ -76,19 +76,19 @@ public abstract class AsList<T, GUI extends BaseGui> {
      * @param value        The value of the asList
      * @since 1.12.0
      */
-    public abstract void clickAction(Player player, Item.WrappedInventoryClickEvent<GUI> wrappedEvent, T value);
+    public abstract void clickAction(Player player, Item.WrappedInventoryClickEvent<GUI, S> wrappedEvent, T value);
 
-    public static class Holder<GUI extends BaseGui> {
-        private final Supplier<Replacer> getReplacer;
+    public static class Holder<GUI extends BaseGui, S extends IStorage> {
+        private final Supplier<Replacer<S>> getReplacer;
         @Getter
-        private final BiConsumer<Player, Item.WrappedInventoryClickEvent<GUI>> callback;
+        private final BiConsumer<Player, Item.WrappedInventoryClickEvent<GUI, S>> callback;
 
-        public Holder(Supplier<Replacer> getReplacer, BiConsumer<Player, Item.WrappedInventoryClickEvent<GUI>> callback) {
+        public Holder(Supplier<Replacer<S>> getReplacer, BiConsumer<Player, Item.WrappedInventoryClickEvent<GUI, S>> callback) {
             this.callback = callback;
             this.getReplacer = getReplacer;
         }
 
-        public Replacer getReplacer() {
+        public Replacer<S> getReplacer() {
             return getReplacer.get();
         }
     }

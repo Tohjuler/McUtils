@@ -4,13 +4,14 @@ import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.PaginatedGui;
 import dk.tohjuler.mcutils.enums.FillType;
 import dk.tohjuler.mcutils.gui.ConfigBasedGuiBase;
+import dk.tohjuler.mcutils.gui.utils.Storage;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import dk.tohjuler.mcutils.strings.ColorUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ConfigBasedPaginatedGui extends ConfigBasedGuiBase<PaginatedGui> {
+public abstract class ConfigBasedPaginatedGui extends ConfigBasedGuiBase<PaginatedGui, Storage> {
     private final int pageSize;
 
     public ConfigBasedPaginatedGui(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem, int pageSize) {

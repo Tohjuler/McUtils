@@ -2,6 +2,7 @@ package dk.tohjuler.mcutils.gui.items;
 
 import dev.triumphteam.gui.guis.BaseGui;
 import dk.tohjuler.mcutils.gui.ConfigBasedGuiBase;
+import dk.tohjuler.mcutils.gui.utils.IStorage;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import org.bukkit.entity.Player;
 
@@ -12,10 +13,10 @@ import java.util.function.Function;
  *
  * @since 1.5
  */
-public class StaticItem<T extends BaseGui> extends Item<T> {
+public class StaticItem<T extends BaseGui, S extends IStorage> extends Item<T, S> {
     private final Function<Player, ItemBuilder> func;
 
-    public StaticItem(ConfigBasedGuiBase<T> gui, int slot, Function<Player, ItemBuilder> func) {
+    public StaticItem(ConfigBasedGuiBase<T, S> gui, int slot, Function<Player, ItemBuilder> func) {
         super(gui, null, slot, null);
         this.func = func;
     }

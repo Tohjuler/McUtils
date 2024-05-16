@@ -11,7 +11,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class Replacer {
+public abstract class Replacer<S extends IStorage> {
     private @Nullable ItemBuilder item;
     private @Nullable String str;
 
@@ -49,7 +49,7 @@ public abstract class Replacer {
             item = func.apply(item);
     }
 
-    public abstract void replace(Player p, Storage localStorage);
+    public abstract void replace(Player p, S localStorage);
 
     /**
      * This method is for internal use.
@@ -61,7 +61,7 @@ public abstract class Replacer {
      * @return The item with the replaced strings
      * @since 1.5.0
      */
-    public ItemBuilder replaceCall(Storage storage, ItemBuilder item, Player p) {
+    public ItemBuilder replaceCall(S storage, ItemBuilder item, Player p) {
         this.item = item;
         this.str = null;
         replace(p, storage);
@@ -78,7 +78,7 @@ public abstract class Replacer {
      * @return The string with the replaced strings
      * @since 1.5.0
      */
-    public String replaceCall(Storage storage, String str, Player p) {
+    public String replaceCall(S storage, String str, Player p) {
         this.str = str;
         this.item = null;
         replace(p, storage);
