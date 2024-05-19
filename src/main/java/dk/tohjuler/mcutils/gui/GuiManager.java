@@ -81,7 +81,7 @@ public class GuiManager {
         }
         @SuppressWarnings("unchecked")
         Consumer<IStorage> i = (Consumer<IStorage>) initStorage;
-        guis.get(id).open(p, i);
+        guis.get(id).openByIStorage(p, i);
     }
 
     /**
@@ -99,7 +99,7 @@ public class GuiManager {
             if (g.getClass().equals(gui)) {
                 @SuppressWarnings("unchecked")
                 Consumer<IStorage> i = (Consumer<IStorage>) initStorage;
-                g.open(p, i);
+                g.openByIStorage(p, i);
                 return;
             }
         plugin.getLogger().warning("No gui with class " + gui.getName() + " found");

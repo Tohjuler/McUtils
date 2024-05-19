@@ -230,7 +230,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * @param initStorage A callback to set up the local storage
      * @since 1.11.0
      */
-    public void open(Player p, Consumer<IStorage> initStorage) {
+    public void open(Player p, Consumer<S> initStorage) {
         S localStorage = createStorage(storage);
         initStorage.accept(localStorage);
         T gui = createGui(p);
@@ -243,6 +243,20 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
         onCreate(p, gui, localStorage);
         gui.open(p);
+    }
+
+    /**
+     * Opens the gui with a storage initializer with a IStorage.
+     * <p>
+     *
+     * @param p           Yes, I use p for player
+     * @param initStorage A callback to set up the local storage
+     * @since 1.18.0
+     */
+    public void openByIStorage(Player p, Consumer<IStorage> initStorage) {
+        @SuppressWarnings("unchecked")
+        Consumer<S> call = (Consumer<S>) initStorage;
+        open(p, call);
     }
 
     private String applyPlaceholder(Player p, String s) {
