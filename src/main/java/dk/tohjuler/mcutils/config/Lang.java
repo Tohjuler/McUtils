@@ -1,11 +1,14 @@
 package dk.tohjuler.mcutils.config;
 
+import com.cryptomorin.xseries.XSound;
 import dk.tohjuler.mcutils.strings.ColorUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,6 +18,10 @@ public class Lang {
     @Getter
     private final ConfigurationFile langFile;
     private final ConfigurationFile defaultLang;
+
+    // Sounds
+    private final Map<String, Sound> sounds = new HashMap<>();
+    private String defaultSound = null;
 
     /**
      * Load a lang file, create it if it doesn't exist
@@ -30,14 +37,7 @@ public class Lang {
 
         defaultLang = new ConfigurationFile(plugin.getResource(resourcePath));
 
-        boolean needSave = false;
-        for (String key : defaultLang.cf().getKeys(false))
-            if (!langFile.cf().contains(key)) {
-                langFile.cf().set(key, defaultLang.cf().get(key));
-                needSave = true;
-            }
-
-        if (needSave) langFile.save();
+        reload(false);
     }
 
     /**
@@ -46,7 +46,30 @@ public class Lang {
      * @since 1.6.0
      */
     public void reload() {
-        langFile.load();
+        reload(true);
+    }
+
+    /**
+     * Reload the lang file
+     * <p>
+     *
+     * @param reloadFile If the file should be reloaded
+     * @since 1.19.0
+     */
+    public void reload(boolean reloadFile) {
+        if (reloadFile)
+            langFile.load();
+
+        // Load sounds
+
+        sounds.clear();
+        if (langFile.cf().isSet("sounds"))
+            for (String key : langFile.cf().getConfigurationSection("sounds").getKeys(false))
+                sounds.put(key, new Sound(langFile, "sounds." + key));
+        if (langFile.cf().isSet("defaultSound"))
+            defaultSound = langFile.cf().getString("defaultSound");
+
+        // Check if all keys are present
 
         boolean needSave = false;
         for (String key : defaultLang.cf().getKeys(false))
@@ -141,6 +164,7 @@ public class Lang {
      * @since 1.0.0
      */
     public void send(CommandSender sender, String key, @NotNull Map<String, String> replace) {
+        if (sender instanceof Player) playSoundForKey(key, (Player) sender);
         String msg = get(key, replace);
         for (String s : msg.split("\n\\|%nl%"))
             sender.sendMessage(s);
@@ -168,9 +192,124 @@ public class Lang {
      * @since 1.9.0
      */
     public void send(CommandSender sender, String key, String... replace) {
+        if (sender instanceof Player) playSoundForKey(key, (Player) sender);
         String msg = get(key, replace);
         for (String s : msg.split("\n\\|%nl%"))
             sender.sendMessage(s);
     }
 
+    // Sounds
+    // ---
+
+    /**
+     * Play the set sound if the key has a sound set, or the default sound if it exists.
+     * The sound order:
+     * Key sound > Sound applyIf > Default sound
+     * If the key sound is null, then it will stop there.
+     * <p>
+     *
+     * @param key     The key to get
+     * @param players The players to play the sound for
+     * @since 1.19.0
+     */
+    public void playSoundForKey(String key, Player... players) {
+        if (langFile.cf().isSet(key + ".sound")) {
+            if (langFile.cf().get(key + ".sound") == null) return;
+            parseSoundFromCf(key + ".sound").play(players);
+            return;
+        }
+
+        for (Sound sound : sounds.values())
+            if (sound.applyTo(key)) {
+                sound.play(players);
+                return;
+            }
+
+        if (defaultSound != null)
+            parseSound(defaultSound).play(players);
+    }
+
+    /**
+     * Get a sound from the lang file.
+     * <p>
+     *
+     * @param id The key to get
+     * @return The sound
+     * @since 1.19.0
+     */
+    public @Nullable Sound getSound(String id) {
+        return sounds.get(id);
+    }
+
+    private Sound parseSound(String sound) {
+        if (sounds.containsKey(sound))
+            return sounds.get(sound);
+
+        return new Sound(sound);
+    }
+
+    private Sound parseSoundFromCf(String key) {
+        if (langFile.cf().isString(key)) return parseSound(langFile.cf().getString(key));
+
+        return new Sound(langFile, key);
+    }
+
+    public static class Sound {
+        private final XSound.Record sound;
+        private final String applyIf;
+
+        public Sound(ConfigurationFile cf, String basePath) {
+            if (cf.cf().isString(basePath)) {
+                sound = XSound.matchXSound(cf.cf().getString(basePath)).orElse(XSound.BLOCK_STONE_BREAK).record();
+                applyIf = null;
+                return;
+            }
+
+            sound = XSound.matchXSound(cf.cf().getString(basePath + ".sound")).orElse(XSound.BLOCK_STONE_BREAK).record();
+            sound.withVolume((float) cf.cf().getDouble(basePath + ".volume"));
+            sound.withPitch((float) cf.cf().getDouble(basePath + ".pitch"));
+            applyIf = cf.cf().getString(basePath + ".applyIf");
+        }
+
+        public Sound(String sound) {
+            this.sound = XSound.matchXSound(sound).orElse(XSound.BLOCK_STONE_BREAK).record();
+            this.applyIf = null;
+        }
+
+        public boolean applyTo(String key) {
+            if (applyIf == null) return true;
+
+            if (applyIf.contains("|")) {
+                for (String condition : applyIf.split("\\|"))
+                    if (handleCondition(condition, key)) return true;
+                return false;
+            } else if (applyIf.contains("&")) {
+                int count = 0;
+                for (String condition : applyIf.split("&"))
+                    if (handleCondition(condition, key)) count++;
+                return count == applyIf.split("&").length;
+            }
+
+            return handleCondition(applyIf, key);
+        }
+
+        private boolean handleCondition(String condition, String key) {
+            boolean not = condition.startsWith("!");
+            boolean res;
+            if (not) condition = condition.substring(1);
+
+            if (condition.startsWith("*"))
+                res = key.endsWith(condition.substring(1));
+            else if (condition.endsWith("*"))
+                res = key.startsWith(condition.substring(0, condition.length() - 1));
+            else
+                res = key.equals(condition);
+
+            return not != res;
+        }
+
+        public void play(Player... players) {
+            sound.soundPlayer().forPlayers(players).play();
+        }
+    }
 }
