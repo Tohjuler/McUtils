@@ -1,0 +1,15 @@
+dk.tohjuler.mcutils
+dk.tohjuler.mcutils.chat
+dk.tohjuler.mcutils.config
+dk.tohjuler.mcutils.data
+dk.tohjuler.mcutils.enums
+dk.tohjuler.mcutils.gui
+dk.tohjuler.mcutils.gui.handler
+dk.tohjuler.mcutils.gui.items
+dk.tohjuler.mcutils.gui.types
+dk.tohjuler.mcutils.gui.utils
+dk.tohjuler.mcutils.hooks
+dk.tohjuler.mcutils.items
+dk.tohjuler.mcutils.listeners
+dk.tohjuler.mcutils.math
+dk.tohjuler.mcutils.strings
