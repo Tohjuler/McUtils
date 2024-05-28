@@ -204,7 +204,9 @@ public class Lang {
     /**
      * Play the set sound if the key has a sound set, or the default sound if it exists.
      * The sound order:
-     * Key sound > Sound applyIf > Default sound
+     * - Key sound
+     * - Sound applyIf
+     * - Default sound
      * If the key sound is null, then it will stop there.
      * <p>
      *
