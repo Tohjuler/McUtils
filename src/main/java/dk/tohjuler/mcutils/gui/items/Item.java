@@ -333,27 +333,33 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     protected void handleAsList(T gui, Player p, S localStorage) {
         List<AsList.Holder<T, S>> items = asList.call(p, localStorage);
-        for (AsList.Holder<T, S> listItem : items)
+        for (AsList.Holder<T, S> listItem : items) {
+            if (!listItem.isShow() && fallbackItem == null) continue;
             gui.addItem(
                     build(
                             localStorage,
                             listItem.getReplacer().getPlayer() != null
                                     ? listItem.getReplacer().getPlayer()
                                     : p,
-                            e -> listItem.getCallback().accept(
-                                    p,
-                                    new Item.WrappedInventoryClickEvent<>(
-                                            gui,
-                                            e,
-                                            this,
-                                            localStorage,
-                                            listItem
-                                    )
-                            ),
+                            e -> {
+                                if (!listItem.isShow()) return; // Uses fallback
+
+                                listItem.getCallback().accept(
+                                        p,
+                                        new Item.WrappedInventoryClickEvent<>(
+                                                gui,
+                                                e,
+                                                this,
+                                                localStorage,
+                                                listItem
+                                        )
+                                );
+                            },
                             listItem.getReplacer(),
                             gui,
-                            false
+                            !listItem.isShow()
                     ));
+        }
     }
 
     /**
