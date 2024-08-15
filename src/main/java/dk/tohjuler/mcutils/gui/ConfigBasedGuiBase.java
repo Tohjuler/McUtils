@@ -236,7 +236,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     public void open(Player p, Consumer<S> initStorage) {
         S localStorage = createStorage(storage);
         initStorage.accept(localStorage);
-        T gui = createGui(p);
+        T gui = createGui(p, localStorage) == null ? createGui(p) : createGui(p, localStorage);
 
         fillGui(gui);
         gui.setCloseGuiAction(e -> {
@@ -379,8 +379,23 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * @param p The player to create the gui for
      * @return The base gui
      * @since 1.5
+     * @Deprecated Use {@link #createGui(Player, IStorage)} instead
      */
+    @Deprecated
     protected abstract T createGui(Player p);
+
+    /**
+     * Create the base gui.
+     * <p>
+     *
+     * @param p The player to create the gui for
+     * @param storage The storage to use
+     * @return The base gui
+     * @since 1.20.0
+     */
+    protected T createGui(Player p, S storage) {
+        return null;
+    }
 
     /**
      * Get the title of the gui.

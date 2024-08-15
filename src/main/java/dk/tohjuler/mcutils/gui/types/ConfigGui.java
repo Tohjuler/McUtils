@@ -20,7 +20,7 @@ public abstract class ConfigGui<S extends IStorage> extends ConfigBasedGuiBase<G
     }
 
     @Override
-    protected Gui createGui(Player p) {
+    protected Gui createGui(Player p, S storage) {
         return Gui.gui()
                 .title(Component.text(
                         ColorUtils.colorize(

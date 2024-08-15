@@ -26,7 +26,7 @@ public abstract class ConfigBasedPaginatedGui extends ConfigBasedGuiBase<Paginat
     }
 
     @Override
-    protected PaginatedGui createGui(Player p) {
+    protected PaginatedGui createGui(Player p, Storage storage) {
         return Gui.paginated()
                 .title(Component.text(
                         ColorUtils.colorize(
