@@ -35,6 +35,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
     private ItemBuilder item;
     @Setter
     private @Nullable ItemBuilder fallbackItem;
+    private boolean callClickOnFallback = false;
     protected Predicate<Player> show;
     protected BiPredicate<Player, S> showWithStorage;
     protected AsList<?, T, S> asList;
@@ -179,6 +180,31 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
      */
     public Item<T, S> fallbackItem(ItemBuilder fallbackItem) {
         this.fallbackItem = fallbackItem;
+        return this;
+    }
+
+    /**
+     * Make onClick run on the fallback item.
+     * <p>
+     *
+     * @return The item
+     * @since 1.20.0
+     */
+    public Item<T, S> callClickOnFallback() {
+        this.callClickOnFallback = true;
+        return this;
+    }
+
+    /**
+     * Make onClick run on the fallback item.
+     * With the option to disable it.
+     * <p>
+     *
+     * @return The item
+     * @since 1.20.0
+     */
+    public Item<T, S> callClickOnFallback(boolean value) {
+        this.callClickOnFallback = value;
         return this;
     }
 
@@ -390,13 +416,17 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
         } else if (getFallbackItem() != null) // Fallback items
             if (parseSlotFirst() == -1)
                 gui.addItem(buildFallback(localStorage, p,
-                        e -> call(p, gui, e, localStorage),
+                        e -> {
+                            if (callClickOnFallback) call(p, gui, e, localStorage);
+                        },
                         gui
                 ));
             else
                 for (int slot : parseSlot())
                     gui.setItem(slot, buildFallback(localStorage, p,
-                            e -> call(p, gui, e, localStorage),
+                            e -> {
+                                if (callClickOnFallback) call(p, gui, e, localStorage);
+                            },
                             gui
                     ));
     }
