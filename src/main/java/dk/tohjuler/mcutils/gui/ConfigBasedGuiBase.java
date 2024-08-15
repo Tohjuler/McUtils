@@ -3,6 +3,7 @@ package dk.tohjuler.mcutils.gui;
 import dev.triumphteam.gui.guis.BaseGui;
 import dk.tohjuler.mcutils.config.ConfigurationFile;
 import dk.tohjuler.mcutils.enums.FillType;
+import dk.tohjuler.mcutils.gui.handler.GuiEventHandler;
 import dk.tohjuler.mcutils.gui.items.AsyncItem;
 import dk.tohjuler.mcutils.gui.items.Item;
 import dk.tohjuler.mcutils.gui.items.StaticItem;
@@ -45,6 +46,8 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     private Replacer<S> titleReplacer;
 
     private final S storage = createStorage(null);
+    @Getter
+    private final GuiEventHandler<T, S> guiEventHandler = new GuiEventHandler<>();
 
     @Getter
     private final List<Item<T, S>> items = new ArrayList<>();
@@ -236,12 +239,19 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
         T gui = createGui(p);
 
         fillGui(gui);
-        gui.setCloseGuiAction(e -> onClose(p, gui, localStorage));
-        gui.setDefaultClickAction(e -> defaultClick(p, gui, e, localStorage));
+        gui.setCloseGuiAction(e -> {
+            onClose(p, gui, localStorage);
+            guiEventHandler.callOnClose(p, gui, localStorage);
+        });
+        gui.setDefaultClickAction(e -> {
+            defaultClick(p, gui, e, localStorage);
+            guiEventHandler.callDefaultClick(p, gui, e, localStorage);
+        });
 
         items.forEach(item -> item.setupGui(gui, p, localStorage));
 
         onCreate(p, gui, localStorage);
+        guiEventHandler.callOnCreate(p, gui, localStorage);
         gui.open(p);
     }
 
@@ -385,6 +395,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     }
 
     // Events
+    // ---
 
     /**
      * Called right before opening the gui.
