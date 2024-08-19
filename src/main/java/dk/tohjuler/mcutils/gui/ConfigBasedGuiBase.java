@@ -379,7 +379,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * @param p The player to create the gui for
      * @return The base gui
      * @since 1.5
-     * @Deprecated Use {@link #createGui(Player, IStorage)} instead
+     * @deprecated Use {@link #createGui(Player, IStorage)} instead
      */
     @Deprecated
     protected abstract T createGui(Player p);
