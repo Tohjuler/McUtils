@@ -19,7 +19,7 @@ public class Flag {
     /**
      * Whether the flag is present in the parsed string
      */
-    private boolean enabled = false;
+    protected boolean enabled = false;
 
     public Flag(String fullName, String shortAlias, String description) {
         this.fullName = fullName;
