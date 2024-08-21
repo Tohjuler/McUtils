@@ -30,4 +30,9 @@ public abstract class ConfigGui<S extends IStorage> extends ConfigBasedGuiBase<G
                 .rows(rows)
                 .create();
     }
+
+    @Override
+    protected Gui createGui(Player p) {
+        return null;
+    }
 }
