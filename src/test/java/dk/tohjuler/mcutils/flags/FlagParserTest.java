@@ -9,19 +9,34 @@ public class FlagParserTest {
 
     @Test
     public void testParser1() {
-        new FlagParser()
+        FlagParser.newParser(
+                        (str, flags) -> {
+                            assertEquals("Hi there", str);
+                            assertTrue(flags.get("t").isEnabled());
+                        }
+                )
                 .newFlag(
                         "test",
                         "t",
                         "Used to test"
                 )
-                .parse(
-                        "-t Hi there",
-                        (str, flags) -> {
-                            assertEquals("Hi there", str);
-                            assertTrue(flags.get("t").isEnabled());
-                        }
-                );
+                .parse("-t Hi there");
+    }
+
+    @Test
+    public void testParser2() {
+        new FlagParser(){
+            private final Flag testFlag = new Flag(
+                    "test",
+                    "t",
+                    "Used to test"
+            );
+            @Override
+            void onParsed(String parsed) {
+                assertEquals("Hi there", parsed);
+                assertTrue(testFlag.isEnabled());
+            }
+        }.parse("-t Hi there");
     }
 
     @Test
