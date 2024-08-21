@@ -33,6 +33,11 @@ public abstract class ConfigBasedGui extends ConfigBasedGuiBase<Gui, Storage> {
     }
 
     @Override
+    protected Gui createGui(Player p) {
+        return null;
+    }
+
+    @Override
     protected Storage createStorage(@Nullable Storage parent) {
         if (parent == null) return new Storage();
         return new Storage(parent);
