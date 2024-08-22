@@ -109,7 +109,7 @@ public abstract class FlagParser {
      * @param parsed The parsed string
      * @since 1.20.0
      */
-    abstract void onParsed(String parsed);
+    public abstract void onParsed(String parsed);
 
     // Static methods
     // ---
@@ -142,7 +142,7 @@ public abstract class FlagParser {
     public static String singleFlag(Flag flag, String toParse) {
         return new FlagParser() {
             @Override
-            void onParsed(String parsed) {
+            public void onParsed(String parsed) {
 
             }
         }.addFlag(flag)

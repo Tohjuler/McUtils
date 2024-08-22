@@ -32,7 +32,7 @@ public class FlagParserTest {
                     "Used to test"
             );
             @Override
-            void onParsed(String parsed) {
+            public void onParsed(String parsed) {
                 assertEquals("Hi there", parsed);
                 assertTrue(testFlag.isEnabled());
             }
