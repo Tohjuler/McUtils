@@ -25,7 +25,7 @@ public abstract class ConfigBasedGui extends ConfigBasedGuiBase<Gui, Storage> {
         return Gui.gui()
                 .title(Component.text(
                         ColorUtils.colorize(
-                                getTitle(p)
+                                getTitle(p, storage)
                         )
                 ))
                 .rows(rows)

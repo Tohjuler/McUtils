@@ -30,7 +30,7 @@ public abstract class ConfigBasedPaginatedGui extends ConfigBasedGuiBase<Paginat
         return Gui.paginated()
                 .title(Component.text(
                         ColorUtils.colorize(
-                                getTitle(p)
+                                getTitle(p, storage)
                         )
                 ))
                 .pageSize(pageSize)

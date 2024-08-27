@@ -404,8 +404,22 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * @param p The player to get the title for
      * @return The title
      * @since 1.10.0
+     * @deprecated Use {@link #getTitle(Player, IStorage)} instead
      */
+    @Deprecated
     protected String getTitle(Player p) {
+        return titleReplacer != null ? titleReplacer.replaceCall(storage, title, p) : title;
+    }
+
+    /**
+     * Get the title of the gui.
+     * <p>
+     *
+     * @param p The player to get the title for
+     * @return The title
+     * @since 1.20.4
+     */
+    protected String getTitle(Player p, S storage) {
         return titleReplacer != null ? titleReplacer.replaceCall(storage, title, p) : title;
     }
 
