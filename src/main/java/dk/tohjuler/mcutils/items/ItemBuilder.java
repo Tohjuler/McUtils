@@ -285,6 +285,7 @@ public class ItemBuilder {
      */
     public ItemBuilder setDisplayName(String name) {
         ItemMeta itemMeta = this.item.getItemMeta();
+        if (itemMeta == null) itemMeta = Bukkit.getItemFactory().getItemMeta(this.item.getType());
         itemMeta.setDisplayName(colorize(name));
         this.item.setItemMeta(itemMeta);
         return this;
@@ -626,6 +627,7 @@ public class ItemBuilder {
      * @since 1.17.0
      */
     public static ItemBuilder fromString(String mat) {
+        if (mat.startsWith("adv:")) mat = mat.substring(4);
         try {
             return new ItemBuilder(UUID.fromString(mat));
         } catch (IllegalArgumentException e) {

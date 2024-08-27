@@ -3,7 +3,6 @@ package dk.tohjuler.mcutils.gui.utils;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Warning;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +42,6 @@ public abstract class Replacer<S extends IStorage> {
      * @param func The function to modify the item with
      * @since 1.5.2
      */
-    @Warning(reason = "This method is not recommended to use, as it goes out of the config system and allows static modifications (Modifications that can't be changed by config).")
     protected void modifyItem(Function<ItemBuilder, ItemBuilder> func) {
         if (item != null)
             item = func.apply(item);

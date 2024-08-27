@@ -444,7 +444,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
         if (getStringMaterial() != null && !getStringMaterial().isEmpty())
             cf.cf().set(path + ".material", "adv:" + getStringMaterial());
         if (getItem().getHeadBase64() != null && !getItem().getHeadBase64().isEmpty())
-            cf.cf().set(path + ".material", "adv:" + getItem().getHeadBase64());
+            cf.cf().set(path + ".material", getItem().getHeadBase64());
         if (getAsList() != null)
             cf.cf().set(path + ".Note", "This item is a listed item.");
         if (getFallbackItem() != null)
