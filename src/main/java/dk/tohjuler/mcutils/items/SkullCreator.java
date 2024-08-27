@@ -1,5 +1,8 @@
 package dk.tohjuler.mcutils.items;
 
+import com.cryptomorin.xseries.profiles.builder.XSkull;
+import com.cryptomorin.xseries.profiles.objects.ProfileInputType;
+import com.cryptomorin.xseries.profiles.objects.Profileable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -84,8 +87,9 @@ public class SkullCreator {
     public static ItemStack skullWithBase64(ItemStack itemStack, String base64) {
         notNull(itemStack, "item");
         notNull(base64, "base64");
-        UUID uUID = new UUID(base64.hashCode(), base64.hashCode());
-        return Bukkit.getUnsafe().modifyItemStack(itemStack, "{SkullOwner:{Id:\"" + uUID + "\",Properties:{textures:[{Value:\"" + base64 + "\"}]}}}");
+        if (base64.isEmpty()) return itemStack;
+
+        return XSkull.of(itemStack).profile(Profileable.of(ProfileInputType.BASE64.getProfile(base64))).apply();
     }
 
     /**
