@@ -238,6 +238,7 @@ public class ItemBuilder {
      */
     public String getDisplayName() {
         ItemMeta itemMeta = this.item.getItemMeta();
+        if (itemMeta == null) return "THE ITEM IS AIR!";
         return itemMeta.getDisplayName();
     }
 
@@ -285,7 +286,8 @@ public class ItemBuilder {
      */
     public ItemBuilder setDisplayName(String name) {
         ItemMeta itemMeta = this.item.getItemMeta();
-        if (itemMeta == null) itemMeta = Bukkit.getItemFactory().getItemMeta(this.item.getType());
+        if (itemMeta == null) return this;
+        if (itemMeta == null) return this;
         itemMeta.setDisplayName(colorize(name));
         this.item.setItemMeta(itemMeta);
         return this;
@@ -300,6 +302,7 @@ public class ItemBuilder {
      */
     public ItemBuilder replaceDisplayName(String replace, String replaceWith) {
         ItemMeta itemMeta = this.item.getItemMeta();
+        if (itemMeta == null) return this;
         if (itemMeta.hasDisplayName()) {
             itemMeta.setDisplayName(itemMeta.getDisplayName().replaceAll(replace, colorize(replaceWith)));
             this.item.setItemMeta(itemMeta);
@@ -314,6 +317,7 @@ public class ItemBuilder {
      */
     public List<String> getLore() {
         ItemMeta itemMeta = this.item.getItemMeta();
+        if (itemMeta == null) return Collections.emptyList();
         return (itemMeta.hasLore() && itemMeta.getLore() != null) ? itemMeta.getLore() : new ArrayList<>();
     }
 
@@ -325,6 +329,7 @@ public class ItemBuilder {
      */
     public ItemBuilder setLore(Collection<String> lore) {
         ItemMeta itemMeta = this.item.getItemMeta();
+        if (itemMeta == null) return this;
         ArrayList<String> arrayList = new ArrayList<>();
         for (String str : lore)
             arrayList.add(colorize(str));
@@ -341,6 +346,7 @@ public class ItemBuilder {
      */
     public ItemBuilder setLore(String... lore) {
         ItemMeta itemMeta = this.item.getItemMeta();
+        if (itemMeta == null) return this;
         ArrayList<String> arrayList = new ArrayList<>();
         byte b = 0;
         String[] arrayOfString;
@@ -363,6 +369,7 @@ public class ItemBuilder {
      */
     public ItemBuilder replaceLore(String replace, String replaceWith) {
         ItemMeta itemMeta = this.item.getItemMeta();
+        if (itemMeta == null) return this;
         if (itemMeta.hasLore()) {
             ArrayList<String> arrayList = new ArrayList<>();
             for (String str : itemMeta.getLore()) {
@@ -384,6 +391,7 @@ public class ItemBuilder {
      */
     public ItemBuilder replaceLore(String replace, List<String> replaceWith) {
         ItemMeta itemMeta = this.item.getItemMeta();
+        if (itemMeta == null) return this;
         if (itemMeta.hasLore()) {
             ArrayList<String> arrayList = new ArrayList<>();
             for (String str : itemMeta.getLore()) {
@@ -410,6 +418,7 @@ public class ItemBuilder {
      */
     public ItemBuilder replaceLore(String replace, String... replaceWith) {
         ItemMeta itemMeta = this.item.getItemMeta();
+        if (itemMeta == null) return this;
         if (itemMeta.hasLore()) {
             ArrayList<String> arrayList = new ArrayList<>();
             for (String str : itemMeta.getLore()) {
@@ -440,6 +449,7 @@ public class ItemBuilder {
      */
     public ItemBuilder addLore(Collection<String> lines) {
         ItemMeta itemMeta = this.item.getItemMeta();
+        if (itemMeta == null) return this;
         if (itemMeta.getLore() == null)
             itemMeta.setLore(new ArrayList<>());
         List<String> list = itemMeta.getLore();
@@ -458,6 +468,7 @@ public class ItemBuilder {
      */
     public ItemBuilder addLore(String... lore) {
         ItemMeta itemMeta = this.item.getItemMeta();
+        if (itemMeta == null) return this;
         if (itemMeta.getLore() == null)
             itemMeta.setLore(new ArrayList<>());
         List<String> list = itemMeta.getLore();
