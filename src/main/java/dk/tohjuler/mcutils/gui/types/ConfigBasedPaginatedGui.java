@@ -39,11 +39,6 @@ public abstract class ConfigBasedPaginatedGui extends ConfigBasedGuiBase<Paginat
     }
 
     @Override
-    protected PaginatedGui createGui(Player p) {
-        return null;
-    }
-
-    @Override
     protected Storage createStorage(@Nullable Storage parent) {
         if (parent == null) return new Storage();
         return new Storage(parent);
