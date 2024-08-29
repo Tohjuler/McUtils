@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * A collection of chest slots patterne.
  */
 @Getter
-enum ChestPatterns {
+public enum ChestPatterns {
 
     // 1 row
     R1_1(1, 1, 22),
@@ -30,16 +30,28 @@ enum ChestPatterns {
     R2_6(2, 6, 20, 22, 24, 29, 31, 33),
     R2_7(2, 7, 20, 22, 24, 28, 30, 32, 24),
     R2_8(2, 8, 19, 21, 23, 25, 28, 30, 32, 34),
+
+    // Special
+    R4_16_PYRAMID(2, 16,
+            13,
+            21, 22, 23,
+            29, 30, 31, 32, 33,
+            37, 38, 39, 40, 41, 42, 43
+    ),
     ;
 
-    private final int rows;
+    private final int freeRows;
     private final int itemAmount;
     private final List<Integer> slots;
 
-    ChestPatterns(int rows, int itemAmount, int... slots) {
-        this.rows = rows;
+    ChestPatterns(int freeRows, int itemAmount, int... slots) {
+        this.freeRows = freeRows;
         this.itemAmount = itemAmount;
         this.slots = Arrays.stream(slots).boxed().collect(Collectors.toList());
+    }
+
+    public String toStringSlots() {
+        return slots.stream().map(Object::toString).collect(Collectors.joining(","));
     }
 
     // Static methods
@@ -56,7 +68,7 @@ enum ChestPatterns {
      */
     public static List<Integer> getPattern(int rows, int itemAmount) {
         for (ChestPatterns pattern : values())
-            if (pattern.getRows() == rows && pattern.getItemAmount() == itemAmount)
+            if (pattern.getFreeRows() == rows && pattern.getItemAmount() == itemAmount)
                 return pattern.getSlots();
         if (rows == 0) return Collections.emptyList();
         return getPattern(rows - 1, itemAmount);
@@ -67,14 +79,51 @@ enum ChestPatterns {
      * All patternes will be takes as the gui has 6 rows.
      * <p>
      *
-     * @param row The amount of free rows to use.
+     * @param rows The amount of free rows to use.
      * @param itemAmount The amount of items to use.
      * @param offset The offset to add to the slots.
      * @return The pattern with the offset.
      * @since 1.21.0
      */
-    public static List<Integer> getPattern(int row, int itemAmount, int offset) {
-        List<Integer> pattern = getPattern(row, itemAmount);
+    public static List<Integer> getPattern(int rows, int itemAmount, int offset) {
+        List<Integer> pattern = getPattern(rows, itemAmount);
         return pattern.stream().map(slot -> slot + offset).collect(Collectors.toList());
+    }
+
+    /**
+     * Get a pattern by rows and item amount as a string.
+     * All patternes will be takes as the gui has 6 rows.
+     * <p>
+     *
+     * @param rows The amount of free rows to use.
+     * @param itemAmount The amount of items to use.
+     * @return The string pattern.
+     * @since 1.21.0
+     */
+    public static String getStringPattern(int rows, int itemAmount) {
+        for (ChestPatterns pattern : values())
+            if (pattern.getFreeRows() == rows && pattern.getItemAmount() == itemAmount)
+                return pattern.toStringSlots();
+        if (rows == 0) return "";
+        return getStringPattern(rows - 1, itemAmount);
+    }
+
+    /**
+     * Get a pattern by rows and item amount with an offset as a string.
+     * All patternes will be takes as the gui has 6 rows.
+     * <p>
+     *
+     * @param rows The amount of free rows to use.
+     * @param itemAmount The amount of items to use.
+     * @param offset The offset to add to the slots.
+     * @return The string pattern with the offset.
+     * @since 1.21.0
+     */
+    public static String getStringPattern(int rows, int itemAmount, int offset) {
+        for (ChestPatterns pattern : values())
+            if (pattern.getFreeRows() == rows && pattern.getItemAmount() == itemAmount)
+                return pattern.getSlots().stream().map(slot -> slot + offset).map(Object::toString).collect(Collectors.joining(","));
+        if (rows == 0) return "";
+        return getStringPattern(rows - 1, itemAmount, offset);
     }
 }

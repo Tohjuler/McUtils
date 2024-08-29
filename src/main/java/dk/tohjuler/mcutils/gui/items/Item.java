@@ -217,7 +217,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
      * @since 1.15.0
      */
     public List<Integer> parseSlot() {
-        return SlotParser.parseSlotString(slot);
+        return SlotParser.parseSlotString(slot, this);
     }
 
     /**

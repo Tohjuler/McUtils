@@ -1,11 +1,25 @@
 package dk.tohjuler.mcutils.gui.utils;
 
+import dk.tohjuler.mcutils.gui.ChestPatterns;
+import dk.tohjuler.mcutils.gui.items.Item;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class SlotParser {
     public static List<Integer> parseSlotString(String str) {
+        return parseSlotString(str, null);
+    }
+
+    public static List<Integer> parseSlotString(String str, @Nullable Item<?, ?> item) {
+        if (str.startsWith("auto") && item != null && item.getAsList() != null) {
+            int rows = str.substring(4).isEmpty() ? 1 : Integer.parseInt(str.substring(5, str.length() - 1));
+
+            str = ChestPatterns.getStringPattern(rows, item.getAsList().getList().size());
+        }
+
         if (str.contains("-") && str.contains(",")) {
             List<Integer> slots = new ArrayList<>();
             for (String s : str.split(",")) {
