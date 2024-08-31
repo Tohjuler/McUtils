@@ -63,7 +63,7 @@ public class AsyncItem<T extends BaseGui, S extends IStorage> extends Item<T, S>
      * @return The item.
      * @since 1.18.0
      */
-    public Item<T, S> loader(ItemBuilder loader) {
+    public AsyncItem<T, S> loader(ItemBuilder loader) {
         this.loader = loader;
         return this;
     }
