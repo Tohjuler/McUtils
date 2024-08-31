@@ -374,7 +374,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * @return The item
      * @since 1.18.0
      */
-    protected Item<T, S> asyncItem(String id, int slot, ItemBuilder item) {
+    protected AsyncItem<T, S> asyncItem(String id, int slot, ItemBuilder item) {
         return new AsyncItem<>(this, id, slot, item);
     }
 
@@ -389,7 +389,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * @return The item
      * @since 1.18.0
      */
-    protected Item<T, S> asyncItem(String id, String slot, ItemBuilder item) {
+    protected AsyncItem<T, S> asyncItem(String id, String slot, ItemBuilder item) {
         return new AsyncItem<>(this, id, slot, item);
     }
 
