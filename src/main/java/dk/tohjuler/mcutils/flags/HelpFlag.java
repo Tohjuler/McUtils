@@ -11,7 +11,7 @@ public class HelpFlag extends Flag{
 
     /**
      * Get the help message
-     * <p>
+     * <br/>
      * @param flags The flags to get the help message for
      * @return The help message
      * @since 1.20.0

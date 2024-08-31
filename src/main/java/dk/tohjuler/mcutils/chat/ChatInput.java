@@ -13,6 +13,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.*;
 import java.util.function.Consumer;
 
+/**
+ * Utils for getting chat input from a player
+ */
 public class ChatInput implements Listener {
 
     private final JavaPlugin plugin;

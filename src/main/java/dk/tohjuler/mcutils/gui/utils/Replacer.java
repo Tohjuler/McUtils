@@ -20,7 +20,7 @@ public abstract class Replacer<S extends IStorage> {
 
     /**
      * Replace a string in the lore and display name
-     * <p>
+     * <br/>
      *
      * @param regex The string to replace
      * @param func  The function to replace the string with
@@ -37,7 +37,7 @@ public abstract class Replacer<S extends IStorage> {
      * If an "adv:" is used in the material of the item, it can override this method.
      * WARNING: This method is not recommended to use, as it goes out of the config system
      * and allows static modifications (Modifications that can't be changed by config).
-     * <p>
+     * <br/>
      *
      * @param func The function to modify the item with
      * @since 1.5.2
@@ -51,7 +51,7 @@ public abstract class Replacer<S extends IStorage> {
 
     /**
      * This method is for internal use.
-     * <p>
+     * <br/>
      *
      * @param storage The storage to use
      * @param item    The item to replace in
@@ -68,7 +68,7 @@ public abstract class Replacer<S extends IStorage> {
 
     /**
      * This method is for internal use.
-     * <p>
+     * <br/>
      *
      * @param storage The storage to use
      * @param str     The string to replace in
@@ -85,7 +85,7 @@ public abstract class Replacer<S extends IStorage> {
 
     /**
      * Replace a regex in a string.
-     * <p>
+     * <br/>
      *
      * @param str     The string to replace in
      * @param regex   The regex to replace

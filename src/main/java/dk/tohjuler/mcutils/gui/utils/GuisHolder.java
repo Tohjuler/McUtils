@@ -33,7 +33,7 @@ public abstract class GuisHolder {
 
     /**
      * Load all the guis, defined in the class as fields.
-     * <p>
+     * <br/>
      *
      * @param folder The folder for the gui's config files
      * @since 1.18.0
@@ -65,7 +65,7 @@ public abstract class GuisHolder {
 
     /**
      * Open a gui by class.
-     * <p>
+     * <br/>
      *
      * @param p     The player
      * @param clazz The class of the gui
@@ -93,7 +93,7 @@ public abstract class GuisHolder {
      * Called right before opening the gui.
      * Remember the onCreate event on the gui is call before this.
      * This is a global event for all guis.
-     * <p>
+     * <br/>
      *
      * @param player       The player that is opening the gui.
      * @param gui          The gui that is being opened.
@@ -107,7 +107,7 @@ public abstract class GuisHolder {
      * Called when the gui is closed.
      * Remember the onClose event on the gui is call before this.
      * This is a global event for all guis.
-     * <p>
+     * <br/>
      *
      * @param player       The player that is closing the gui.
      * @param gui          The gui that is being closed.
@@ -122,7 +122,7 @@ public abstract class GuisHolder {
      * Remember if there is a click action on the item, then it will also be called.
      * Remember the default click event on the gui is call before this.
      * This is a global event for all guis.
-     * <p>
+     * <br/>
      *
      * @param player       The player that clicked.
      * @param gui          The gui that was clicked in.

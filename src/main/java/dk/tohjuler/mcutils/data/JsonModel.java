@@ -78,7 +78,7 @@ public class JsonModel<T> extends DataModel<T, T> {
 
     /**
      * Loads the data from `data/{id}.json`
-     * <p>
+     * <br/>
      * @return true if the data was loaded successfully
      * @since 1.0.0
      */
@@ -94,7 +94,7 @@ public class JsonModel<T> extends DataModel<T, T> {
 
     /**
      * Saves the data to a file
-     * <p>
+     * <br/>
      * @param file The file to save to
      * @return true if the data was saved successfully
      * @since 1.0.0
@@ -116,7 +116,7 @@ public class JsonModel<T> extends DataModel<T, T> {
 
     /**
      * Saves the data to `data/{id}.json`
-     * <p>
+     * <br/>
      * @return true if the data was saved successfully
      * @since 1.0.0
      */

@@ -24,7 +24,7 @@ public class Storage implements IStorage {
 
     /**
      * Set a variable in the storage.
-     * <p>
+     * <br/>
      *
      * @param key   The key of the variable
      * @param value The value of the variable
@@ -36,7 +36,7 @@ public class Storage implements IStorage {
 
     /**
      * Get a variable from the storage.
-     * <p>
+     * <br/>
      *
      * @param key The key of the variable
      * @return The value of the variable
@@ -48,7 +48,7 @@ public class Storage implements IStorage {
 
     /**
      * Get a variable from the storage with a default value.
-     * <p>
+     * <br/>
      *
      * @param key The key of the variable
      * @param def The default value
@@ -61,7 +61,7 @@ public class Storage implements IStorage {
 
     /**
      * Remove a variable from the storage.
-     * <p>
+     * <br/>
      *
      * @param key The key of the variable
      * @since 1.5.0
@@ -72,7 +72,7 @@ public class Storage implements IStorage {
 
     /**
      * Check if the storage contains a variable.
-     * <p>
+     * <br/>
      *
      * @param key The key of the variable
      * @return If the storage contains the variable
@@ -84,7 +84,7 @@ public class Storage implements IStorage {
 
     /**
      * Clear the storage.
-     * <p>
+     * <br/>
      *
      * @since 1.5.0
      */
@@ -94,7 +94,7 @@ public class Storage implements IStorage {
 
     /**
      * Save the storage to a config file.
-     * <p>
+     * <br/>
      *
      * @param cf   The config file to save to
      * @param path The path to save the storage to
@@ -106,7 +106,7 @@ public class Storage implements IStorage {
 
     /**
      * Load the storage from a config file.
-     * <p>
+     * <br/>
      *
      * @param cf   The config file to load from
      * @param path The path to load the storage from

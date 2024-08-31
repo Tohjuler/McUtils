@@ -101,7 +101,7 @@ public class ItemBuilder {
 
     /**
      * Used to clone an itembuilder
-     * <p>
+     * <br/>
      *
      * @param item       the item
      * @param headBase64 the head base64
@@ -179,7 +179,7 @@ public class ItemBuilder {
     /**
      * Transform the item to a different type
      * This will keep the amount, display name, lore, enchantments, unstackable status and item flags
-     * <p>
+     * <br/>
      *
      * @param item the item to transform
      * @return the itembuilder
@@ -256,7 +256,7 @@ public class ItemBuilder {
     /**
      * Replace placeholders from gui, in the lore and display name
      * This should only be used by the GUI API
-     * <p>
+     * <br/>
      *
      * @param regex   the regex to replace
      * @param func    the function to replace with
@@ -632,7 +632,7 @@ public class ItemBuilder {
      * - Material name
      * - Base64 skull value
      * - UUID of a player
-     * <p>
+     * <br/>
      * @param mat the string
      * @return the itembuilder
      * @since 1.17.0

@@ -12,6 +12,8 @@ import java.util.function.Function;
 /**
  * A static item is an item that doesn't get saved to the config.
  *
+ * @param <T> The type of the gui.
+ * @param <S> The type of the storage.
  * @since 1.5
  */
 public class StaticItem<T extends BaseGui, S extends IStorage> extends Item<T, S> {

@@ -66,7 +66,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
      * Placeholders from the replacer or PlaceholderAPI will be applied.
      * The string material will override the item material.
      * Example: "%player_uuid%" can be used to get the player's skull as the item.
-     * <p>
+     * <br/>
      *
      * @param stringMaterial The string material
      * @return The item
@@ -79,7 +79,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Set the event handler for the item.
-     * <p>
+     * <br/>
      *
      * @param eventHandler The event handler to use
      * @return The item
@@ -92,7 +92,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Set a condition for the item to be shown.
-     * <p>
+     * <br/>
      *
      * @param show The condition for the item to be shown
      * @return The item
@@ -105,7 +105,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Set a condition for the item to be shown.
-     * <p>
+     * <br/>
      *
      * @param show The condition for the item to be shown
      * @return The item
@@ -118,7 +118,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Set the item as a list.
-     * <p>
+     * <br/>
      *
      * @param asList The list to use
      * @return The item
@@ -131,7 +131,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
     /**
      * Set the click action for the item.
      * If a {@link AsList} is in use, then the callback in the asList will be used instead.
-     * <p>
+     * <br/>
      *
      * @param clickAction The action to run when the item is clicked
      * @return The item
@@ -144,7 +144,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Alias for {@link #clickAction(BiConsumer)}
-     * <p>
+     * <br/>
      *
      * @param clickAction The action to run when the item is clicked
      * @return The item
@@ -157,7 +157,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Add a replacer to the item.
-     * <p>
+     * <br/>
      *
      * @param replacer The replacer to add
      * @return The item
@@ -172,7 +172,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
      * Set the fallback item for the item.
      * The fallback item will be used if the item is not shown.
      * A fallback item DOES NOT support asList or when the item is static.
-     * <p>
+     * <br/>
      *
      * @param fallbackItem The fallback item
      * @return The item
@@ -185,7 +185,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Make onClick run on the fallback item.
-     * <p>
+     * <br/>
      *
      * @return The item
      * @since 1.20.0
@@ -198,7 +198,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
     /**
      * Make onClick run on the fallback item.
      * With the option to disable it.
-     * <p>
+     * <br/>
      *
      * @param value The value
      * @return The item
@@ -211,7 +211,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Parse the slot string to a list of slots.
-     * <p>
+     * <br/>
      *
      * @return The list of slots
      * @since 1.15.0
@@ -222,7 +222,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Parse the slot string to a single slot.
-     * <p>
+     * <br/>
      *
      * @return The slot
      * @since 1.15.0
@@ -247,7 +247,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Used to call the click action.
-     * <p>
+     * <br/>
      *
      * @param player       The player who clicked the item
      * @param gui          The gui
@@ -262,7 +262,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Build the item as a GuiItem.
-     * <p>
+     * <br/>
      *
      * @param storage  The storage to use
      * @param player   The player to use
@@ -314,7 +314,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Build the item as a GuiItem.
-     * <p>
+     * <br/>
      *
      * @param storage The storage to use
      * @param player  The player to use
@@ -329,7 +329,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Build the fallback item as a GuiItem.
-     * <p>
+     * <br/>
      *
      * @param storage The storage to use
      * @param player  The player to use
@@ -344,7 +344,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Check if the item should be shown.
-     * <p>
+     * <br/>
      *
      * @param player  The player to check
      * @param storage The storage to check
@@ -391,7 +391,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Used to set the item in the gui.
-     * <p>
+     * <br/>
      *
      * @param gui          The gui to add the item to
      * @param p            The player
@@ -460,9 +460,10 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
     /**
      * Wrapped event for the InventoryClickEvent.
      * Adding access to the gui, local storage and some utils.
-     * <p>
+     * <br/>
      *
      * @param <T> The type of the gui
+     * @param <S> The type of the storage
      * @since 1.5
      */
     public static class WrappedInventoryClickEvent<T extends BaseGui, S extends IStorage> {

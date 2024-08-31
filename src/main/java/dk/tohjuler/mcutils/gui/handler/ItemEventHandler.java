@@ -10,10 +10,12 @@ import java.util.function.Function;
 
 /**
  * Abstract class for handling events for a gui item.
- * <p>
+ * <br/>
  * Warning: Use of these events can override the item, meaning that it can bypas the config.
  * If there is an event handler in use then the click action on the item, will not be called.
  *
+ * @param <T> The type of the gui.
+ * @param <S> The type of the storage.
  * @since 1.17.0
  */
 public abstract class ItemEventHandler<T extends BaseGui, S extends IStorage> {
@@ -22,7 +24,7 @@ public abstract class ItemEventHandler<T extends BaseGui, S extends IStorage> {
      * Called when the item is created.
      * If you want to modify the item, pls use {@link dk.tohjuler.mcutils.gui.utils.Replacer#modifyItem(Function)}
      * but remember that it bypasses the config.
-     * <p>
+     * <br/>
      *
      * @param player The player that is opening the gui.
      * @param gui    The gui that is being opened.
@@ -33,7 +35,7 @@ public abstract class ItemEventHandler<T extends BaseGui, S extends IStorage> {
 
     /**
      * Called when a player clicks on the item.
-     * <p>
+     * <br/>
      *
      * @param player       The player that clicked.
      * @param wrappedEvent The event that was triggered.

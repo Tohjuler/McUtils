@@ -35,7 +35,7 @@ public class GuiManager {
 
     /**
      * Get a gui by id
-     * <p>
+     * <br/>
      *
      * @param p  The player to get the gui for
      * @param id The id of the gui
@@ -50,7 +50,7 @@ public class GuiManager {
 
     /**
      * Open a gui, by class
-     * <p>
+     * <br/>
      *
      * @param p   The player to open the gui for
      * @param gui The class of the gui to open
@@ -66,7 +66,7 @@ public class GuiManager {
 
     /**
      * Get a gui by id
-     * <p>
+     * <br/>
      *
      * @param <S>         The type of the storage
      * @param p           The player to get the gui for
@@ -86,7 +86,7 @@ public class GuiManager {
 
     /**
      * Open a gui, by class
-     * <p>
+     * <br/>
      *
      * @param <S>         The type of the storage
      * @param p           The player to open the gui for

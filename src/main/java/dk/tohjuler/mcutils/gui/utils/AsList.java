@@ -14,10 +14,11 @@ import java.util.stream.Collectors;
 /**
  * This class is used to make a single gui item into many.
  * Example: Show all online players.
- * <p>
+ * <br/>
  *
  * @param <T>   The type of the list.
  * @param <GUI> The type of the gui.
+ * @param <S>   The type of the storage.
  * @since 1.5.0
  */
 @Getter
@@ -26,7 +27,7 @@ public abstract class AsList<T, GUI extends BaseGui, S extends IStorage> {
 
     /**
      * This is an internal method, don't use it.
-     * <p>
+     * <br/>
      *
      * @param p            The player to call the method on
      * @param localStorage The local storage
@@ -48,7 +49,7 @@ public abstract class AsList<T, GUI extends BaseGui, S extends IStorage> {
     /**
      * Get calls for every value in the list
      * If the {@link T} is a player, that player will be used in {@link #getList(Player, IStorage)} and {@link Replacer#replace(Player, IStorage)}
-     * <p>
+     * <br/>
      *
      * @param value The value to get the calls for
      * @param p     The player to get the calls for
@@ -59,7 +60,7 @@ public abstract class AsList<T, GUI extends BaseGui, S extends IStorage> {
 
     /**
      * Get the list of values
-     * <p>
+     * <br/>
      *
      * @param p            The player to get the list for
      * @param localStorage The local storage
@@ -70,7 +71,7 @@ public abstract class AsList<T, GUI extends BaseGui, S extends IStorage> {
 
     /**
      * The action to run when the item is clicked
-     * <p>
+     * <br/>
      *
      * @param player       The player that clicked the item
      * @param wrappedEvent The wrapped event
@@ -81,7 +82,7 @@ public abstract class AsList<T, GUI extends BaseGui, S extends IStorage> {
 
     /**
      * Check if the item should be shown.
-     * <p>
+     * <br/>
      *
      * @param player       The player to check for
      * @param localStorage The local storage
@@ -93,6 +94,13 @@ public abstract class AsList<T, GUI extends BaseGui, S extends IStorage> {
         return true;
     }
 
+    /**
+     * A holder for the replacer and the click action.
+     * <br/>
+     *
+     * @param <GUI> The type of the gui.
+     * @param <S>   The type of the storage.
+     */
     public static class Holder<GUI extends BaseGui, S extends IStorage> {
         private final Supplier<Replacer<S>> getReplacer;
         @Getter
@@ -101,6 +109,14 @@ public abstract class AsList<T, GUI extends BaseGui, S extends IStorage> {
         @Getter
         private final boolean show;
 
+        /**
+         * Create a new holder
+         * <br/>
+         *
+         * @param getReplacer The replacer
+         * @param callback    The click action
+         * @param show        If the item should be shown
+         */
         public Holder(Supplier<Replacer<S>> getReplacer, BiConsumer<Player, Item.WrappedInventoryClickEvent<GUI, S>> callback, boolean show) {
             this.callback = callback;
             this.getReplacer = getReplacer;

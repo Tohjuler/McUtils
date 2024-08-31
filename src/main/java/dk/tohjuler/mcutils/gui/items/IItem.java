@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 /**
  * An item interface, for items in the gui.
- * <p>
+ * <br/>
  *
  * @param <T> The type of the gui
  * @param <S> The type of the storage
@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 public interface IItem<T extends BaseGui, S extends IStorage> {
     /**
      * Set up the gui, with the item.
-     * <p>
+     * <br/>
      *
      * @param gui          The gui
      * @param p            The player
@@ -26,7 +26,7 @@ public interface IItem<T extends BaseGui, S extends IStorage> {
 
     /**
      * Save the item to the config
-     * <p>
+     * <br/>
      *
      * @param cf The config file
      * @since 1.18.0
@@ -35,7 +35,7 @@ public interface IItem<T extends BaseGui, S extends IStorage> {
 
     /**
      * Load extra data from the config
-     * <p>
+     * <br/>
      *
      * @param cf       The config file
      * @param basePath The base path

@@ -23,7 +23,7 @@ public class VaultHook {
 
     /**
      * Check if a player can afford a certain amount
-     * <p>
+     * <br/>
      *
      * @param offlinePlayer The player
      * @param amount        The amount
@@ -37,7 +37,7 @@ public class VaultHook {
 
     /**
      * Get the bank of a player
-     * <p>
+     * <br/>
      *
      * @param offlinePlayer The player
      * @return The bank of the player
@@ -50,7 +50,7 @@ public class VaultHook {
 
     /**
      * Remove money from a player
-     * <p>
+     * <br/>
      *
      * @param offlinePlayer The player
      * @param amount        The amount
@@ -63,7 +63,7 @@ public class VaultHook {
 
     /**
      * Add money to a player
-     * <p>
+     * <br/>
      *
      * @param offlinePlayer The player
      * @param amount        The amount
@@ -76,7 +76,7 @@ public class VaultHook {
 
     /**
      * Get the primary group of a player
-     * <p>
+     * <br/>
      *
      * @param player The player
      * @return The primary group of the player
@@ -89,7 +89,7 @@ public class VaultHook {
 
     /**
      * Get the groups of a player
-     * <p>
+     * <br/>
      *
      * @param player The player
      * @return The groups of the player
@@ -102,7 +102,7 @@ public class VaultHook {
 
     /**
      * Get the prefix of a player
-     * <p>
+     * <br/>
      *
      * @param player The player
      * @return The prefix of the player
@@ -115,7 +115,7 @@ public class VaultHook {
 
     /**
      * Get the suffix of a player
-     * <p>
+     * <br/>
      *
      * @param player The player
      * @return The suffix of the player
@@ -128,7 +128,7 @@ public class VaultHook {
 
     /**
      * Get the group prefix of a player
-     * <p>
+     * <br/>
      *
      * @param player The player
      * @return The group prefix of the player
@@ -141,7 +141,7 @@ public class VaultHook {
 
     /**
      * Get the group suffix of a player
-     * <p>
+     * <br/>
      *
      * @param player The player
      * @return The group suffix of the player

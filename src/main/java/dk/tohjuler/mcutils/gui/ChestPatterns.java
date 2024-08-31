@@ -50,6 +50,13 @@ public enum ChestPatterns {
         this.slots = Arrays.stream(slots).boxed().collect(Collectors.toList());
     }
 
+    /**
+     * Get the slots as a string.
+     * <br/>
+     *
+     * @return The slots as a string.
+     * @since 1.21.0
+     */
     public String toStringSlots() {
         return slots.stream().map(Object::toString).collect(Collectors.joining(","));
     }
@@ -59,9 +66,9 @@ public enum ChestPatterns {
     /**
      * Get a pattern by rows and item amount
      * All patternes will be takes as the gui has 6 rows.
-     * <p>
+     * <br/>
      *
-     * @param rows The amount of free rows to use.
+     * @param rows       The amount of free rows to use.
      * @param itemAmount The amount of items to use.
      * @return The pattern.
      * @since 1.21.0
@@ -77,11 +84,11 @@ public enum ChestPatterns {
     /**
      * Get a pattern by rows and item amount with an offset.
      * All patternes will be takes as the gui has 6 rows.
-     * <p>
+     * <br/>
      *
-     * @param rows The amount of free rows to use.
+     * @param rows       The amount of free rows to use.
      * @param itemAmount The amount of items to use.
-     * @param offset The offset to add to the slots.
+     * @param offset     The offset to add to the slots.
      * @return The pattern with the offset.
      * @since 1.21.0
      */
@@ -93,9 +100,9 @@ public enum ChestPatterns {
     /**
      * Get a pattern by rows and item amount as a string.
      * All patternes will be takes as the gui has 6 rows.
-     * <p>
+     * <br/>
      *
-     * @param rows The amount of free rows to use.
+     * @param rows       The amount of free rows to use.
      * @param itemAmount The amount of items to use.
      * @return The string pattern.
      * @since 1.21.0
@@ -111,11 +118,11 @@ public enum ChestPatterns {
     /**
      * Get a pattern by rows and item amount with an offset as a string.
      * All patternes will be takes as the gui has 6 rows.
-     * <p>
+     * <br/>
      *
-     * @param rows The amount of free rows to use.
+     * @param rows       The amount of free rows to use.
      * @param itemAmount The amount of items to use.
-     * @param offset The offset to add to the slots.
+     * @param offset     The offset to add to the slots.
      * @return The string pattern with the offset.
      * @since 1.21.0
      */

@@ -11,7 +11,7 @@ public class HeadFonts {
 
     /**
      * Add a char to the font
-     * <p>
+     * <br/>
      * @param type The type of the char
      * @param c The char
      * @param value The itemstack
@@ -25,7 +25,7 @@ public class HeadFonts {
 
     /**
      * Get a char from the font
-     * <p>
+     * <br/>
      * @param type The type of the char
      * @param c The char
      * @return The itemstack
@@ -37,7 +37,7 @@ public class HeadFonts {
 
     /**
      * Get a char from the font
-     * <p>
+     * <br/>
      * @param type The type of the char
      * @param c The char
      * @return The base64 of the itemstack
@@ -48,7 +48,7 @@ public class HeadFonts {
 
     /**
      * Add a number to the font
-     * <p>
+     * <br/>
      * @param type The type of the char
      * @param number The number
      * @param value The itemstack
@@ -62,7 +62,7 @@ public class HeadFonts {
 
     /**
      * Get a number from the font
-     * <p>
+     * <br/>
      * @param type The type of the char
      * @param number The number
      * @return The itemstack
@@ -74,7 +74,7 @@ public class HeadFonts {
 
     /**
      * Get a number from the font
-     * <p>
+     * <br/>
      * @param type The type of the char
      * @param number The number
      * @return The base64 of the itemstack

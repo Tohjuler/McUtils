@@ -52,6 +52,17 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     @Getter
     private final List<Item<T, S>> items = new ArrayList<>();
 
+    /**
+     * Create a new ConfigBasedGui.
+     * <br/>
+     *
+     * @param id       The id of the gui.
+     * @param title    The title of the gui.
+     * @param rows     The amount of rows in the gui.
+     * @param fillType The fill type of the gui.
+     * @param fillItem The fill item of the gui.
+     * @param category The category of the gui.
+     */
     public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem, String category) {
         this.id = id;
         this.title = title;
@@ -62,6 +73,16 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
         init();
     }
 
+    /**
+     * Create a new ConfigBasedGui.
+     * <br/>
+     *
+     * @param id       The id of the gui.
+     * @param title    The title of the gui.
+     * @param rows     The amount of rows in the gui.
+     * @param fillType The fill type of the gui.
+     * @param fillItem The fill item of the gui.
+     */
     public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem) {
         this.id = id;
         this.title = title;
@@ -75,7 +96,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     /**
      * Used to set up the storage.
      * ONLY call this in the constructor.
-     * <p>
+     * <br/>
      *
      * @param initStorage The callback to set up the storage
      * @since 1.16.0
@@ -87,7 +108,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     /**
      * Load the gui from a file.
      * This will clear the item and load the item from the config.
-     * <p>
+     * <br/>
      *
      * @param folder The folder to load the gui from
      * @since 1.5
@@ -163,7 +184,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     /**
      * Save the gui to a file.
-     * <p>
+     * <br/>
      *
      * @param folder The folder to save the gui to
      * @since 1.5
@@ -197,7 +218,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     /**
      * Create a new storage.
      * Default vars can be set here, {@link #setupStorage(Consumer)} can also be used in constructor.
-     * <p>
+     * <br/>
      *
      * @param parent The parent storage, called when a local storage is created.
      * @return The storage
@@ -215,7 +236,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     /**
      * What do you think this does?
-     * <p>
+     * <br/>
      *
      * @param p Yes, I use p for player
      * @since 1.5
@@ -227,7 +248,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     /**
      * What do you think this does?
-     * <p>
+     * <br/>
      *
      * @param p           Yes, I use p for player
      * @param initStorage A callback to set up the local storage
@@ -257,7 +278,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     /**
      * Opens the gui with a storage initializer with a IStorage.
-     * <p>
+     * <br/>
      *
      * @param p           Yes, I use p for player
      * @param initStorage A callback to set up the local storage
@@ -278,7 +299,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * Set an item in the gui.
      * If the item has a -1 slot, it will be added to the gui without a slot.
      * Pls, use the {@link #item(String, int, ItemBuilder)} method to create the item.
-     * <p>
+     * <br/>
      *
      * @param item The item to set
      * @since 1.5
@@ -289,7 +310,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     /**
      * Create a new item.
-     * <p>
+     * <br/>
      *
      * @param id   The id of the item
      * @param slot The slot of the item
@@ -303,7 +324,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     /**
      * Create a new item.
-     * <p>
+     * <br/>
      *
      * @param id   The id of the item
      * @param slot The slot of the item
@@ -317,7 +338,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     /**
      * Create a new item, with no slot.
-     * <p>
+     * <br/>
      *
      * @param id   The id of the item
      * @param item The item
@@ -331,7 +352,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     /**
      * Create a new static item.
      * Use -1 as the slot to add the item to the gui without a slot.
-     * <p>
+     * <br/>
      *
      * @param slot The slot of the item
      * @param func The function to get the item
@@ -345,7 +366,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     /**
      * Create a new async item.
      * Use -1 as the slot to add the item to the gui without a slot.
-     * <p>
+     * <br/>
      *
      * @param id   The id of the item
      * @param slot The slot of the item
@@ -360,7 +381,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     /**
      * Create a new async item, from a string slot.
      * Use -1 as the slot to add the item to the gui without a slot.
-     * <p>
+     * <br/>
      *
      * @param id   The id of the item
      * @param slot The slot of the item
@@ -374,9 +395,9 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     /**
      * Create the base gui.
-     * <p>
+     * <br/>
      *
-     * @param p The player to create the gui for
+     * @param p       The player to create the gui for
      * @param storage The storage to use
      * @return The base gui
      * @since 1.20.0
@@ -385,9 +406,10 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     /**
      * Get the title of the gui.
-     * <p>
+     * <br/>
      *
-     * @param p The player to get the title for
+     * @param p       The player to get the title for
+     * @param storage The storage to use
      * @return The title
      * @since 1.20.4
      */
@@ -400,7 +422,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     /**
      * Called right before opening the gui.
-     * <p>
+     * <br/>
      *
      * @param player       The player that is opening the gui.
      * @param gui          The gui that is being opened.
@@ -412,7 +434,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     /**
      * Called when the gui is closed.
-     * <p>
+     * <br/>
      *
      * @param player       The player that is closing the gui.
      * @param gui          The gui that is being closed.
@@ -425,7 +447,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     /**
      * Called when a player clicks in the gui.
      * Remember if there is a click action on the item, then it will also be called.
-     * <p>
+     * <br/>
      *
      * @param player       The player that clicked.
      * @param gui          The gui that was clicked in.

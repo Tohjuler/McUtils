@@ -10,6 +10,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 
+/**
+ * A class to handle configuration files.
+ */
 public class ConfigurationFile {
 
     private final YamlConfiguration yamlConfiguration;
@@ -38,6 +41,14 @@ public class ConfigurationFile {
         this.yamlConfiguration.load(this.file);
     }
 
+    /**
+     * Create a new ConfigurationFile
+     * <br/>
+     *
+     * @param plugin The plugin which should own this file.
+     * @param name   The name of the file
+     * @param noSave If the file should not be saved
+     */
     @SneakyThrows
     public ConfigurationFile(Plugin plugin, String name, boolean noSave) {
 
@@ -53,6 +64,13 @@ public class ConfigurationFile {
         this.yamlConfiguration.load(this.file);
     }
 
+    /**
+     * Create a new ConfigurationFile
+     * <br/>
+     *
+     * @param path The path to the folder
+     * @param name The name of the file
+     */
     @SneakyThrows
     public ConfigurationFile(String path, String name) {
         this.file = new File(path, name);
@@ -64,6 +82,15 @@ public class ConfigurationFile {
         this.yamlConfiguration.load(this.file);
     }
 
+    /**
+     * Create a new ConfigurationFile
+     * <br/>
+     *
+     * @param path        The path to the folder
+     * @param name        The name of the file
+     * @param classLoader The class loader
+     * @param defaultFile The default file
+     */
     @SneakyThrows
     public ConfigurationFile(String path, String name, ClassLoader classLoader, String defaultFile) {
         this.file = new File(path, name);
@@ -74,6 +101,41 @@ public class ConfigurationFile {
         this.yamlConfiguration.load(this.file);
     }
 
+    /**
+     * Create a new ConfigurationFile
+     * <br/>
+     *
+     * @param file The file
+     */
+    @SneakyThrows
+    public ConfigurationFile(File file) {
+        this.file = file;
+        this.yamlConfiguration = new YamlConfiguration();
+        this.yamlConfiguration.load(file);
+    }
+
+    /**
+     * Create a new ConfigurationFile
+     * <br/>
+     *
+     * @param stream The input stream
+     */
+    @SneakyThrows
+    public ConfigurationFile(InputStream stream) {
+        this.file = null;
+        this.yamlConfiguration = new YamlConfiguration();
+        this.yamlConfiguration.load(new InputStreamReader(stream));
+    }
+
+    /**
+     * Save a resource to a file
+     * <br/>
+     *
+     * @param resourcePath The path to the resource
+     * @param replace      If the file should be replaced
+     * @param dataFolder   The data folder
+     * @param cl           The class loader
+     */
     public void saveResource(String resourcePath, boolean replace, File dataFolder, ClassLoader cl) {
         if (resourcePath != null && !resourcePath.isEmpty()) {
             resourcePath = resourcePath.replace('\\', '/');
@@ -113,6 +175,14 @@ public class ConfigurationFile {
         }
     }
 
+    /**
+     * Get a resource as an input stream
+     * <br/>
+     *
+     * @param filename The name of the file
+     * @param cl       The class loader
+     * @return The input stream
+     */
     public InputStream getResource(String filename, ClassLoader cl) {
         try {
             URL url = cl.getResource(filename);
@@ -129,29 +199,27 @@ public class ConfigurationFile {
         }
     }
 
+    /**
+     * Load the configuration file
+     */
     @SneakyThrows
     public void load() {
         this.yamlConfiguration.load(this.file);
     }
 
-    @SneakyThrows
-    public ConfigurationFile(File file) {
-        this.file = file;
-        this.yamlConfiguration = new YamlConfiguration();
-        this.yamlConfiguration.load(file);
-    }
-
-    @SneakyThrows
-    public ConfigurationFile(InputStream stream) {
-        this.file = null;
-        this.yamlConfiguration = new YamlConfiguration();
-        this.yamlConfiguration.load(new InputStreamReader(stream));
-    }
-
+    /**
+     * Get the YamlConfiguration
+     * <br/>
+     *
+     * @return The YamlConfiguration
+     */
     public YamlConfiguration cf() {
         return yamlConfiguration;
     }
 
+    /**
+     * Save the configuration file
+     */
     @SneakyThrows
     public void save() {
         yamlConfiguration.save(file);

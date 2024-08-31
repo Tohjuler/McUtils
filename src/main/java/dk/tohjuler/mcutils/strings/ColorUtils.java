@@ -13,6 +13,9 @@ import java.util.regex.Pattern;
 // Credit to M3II0
 // Original repo https://github.com/M3II0/Spigot-Color-Utils/blob/main/ColorUtils.java
 
+/**
+ * A utility class for coloring strings.
+ */
 public class ColorUtils {
 
     /*
@@ -46,10 +49,25 @@ public class ColorUtils {
      *
      * */
 
+    /**
+     * Colorize a string
+     * <br/>
+     *
+     * @param text The text to colorize
+     * @return The colorized text
+     */
     public static String colorize(String text) {
         return colorize(text, '&');
     }
 
+    /**
+     * Colorize a string, with a custom color symbol
+     * <br/>
+     *
+     * @param text        The text to colorize
+     * @param colorSymbol The color symbol to use
+     * @return The colorized text
+     */
     public static String colorize(String text, char colorSymbol) {
         Matcher g = gradient.matcher(text);
         Matcher l = legacyGradient.matcher(text);
@@ -84,10 +102,24 @@ public class ColorUtils {
         return ChatColor.translateAlternateColorCodes(colorSymbol, text);
     }
 
+    /**
+     * Remove colors from a string
+     * <br/>
+     *
+     * @param text The text to remove colors from
+     * @return The text without colors
+     */
     public static String removeColors(String text) {
         return ChatColor.stripColor(text);
     }
 
+    /**
+     * Get the characters of a string without colors
+     * <br/>
+     *
+     * @param text The text to get the characters of
+     * @return The characters without colors
+     */
     public static List<Character> charactersWithoutColors(String text) {
         text = removeColors(text);
         final List<Character> result = new ArrayList<>();
@@ -97,10 +129,25 @@ public class ColorUtils {
         return result;
     }
 
+    /**
+     * Get the characters of a string with colors
+     * <br/>
+     *
+     * @param text The text to get the characters of
+     * @return The characters with colors
+     */
     public static List<String> charactersWithColors(String text) {
         return charactersWithColors(text, '§');
     }
 
+    /**
+     * Get the characters of a string with colors
+     * <br/>
+     *
+     * @param text        The text to get the characters of
+     * @param colorSymbol The color symbol to use
+     * @return The characters with colors
+     */
     public static List<String> charactersWithColors(String text, char colorSymbol) {
         final List<String> result = new ArrayList<>();
         StringBuilder colors = new StringBuilder();

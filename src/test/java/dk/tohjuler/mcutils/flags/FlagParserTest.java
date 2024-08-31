@@ -40,6 +40,11 @@ public class FlagParserTest {
     }
 
     @Test
+    public void testParser3() {
+        new TestParser().parse("-t");
+    }
+
+    @Test
     public void testParserSingle() {
         Flag testFlag = new Flag(
                 "test",

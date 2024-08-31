@@ -14,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * An async item is an item that gets loaded async.
- * <p>
+ * <br/>
  *
  * @param <T> The type of the gui
  * @param <S> The type of the storage
@@ -26,14 +26,43 @@ public class AsyncItem<T extends BaseGui, S extends IStorage> extends Item<T, S>
     @Setter
     private int fakeLoading = 0;
 
+    /**
+     * Create a new async item.
+     * <br/>
+     *
+     * @param gui  The gui to add the item to.
+     * @param id   The id of the item.
+     * @param slot The slot of the item.
+     * @param item The item to show.
+     * @since 1.18.0
+     */
     public AsyncItem(ConfigBasedGuiBase<T, S> gui, String id, int slot, ItemBuilder item) {
         super(gui, id, slot, item);
     }
 
+    /**
+     * Create a new async item.
+     * <br/>
+     *
+     * @param gui  The gui to add the item to.
+     * @param id   The id of the item.
+     * @param slot The slot of the item.
+     * @param item The item to show.
+     * @since 1.18.0
+     */
     public AsyncItem(ConfigBasedGuiBase<T, S> gui, String id, String slot, ItemBuilder item) {
         super(gui, id, slot, item);
     }
 
+    /**
+     * Set the loader item for this item.
+     * The loader item is the item that is shown while the item is loading.
+     * <br/>
+     *
+     * @param loader The loader item.
+     * @return The item.
+     * @since 1.18.0
+     */
     public Item<T, S> loader(ItemBuilder loader) {
         this.loader = loader;
         return this;

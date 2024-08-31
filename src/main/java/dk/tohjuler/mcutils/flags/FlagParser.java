@@ -9,7 +9,7 @@ public abstract class FlagParser {
 
     /**
      * Create a new flag
-     * <p>
+     * <br/>
      *
      * @param fullName    The full name of the flag
      * @param shortAlias  The short alias of the flag
@@ -24,7 +24,7 @@ public abstract class FlagParser {
 
     /**
      * Add a flag to the parser
-     * <p>
+     * <br/>
      *
      * @param flags The flags to add
      * @return The parser
@@ -38,12 +38,12 @@ public abstract class FlagParser {
 
     /**
      * Get all flags declared in the class
-     * <p>
+     * <br/>
      *
      * @return A list of all flags
      * @since 1.20.0
      */
-    private List<Flag> getFlags() {
+    public List<Flag> getFlags() {
         return Arrays.stream(getClass().getDeclaredFields())
                 .filter(field -> field.getType().isAssignableFrom(Flag.class))
                 .map(f -> {
@@ -61,7 +61,7 @@ public abstract class FlagParser {
 
     /**
      * Parse the string
-     * <p>
+     * <br/>
      *
      * @param toParse The string to parse
      * @return The string without the flags
@@ -79,7 +79,7 @@ public abstract class FlagParser {
             if (c == ' ' && flag.length() > 0) {
                 foundFlags.add(flagPrefix + flag);
                 flags.forEach(f -> f.parse(flag.toString()));
-                flag.delete(0, flag.length() - 1);
+                flag.delete(0, flag.length() - 1); // Clear the flag
                 lastChar = ' ';
                 continue;
             }
@@ -93,6 +93,10 @@ public abstract class FlagParser {
             if (c == '-' && flag.length() == 0) flagPrefix = "-";
             lastChar = c;
         }
+        if (flag.length() > 0) {
+            foundFlags.add(flagPrefix + flag);
+            flags.forEach(f -> f.parse(flag.toString()));
+        }
 
         for (String f : foundFlags) {
             toParse = toParse.replace(f, "");
@@ -104,7 +108,7 @@ public abstract class FlagParser {
 
     /**
      * Called when the string has been parsed
-     * <p>
+     * <br/>
      *
      * @param parsed The parsed string
      * @since 1.20.0
@@ -116,7 +120,7 @@ public abstract class FlagParser {
 
     /**
      * Create a new parser
-     * <p>
+     * <br/>
      *
      * @param callback The callback to call when the string has been parsed
      * @return The parser
@@ -133,7 +137,7 @@ public abstract class FlagParser {
 
     /**
      * Parse a string with a single flag
-     * <p>
+     * <br/>
      *
      * @param flag    The flag to parse
      * @param toParse The string to parse

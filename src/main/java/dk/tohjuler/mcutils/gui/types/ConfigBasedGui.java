@@ -11,11 +11,36 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A gui that is based on a config.
+ * Using the {@link Storage} class to store data and the {@link Gui} class to create the gui.
+ */
 public abstract class ConfigBasedGui extends ConfigBasedGuiBase<Gui, Storage> {
+    /**
+     * Create a new ConfigBasedGui.
+     * <br/>
+     *
+     * @param id       The id of the gui.
+     * @param title    The title of the gui.
+     * @param rows     The amount of rows in the gui.
+     * @param fillType The fill type of the gui.
+     * @param fillItem The fill item of the gui.
+     */
     public ConfigBasedGui(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem) {
         super(id, title, rows, fillType, fillItem);
     }
 
+    /**
+     * Create a new ConfigBasedGui.
+     * <br/>
+     *
+     * @param id       The id of the gui.
+     * @param title    The title of the gui.
+     * @param rows     The amount of rows in the gui.
+     * @param fillType The fill type of the gui.
+     * @param fillItem The fill item of the gui.
+     * @param category The category of the gui.
+     */
     public ConfigBasedGui(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem, String category) {
         super(id, title, rows, fillType, fillItem, category);
     }

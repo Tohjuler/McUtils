@@ -8,7 +8,7 @@ import dk.tohjuler.mcutils.config.ConfigurationFile;
 public interface IStorage {
     /**
      * Save the storage to a file
-     * <p>
+     * <br/>
      *
      * @param cf   The config file
      * @param path The path to save the storage to
@@ -18,7 +18,7 @@ public interface IStorage {
 
     /**
      * Load the storage from a file
-     * <p>
+     * <br/>
      *
      * @param cf   The config file
      * @param path The path to load the storage from

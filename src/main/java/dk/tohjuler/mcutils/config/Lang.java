@@ -51,7 +51,7 @@ public class Lang {
 
     /**
      * Reload the lang file
-     * <p>
+     * <br/>
      *
      * @param reloadFile If the file should be reloaded
      * @since 1.19.0
@@ -110,7 +110,7 @@ public class Lang {
     /**
      * Get a string from the lang file
      * Replace with string pairs. Ex: get("key", "placeholder1", "value1", "placeholder2", "value2")
-     * <p>
+     * <br/>
      *
      * @param key     The key to get
      * @param replace The placeholders to replace
@@ -184,7 +184,7 @@ public class Lang {
     /**
      * Send a message to a CommandSender
      * Replace with string pairs. Ex: send(sender, "key", "placeholder1", "value1", "placeholder2", "value2")
-     * <p>
+     * <br/>
      *
      * @param sender  The CommandSender to send the message to
      * @param key     The key to get
@@ -208,7 +208,7 @@ public class Lang {
      * - Sound applyIf
      * - Default sound
      * If the key sound is null, then it will stop there.
-     * <p>
+     * <br/>
      *
      * @param key     The key to get
      * @param players The players to play the sound for
@@ -233,7 +233,7 @@ public class Lang {
 
     /**
      * Get a sound from the lang file.
-     * <p>
+     * <br/>
      *
      * @param id The key to get
      * @return The sound
