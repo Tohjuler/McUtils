@@ -435,7 +435,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
     @Override
     public void save(ConfigurationFile cf) {
         String path = "items." + getId();
-        if (parseSlotFirst() == -1 || getAsList() != null)
+        if (getAsList() != null || parseSlotFirst() == -1)
             path = "noSlot-items." + getId();
         else
             cf.cf().set(path + ".slot", getSlot());

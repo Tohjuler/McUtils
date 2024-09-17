@@ -23,28 +23,36 @@ import java.util.Arrays;
 public abstract class GuisHolder {
     protected @Nullable XSound clickSound = XSound.UI_BUTTON_CLICK;
 
-    public GuisHolder(JavaPlugin plugin) {
-        load(new File(plugin.getDataFolder(), "guis"));
-    }
-
-    public GuisHolder(File folder) {
-        load(folder);
+    public GuisHolder() {
     }
 
     /**
      * Load all the guis, defined in the class as fields.
+     * Don't have any other fields in the class.
+     * <br/>
+     *
+     * @param plugin    The plugin
+     * @param guiHolder The holder of the guis
+     * @since 1.21.1
+     */
+    public void load(JavaPlugin plugin, GuisHolder guiHolder) {
+        load(new File(plugin.getDataFolder(), "guis"), guiHolder);
+    }
+
+    /**
+     * Load all the guis, defined in the class as fields.
+     * Don't have any other fields in the class.
      * <br/>
      *
      * @param folder The folder for the gui's config files
      * @since 1.18.0
      */
-    public void load(File folder) {
-        Arrays.stream(getClass().getDeclaredFields())
-                .filter(field -> field.getType().isAssignableFrom(ConfigBasedGuiBase.class))
+    public void load(File folder, GuisHolder guiHolder) {
+        Arrays.stream(guiHolder.getClass().getDeclaredFields())
                 .forEach(field -> {
                     try {
                         field.setAccessible(true);
-                        ConfigBasedGuiBase<?, ?> gui = (ConfigBasedGuiBase<?, ?>) field.get(this);
+                        ConfigBasedGuiBase<?, ?> gui = (ConfigBasedGuiBase<?, ?>) field.get(guiHolder);
                         gui.getGuiEventHandler().addOnCreate(this::onCreate);
                         gui.getGuiEventHandler().addOnClose(this::onClose);
                         gui.getGuiEventHandler().addDefaultClick(this::defaultClick);
@@ -57,8 +65,8 @@ public abstract class GuisHolder {
                             });
 
                         gui.load(folder);
-                    } catch (IllegalAccessException e) {
-                        new RuntimeException("Could not load gui", e).printStackTrace();
+                    } catch (Exception e) {
+                        new RuntimeException("Could not load gui: " + field.getName(), e).printStackTrace();
                     }
                 });
     }

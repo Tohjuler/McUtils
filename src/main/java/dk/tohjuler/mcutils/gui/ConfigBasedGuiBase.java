@@ -125,7 +125,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
         try {
             title = cf.cf().getString("title");
             rows = cf.cf().getInt("rows");
-            fillType = FillType.valueOf(cf.cf().getString("fillType"));
+            fillType = FillType.valueOf(cf.cf().getString("fillType", "NONE"));
             fillItem = YamlItem.loadItem(cf, "fillItem");
         } catch (Exception ex) {
             new RuntimeException("Could not load gui info: " + id, ex).printStackTrace();
