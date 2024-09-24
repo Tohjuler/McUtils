@@ -278,9 +278,9 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
         ItemBuilder newItem = fallback && fallbackItem != null
                 ? fallbackItem.clone()
                 : item.clone();
-        newItem = newItem.applyPlaceholder(player);
         if (replacer != null)
             newItem = replacer.replaceCall(storage, newItem, player);
+        newItem = newItem.applyPlaceholder(player);
 
         if (eventHandler != null)
             call = e -> eventHandler.onClick(player, new WrappedInventoryClickEvent<>(
