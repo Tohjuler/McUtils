@@ -287,7 +287,6 @@ public class ItemBuilder {
     public ItemBuilder setDisplayName(String name) {
         ItemMeta itemMeta = this.item.getItemMeta();
         if (itemMeta == null) return this;
-        if (itemMeta == null) return this;
         itemMeta.setDisplayName(colorize(name));
         this.item.setItemMeta(itemMeta);
         return this;

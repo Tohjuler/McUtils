@@ -79,6 +79,7 @@ public class JsonModel<T> extends DataModel<T, T> {
     /**
      * Loads the data from `data/{id}.json`
      * <br/>
+     *
      * @return true if the data was loaded successfully
      * @since 1.0.0
      */
@@ -95,6 +96,7 @@ public class JsonModel<T> extends DataModel<T, T> {
     /**
      * Saves the data to a file
      * <br/>
+     *
      * @param file The file to save to
      * @return true if the data was saved successfully
      * @since 1.0.0
@@ -117,6 +119,7 @@ public class JsonModel<T> extends DataModel<T, T> {
     /**
      * Saves the data to `data/{id}.json`
      * <br/>
+     *
      * @return true if the data was saved successfully
      * @since 1.0.0
      */
@@ -133,5 +136,22 @@ public class JsonModel<T> extends DataModel<T, T> {
         File file = new File(dataFolder, getId() + ".json");
 
         return saveTo(file);
+    }
+
+    /**
+     * Deletes the data file `data/{id}.json` and sets the data to null
+     * <br/>
+     *
+     * @return true if the data was deleted successfully
+     */
+    @Override
+    public boolean delete() {
+        File dataFolder = new File(plugin.getDataFolder(), "data");
+        if (!dataFolder.exists()) return false;
+
+        File file = new File(dataFolder, getId() + ".json");
+
+        set(null);
+        return file.delete();
     }
 }

@@ -32,4 +32,6 @@ public abstract class DataModel<T, S> {
 
     public abstract boolean save();
     public abstract boolean saveTo(File path);
+
+    public abstract boolean delete();
 }

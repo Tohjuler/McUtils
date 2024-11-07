@@ -7,6 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Utility class for handling configuration files
@@ -54,6 +55,36 @@ public class ConfigUtils {
                 return (List<T>) Collections.singletonList(cf.get(base + alias, defaultValue));
             }
         return defaultValue;
+    }
+
+    /**
+     * Get a value from a configuration section, and execute a callback if the value is present
+     * <br>
+     *
+     * @param cf       The configuration section
+     * @param base     The base path
+     * @param callback The callback to execute
+     * @param keys     The keys to look for
+     * @param <T>      The type of the value
+     */
+    public static <T> void ifPresent(ConfigurationSection cf, String base, Consumer<T> callback, String... keys) {
+        T value = get(cf, base, null, keys);
+        if (value != null) callback.accept(value);
+    }
+
+    /**
+     * Get a list from a configuration section, and execute a callback if the list is present
+     * <br>
+     *
+     * @param cf       The configuration section
+     * @param base     The base path
+     * @param callback The callback to execute
+     * @param keys     The keys to look for
+     * @param <T>      The type of the list
+     */
+    public static <T> void ifPresentList(ConfigurationSection cf, String base, Consumer<List<T>> callback, String... keys) {
+        List<T> value = getList(cf, base, null, keys);
+        if (value != null) callback.accept(value);
     }
 
     /**
