@@ -5,6 +5,10 @@
 ## Contents:
 
 - Color Utils
+- Config Utils
+- Location Utils
+- Talk System - A simple way to have a conversation with a NPC
+- Flag System - Utils to handle flags in commands
 - VaultHook
 - Item Utils
     - ItemBuilder
