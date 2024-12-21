@@ -184,15 +184,18 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     /**
      * Save the gui to a file.
+     * Will overwrite the file if it already exists.
      * <br/>
      *
      * @param folder The folder to save the gui to
      * @since 1.5
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void save(File folder) {
         File file = new File(folder, id + ".yml");
         try {
             file.getParentFile().mkdirs();
+            if (file.exists()) file.delete();
             file.createNewFile();
         } catch (IOException ex) {
             new RuntimeException("Could not create file: " + file.getAbsolutePath(), ex).printStackTrace();

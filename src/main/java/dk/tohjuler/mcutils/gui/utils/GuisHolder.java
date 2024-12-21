@@ -22,6 +22,11 @@ import java.util.Arrays;
  */
 public abstract class GuisHolder {
     protected @Nullable XSound clickSound = XSound.UI_BUTTON_CLICK;
+    /**
+     * If true, the guis will be saved to the folder when loaded.
+     * To always have the latest version of the guis.
+     */
+    protected boolean development = false;
 
     public GuisHolder() {
     }
@@ -64,6 +69,7 @@ public abstract class GuisHolder {
                                 clickSound.play(player);
                             });
 
+                        if (development) gui.save(folder);
                         gui.load(folder);
                     } catch (Exception e) {
                         new RuntimeException("Could not load gui: " + field.getName(), e).printStackTrace();
