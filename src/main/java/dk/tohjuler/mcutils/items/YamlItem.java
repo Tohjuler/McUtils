@@ -2,6 +2,7 @@ package dk.tohjuler.mcutils.items;
 
 import com.cryptomorin.xseries.XEnchantment;
 import dk.tohjuler.mcutils.config.ConfigurationFile;
+import dk.tohjuler.mcutils.data.ConfigUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemFlag;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +34,10 @@ public class YamlItem {
      * @since 1.19.0
      */
     public static void saveItem(@NotNull ConfigurationSection cf, @NotNull ItemBuilder item, @NotNull String baseKey) {
-        cf.set(baseKey + ".material", item.getMaterial().name());
+        cf.set(baseKey + ".material", item.getHeadBase64() != null
+                ? item.getHeadBase64()
+                : item.getMaterial().name()
+        );
         cf.set(baseKey + ".amount", item.getAmount());
         if (item.getDisplayName() != null)
             cf.set(baseKey + ".name", item.getDisplayName());
@@ -68,12 +72,12 @@ public class YamlItem {
     public static ItemBuilder loadItem(@NotNull ConfigurationSection cf, @NotNull String baseKey) {
         if (!cf.isSet(baseKey)) return null;
         ItemBuilder item = ItemBuilder.fromString(
-                get(cf, "", "STONE", "material", "type", "mat")
+                get(cf, baseKey, "STONE", "material", "type", "mat")
         );
 
-        item.setAmount(get(cf, "", 1, "amount", "count"));
-        ifPresent(cf, "", item::setDisplayName, "name", "displayname", "display-name");
-        ifPresent(cf, "", (Consumer<List<String>>) item::setLore, "lore");
+        item.setAmount(get(cf, baseKey, 1, "amount", "count"));
+        ifPresent(cf, baseKey, item::setDisplayName, "name", "displayname", "display-name");
+        ifPresent(cf, baseKey, (Consumer<List<String>>) item::setLore, "lore");
         if (cf.contains(baseKey + ".enchantments"))
             cf.getConfigurationSection(baseKey + ".enchantments").getKeys(false)
                     .forEach(
@@ -86,10 +90,10 @@ public class YamlItem {
                                             cf.getInt(baseKey + ".enchantments." + enchantment)
                                     )
                     );
-        ifPresentList(cf, "", (Consumer<List<String>>) flags -> item.addItemFlags(
+        ifPresentList(cf, baseKey, (Consumer<List<String>>) flags -> item.addItemFlags(
                 flags.stream().map(ItemFlag::valueOf).toArray(ItemFlag[]::new)
         ), "flags", "itemflags", "item-flags");
-        ifPresent(cf, "", item::setDurability, "data", "durability");
+        ConfigUtils.<Integer>ifPresent(cf, baseKey, data -> item.setDurability(data.shortValue()), "data", "durability");
         return item;
     }
 }

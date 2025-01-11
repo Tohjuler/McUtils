@@ -78,6 +78,39 @@ public abstract class GuisHolder {
     }
 
     /**
+     * Reload all the guis, defined in the class as fields.
+     * <br/>
+     *
+     * @param plugin    The plugin
+     * @param guiHolder The holder of the guis
+     */
+    public void reload(JavaPlugin plugin, GuisHolder guiHolder) {
+        reload(new File(plugin.getDataFolder(), "guis"), guiHolder);
+    }
+
+    /**
+     * Reload all the guis, defined in the class as fields.
+     * <br/>
+     *
+     * @param folder    The folder for the gui's config files
+     * @param guiHolder The holder of the guis
+     * @since 1.22.0
+     */
+    public void reload(File folder, GuisHolder guiHolder) {
+        Arrays.stream(guiHolder.getClass().getDeclaredFields())
+                .forEach(field -> {
+                    try {
+                        field.setAccessible(true);
+                        ConfigBasedGuiBase<?, ?> gui = (ConfigBasedGuiBase<?, ?>) field.get(guiHolder);
+
+                        gui.load(folder);
+                    } catch (Exception e) {
+                        new RuntimeException("Could not load gui: " + field.getName(), e).printStackTrace();
+                    }
+                });
+    }
+
+    /**
      * Open a gui by class.
      * <br/>
      *

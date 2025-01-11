@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class SlotParser {
     public static List<Integer> parseSlotString(String str) {
@@ -14,10 +15,18 @@ public class SlotParser {
     }
 
     public static List<Integer> parseSlotString(String str, @Nullable Item<?, ?> item) {
+        return parseSlotString(str, item, null);
+    }
+
+    public static List<Integer> parseSlotString(String str, @Nullable Item<?, ?> item, @Nullable Supplier<Integer> getItemAmount) {
         if (str.startsWith("auto") && item != null && item.getAsList() != null) {
             int rows = str.substring(4).isEmpty() ? 1 : Integer.parseInt(str.substring(5, str.length() - 1));
 
-            str = ChestPatterns.getStringPattern(rows, item.getAsList().getList().size());
+            if (item.getAsList().getList() == null && getItemAmount == null) {
+                new RuntimeException("Item as list is null. Gui: " + item.getGuiConfig().getId() + " Item: " + item.getId()).printStackTrace();
+                return Collections.singletonList(-1);
+            }
+            str = ChestPatterns.getStringPattern(rows, getItemAmount != null ? getItemAmount.get() : item.getAsList().getList().size());
         }
 
         if (str.contains("-") && str.contains(",")) {

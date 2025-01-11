@@ -1,9 +1,11 @@
 package dk.tohjuler.mcutils.gui.items;
 
+import com.cryptomorin.xseries.XMaterial;
 import dev.triumphteam.gui.guis.BaseGui;
 import dk.tohjuler.mcutils.config.ConfigurationFile;
 import dk.tohjuler.mcutils.gui.ConfigBasedGuiBase;
 import dk.tohjuler.mcutils.gui.utils.IStorage;
+import dk.tohjuler.mcutils.gui.utils.SlotParser;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import dk.tohjuler.mcutils.items.YamlItem;
 import lombok.Getter;
@@ -11,6 +13,7 @@ import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An async item is an item that gets loaded async.
@@ -22,7 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 @Getter
 public class AsyncItem<T extends BaseGui, S extends IStorage> extends Item<T, S> {
-    private ItemBuilder loader;
+    private @Nullable ItemBuilder loader = new ItemBuilder(XMaterial.BARRIER).setDisplayName("&cLoading...");
     @Setter
     private int fakeLoading = 0;
 
@@ -71,7 +74,7 @@ public class AsyncItem<T extends BaseGui, S extends IStorage> extends Item<T, S>
     private void asyncUpdateSlot(T gui, Player p, S localStorage) {
         if (checkShow(p, localStorage)) {
             if (asList != null) {
-                handleAsList(gui, p, localStorage);
+                handleAsList(gui, p, localStorage, true);
             } else if (parseSlotFirst() == -1)
                 gui.addItem(build(localStorage, p,
                         e -> call(p, gui, e, localStorage),
@@ -98,15 +101,19 @@ public class AsyncItem<T extends BaseGui, S extends IStorage> extends Item<T, S>
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public void setupGui(T gui, Player p, S localStorage) {
-        if (asList == null && parseSlotFirst() != -1)
-            parseSlot().forEach(slot ->
-                    gui.setItem(slot, loader.buildAsGuiItem()));
+        if ((asList != null || parseSlotFirst() != -1) && loader != null)
+            SlotParser.parseSlotString(getSlot(), this, () -> asList.getList(p, localStorage).size())
+                    .forEach(slot -> {
+                        if (slot == -1) return;
+                        gui.setItem(slot, loader.buildAsGuiItem());
+                    });
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(
                 JavaPlugin.getProvidingPlugin(getClass()),
                 () -> asyncUpdateSlot(gui, p, localStorage),
-                fakeLoading
+                fakeLoading // Add a fake loading time
         );
     }
 
@@ -115,7 +122,7 @@ public class AsyncItem<T extends BaseGui, S extends IStorage> extends Item<T, S>
         super.save(cf);
         if (loader == null) return;
         String path = "items." + getId();
-        if (parseSlotFirst() == -1 || getAsList() != null)
+        if (getAsList() != null || parseSlotFirst() == -1)
             path = "noSlot-items." + getId();
         else
             cf.cf().set(path + ".slot", getSlot());

@@ -4,6 +4,7 @@ import dev.triumphteam.gui.guis.BaseGui;
 import dk.tohjuler.mcutils.gui.items.Item;
 import lombok.Getter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
  */
 @Getter
 public abstract class AsList<T, GUI extends BaseGui, S extends IStorage> {
-    private List<T> list;
+    private @Nullable List<T> list;
 
     /**
      * This is an internal method, don't use it.
@@ -67,7 +68,7 @@ public abstract class AsList<T, GUI extends BaseGui, S extends IStorage> {
      * @return The list of values
      * @since 1.5.1
      */
-    public abstract List<T> getList(Player p, S localStorage);
+    public abstract @Nullable List<T> getList(Player p, S localStorage);
 
     /**
      * The action to run when the item is clicked

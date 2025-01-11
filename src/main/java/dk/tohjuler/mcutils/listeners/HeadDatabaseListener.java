@@ -57,11 +57,14 @@ public class HeadDatabaseListener implements Listener {
             "Purple",
             "Cyan",
             "Lime",
+            "Green",
             "Pink",
             "Orange",
             "Dirt",
             "Chat",
             "Oak",
+            "Gray",
+            "Light Gray",
             "Mangrove Planks",
             "Smooth Sandstone",
             "Redstone Block"
@@ -71,6 +74,7 @@ public class HeadDatabaseListener implements Listener {
      * Used to replace names with spaces so the char can be found.
      */
     private static final List<String> nameReplacer = Arrays.asList(
+            "Light Gray",
             "Oak Wood",
             "Mangrove Plank",
             "Smooth Sandstone",
@@ -92,6 +96,7 @@ public class HeadDatabaseListener implements Listener {
                 }
             }
         }
+
         for (String head : heads) {
             String type = head.substring(6, head.length() - 1);
             for (Head head2 : api.getHeads(CategoryEnum.ALPHABET)) {
