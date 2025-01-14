@@ -3,7 +3,6 @@ package dk.tohjuler.mcutils.kami.expressions.debugexps;
 import dk.tohjuler.mcutils.kami.KamiExp;
 import dk.tohjuler.mcutils.kami.KamiResult;
 import dk.tohjuler.mcutils.kami.KamiState;
-import dk.tohjuler.mcutils.kami.KamiUtils;
 import dk.tohjuler.mcutils.kami.handlers.defaults.FunctionHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +43,7 @@ public class CallFunctionExp extends KamiExp {
         Object res = func.run(!params.isEmpty() ? Arrays.stream(params.split(",")).map(state::parseObject).toArray() : new Object[0]);
 
         if (res == null) return result.success();
-        if (KamiUtils.PRINT_TYPES.contains(res.getClass())) return result.success(res.toString());
+        if (state.getParser().getPrintTypes().contains(res.getClass())) return result.success(res.toString());
 
         return result.successWithObj(res);
     }

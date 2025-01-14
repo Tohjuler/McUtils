@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Utility methods for Kami.
@@ -15,10 +14,6 @@ public class KamiUtils {
     public static final Pattern OBJECT_REF_PATTERN = Pattern.compile("obj:\\{\\b[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}\\b}");
 
     private static final Map<String, Map<String, Function<Object[], Object>>> methodOverrides = new HashMap<>();
-
-    public static final List<Class<?>> PRINT_TYPES = Arrays.asList(
-            String.class, Integer.class, Long.class, Double.class, Float.class, Boolean.class
-    );
 
     static {
         addMethodOverride(
@@ -75,59 +70,6 @@ public class KamiUtils {
         if (override == null) return null;
 
         return override.apply(input);
-    }
-
-    /**
-     * Parses a string into an object.
-     * <br>
-     * Types:
-     * - String: ".*"
-     * - Boolean: true|false
-     * - Integer: -?\d+
-     * - Double: -?\d+\.\d+
-     * - List: \[.*]
-     * <br>
-     *
-     * @param input The input to parse.
-     * @return The parsed object.
-     */
-    public static @Nullable Object parseObject(String input) {
-        if (input.matches("\".*\"")) {
-            return input.substring(1, input.length() - 1);
-        } else if (input.matches("true|false")) {
-            return Boolean.parseBoolean(input);
-        } else if (input.matches("-?\\d+")) {
-            return Integer.parseInt(input);
-        } else if (input.matches("-?\\d+\\.\\d+")) {
-            return Double.parseDouble(input);
-        } else if (input.matches("\\[.*]")) {
-            return Arrays.stream(input.substring(1, input.length() - 1).split(",")).map(KamiUtils::parseObject).collect(Collectors.toList());
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Determines the class of a parameter.
-     * <br>
-     *
-     * @param param The parameter to determine the class of.
-     * @return The class of the parameter.
-     */
-    public static Class<?> determineClass(String param) {
-        if (param.matches("\".*\"")) {
-            return String.class;
-        } else if (param.matches("true|false")) {
-            return boolean.class;
-        } else if (param.matches("-?\\d+")) {
-            return int.class;
-        } else if (param.matches("-?\\d+\\.\\d+")) {
-            return double.class;
-        } else if (param.matches("\\[.*]")) {
-            return List.class;
-        } else {
-            return null;
-        }
     }
 
     /**

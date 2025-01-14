@@ -7,8 +7,8 @@ import static org.junit.Assert.assertEquals;
 
 public class KamiTest {
     private final KamiParser defaultDebugParser = new KamiBuilder()
-            .useDefaultStorage(st -> st.set("logLevel", LogLevel.DEBUG.name())
-            ).useDebugExps()
+            .useDefaultStorage(st -> st.set("logLevel", LogLevel.DEBUG.name()))
+            .useDebugExps()
             .build();
 
     @Test

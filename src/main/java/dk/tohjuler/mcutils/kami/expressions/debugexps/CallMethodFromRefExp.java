@@ -40,21 +40,23 @@ public class CallMethodFromRefExp extends KamiExp {
         Method method = KamiUtils.getMethod(
                 obj.getClass(),
                 methodName,
-                !params.isEmpty() ? Arrays.stream(params.split(",")).map(KamiUtils::determineClass).toArray(Class[]::new) : new Class[0]
+                !params.isEmpty() ? Arrays.stream(params.split(",")).map(str -> {
+                    if (KamiUtils.OBJECT_REF_PATTERN.matcher(str).matches() && state.getObjFromRef(str) != null)
+                        return state.getObjFromRef(str).getClass();
+                    return state.getTypeHandler().detectClass(str);
+                }).toArray(Class[]::new) : new Class[0]
         );
 
-        if (method == null)
+        if (method == null && !KamiUtils.hasMethodOverridden(obj.getClass(), methodName))
             return result.error(new KamiError("Method not found: " + methodName + " in " + obj.getClass().getName()));
-
-
 
         // Execute the method
         Object res;
         try {
-            if (KamiUtils.hasMethodOverridden(method.getDeclaringClass(), methodName)){
+            if (KamiUtils.hasMethodOverridden(obj.getClass(), methodName)) {
                 List<Object> paramsList = Arrays.stream(params.split(",")).map(state::parseObject).collect(Collectors.toList());
                 paramsList.add(0, obj);
-                res = KamiUtils.runMethodOverride(method.getDeclaringClass(), methodName, paramsList.toArray());
+                res = KamiUtils.runMethodOverride(obj.getClass(), methodName, paramsList.toArray());
             } else {
                 if (!method.isAccessible()) method.setAccessible(true);
                 res = method.invoke(obj, Arrays.stream(params.split(",")).map(state::parseObject).toArray());
@@ -63,7 +65,7 @@ public class CallMethodFromRefExp extends KamiExp {
             return result.error(new KamiError("Failed to execute method: " + methodName, e));
         }
         if (res == null) return result.success();
-        if (KamiUtils.PRINT_TYPES.contains(res.getClass())) return result.success(res.toString());
+        if (state.getParser().getPrintTypes().contains(res.getClass())) return result.success(res.toString());
 
         return result.successWithObj(res);
     }

@@ -3,7 +3,6 @@ package dk.tohjuler.mcutils.kami.expressions.debugexps;
 import dk.tohjuler.mcutils.kami.KamiExp;
 import dk.tohjuler.mcutils.kami.KamiResult;
 import dk.tohjuler.mcutils.kami.KamiState;
-import dk.tohjuler.mcutils.kami.KamiUtils;
 import dk.tohjuler.mcutils.kami.errors.KamiError;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,7 +58,7 @@ public class CallMethodExp extends KamiExp {
             return result.error(new KamiError("Failed to execute method: " + methodName, e));
         }
         if (res == null) return result.success();
-        if (KamiUtils.PRINT_TYPES.contains(res.getClass())) return result.success(res.toString());
+        if (state.getParser().getPrintTypes().contains(res.getClass())) return result.success(res.toString());
 
         return result.successWithObj(res);
     }

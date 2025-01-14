@@ -9,6 +9,7 @@ import dk.tohjuler.mcutils.kami.expressions.debugexps.SetExp;
 import dk.tohjuler.mcutils.kami.handlers.IGlobalStorage;
 import dk.tohjuler.mcutils.kami.handlers.IHandler;
 import dk.tohjuler.mcutils.kami.handlers.IOutputHandler;
+import dk.tohjuler.mcutils.kami.handlers.TypeHandler;
 import dk.tohjuler.mcutils.kami.handlers.defaults.DefaultOutputHandler;
 import dk.tohjuler.mcutils.kami.handlers.defaults.EmptyGlobalStorage;
 import dk.tohjuler.mcutils.kami.handlers.defaults.MemoryGlobalStorage;
@@ -26,6 +27,8 @@ import java.util.function.Consumer;
 public class KamiBuilder {
 
     private final List<KamiExp> expressions = new ArrayList<>();
+
+    private final TypeHandler typeHandler = new TypeHandler();
     private IOutputHandler outputHandler;
     private IGlobalStorage globalStorage = new MemoryGlobalStorage();
 
@@ -33,6 +36,9 @@ public class KamiBuilder {
     private final List<IHandler> handlers = new ArrayList<>();
 
     private String globalStorageId = null;
+    private final List<Class<?>> printTypes = new ArrayList<>(Arrays.asList(
+            String.class, Integer.class, Long.class, Double.class, Float.class, Boolean.class
+    ));
 
     public KamiBuilder() {
         addExpression(new HelpExp());
@@ -61,6 +67,58 @@ public class KamiBuilder {
      */
     public KamiBuilder use(IHandler handler) {
         handlers.add(handler);
+        return this;
+    }
+
+    /**
+     * Register a type adapter.
+     * <br>
+     *
+     * @param clazz   The class to register the type adapter for.
+     * @param adapter The type adapter to register.
+     * @param <T>     The type of the type adapter.
+     * @return The builder.
+     */
+    public <T> KamiBuilder registerTypeAdapter(Class<T> clazz, TypeHandler.TypeAdapter<T> adapter) {
+        typeHandler.registerTypeAdapter(clazz, adapter);
+        return this;
+    }
+
+    // Print types
+    // ---
+
+    /**
+     * Add a print type.
+     * <br>
+     *
+     * @param clazz The class to add as a print type.
+     * @return The builder.
+     */
+    public KamiBuilder addPrintType(Class<?> clazz) {
+        printTypes.add(clazz);
+        return this;
+    }
+
+    /**
+     * Remove a print type.
+     * <br>
+     *
+     * @param clazz The class to remove as a print type.
+     * @return The builder.
+     */
+    public KamiBuilder removePrintType(Class<?> clazz) {
+        printTypes.remove(clazz);
+        return this;
+    }
+
+    /**
+     * Clear all print types.
+     * <br>
+     *
+     * @return The builder.
+     */
+    public KamiBuilder clearPrintTypes() {
+        printTypes.clear();
         return this;
     }
 
@@ -180,8 +238,11 @@ public class KamiBuilder {
 
         if (outputHandler == null) outputHandler = new DefaultOutputHandler();
         globalStorage.load(globalStorageId);
-        KamiParser parser = new KamiParser(outputHandler, expressions, globalStorage);
+        KamiParser parser = new KamiParser(expressions, typeHandler, outputHandler, globalStorage);
         if (defaultStorage != null) parser.setDefaultStorage(defaultStorage);
+
+        parser.getPrintTypes().clear();
+        parser.getPrintTypes().addAll(printTypes);
 
         parser.addHandlers(handlers);
         return parser;

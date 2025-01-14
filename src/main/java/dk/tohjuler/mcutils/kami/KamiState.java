@@ -4,6 +4,7 @@ import dk.tohjuler.mcutils.kami.enums.LogLevel;
 import dk.tohjuler.mcutils.kami.errors.KamiError;
 import dk.tohjuler.mcutils.kami.handlers.IGlobalStorage;
 import dk.tohjuler.mcutils.kami.handlers.IHandler;
+import dk.tohjuler.mcutils.kami.handlers.TypeHandler;
 import dk.tohjuler.mcutils.kami.storage.KamiStorage;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,7 @@ public class KamiState {
     private String currentStr;
 
     private final IGlobalStorage globalStorage;
+    private final TypeHandler typeHandler;
 
     /**
      * Local storage for the current state.
@@ -44,6 +46,7 @@ public class KamiState {
         this.player = player;
 
         this.globalStorage = parser.getGlobalStorage();
+        this.typeHandler = parser.getTypeHandler();
     }
 
     // Output
@@ -150,7 +153,6 @@ public class KamiState {
      */
     public @Nullable Object dejectObj(String check) {
         Matcher matcher = KamiUtils.OBJECT_REF_PATTERN.matcher(check);
-
         if (!matcher.matches()) return null;
 
         return getObjFromRef(matcher.group());
@@ -200,7 +202,7 @@ public class KamiState {
      * - Object references: obj:{UUID}
      * - Global variables: #{name}
      * - Local variables: _{name}
-     * - Types from {@link KamiUtils#parseObject(String)}.
+     * - Types from the used type handler.
      * If none of the above, it will check for a global variable.
      * <br>
      *
@@ -213,7 +215,7 @@ public class KamiState {
             getGlobalStorage().get("var:" + input.substring(1)).get();
         if (input.startsWith("_") && localStorage.get(input.substring(1)).isPresent())
             localStorage.get(input.substring(1)).get();
-        Object res = KamiUtils.parseObject(input);
+        Object res = getTypeHandler().deserialize(input);
         if (res != null) return res;
 
         if (getGlobalStorage().get("var:" + input).isPresent()) return getGlobalStorage().get("var:" + input).get();

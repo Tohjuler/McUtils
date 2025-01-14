@@ -3,6 +3,7 @@ package dk.tohjuler.mcutils.kami;
 import dk.tohjuler.mcutils.kami.handlers.IGlobalStorage;
 import dk.tohjuler.mcutils.kami.handlers.IHandler;
 import dk.tohjuler.mcutils.kami.handlers.IOutputHandler;
+import dk.tohjuler.mcutils.kami.handlers.TypeHandler;
 import dk.tohjuler.mcutils.kami.storage.KamiStorage;
 import dk.tohjuler.mcutils.kami.storage.TypeItem;
 import lombok.Getter;
@@ -13,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-
 /**
  * Kami parser used for parsing inputs.
  * <br>
@@ -23,10 +23,16 @@ import java.util.*;
 public class KamiParser {
     private final List<KamiExp> expressions;
 
+    private final TypeHandler typeHandler;
+
     private final IOutputHandler outputHandler;
     private final IGlobalStorage globalStorage;
 
     private final List<IHandler> handlers = new ArrayList<>();
+
+    private final List<Class<?>> printTypes = new ArrayList<>(Arrays.asList(
+            String.class, Integer.class, Long.class, Double.class, Float.class, Boolean.class
+    ));
 
     @Setter
     private @Nullable KamiStorage<String> defaultStorage = null;
@@ -36,13 +42,15 @@ public class KamiParser {
      * Please use {@link KamiBuilder} to create a parser.
      * <br>
      *
-     * @param outputHandler        The output handler.
-     * @param expressions          The expressions to use.
+     * @param expressions   The expressions to use.
+     * @param typeHandler   The type handler.
+     * @param outputHandler The output handler.
      * @param globalStorage The global storage handler.
      */
-    public KamiParser(IOutputHandler outputHandler, List<KamiExp> expressions, IGlobalStorage globalStorage) {
-        this.outputHandler = outputHandler;
+    public KamiParser(List<KamiExp> expressions, TypeHandler typeHandler, IOutputHandler outputHandler, IGlobalStorage globalStorage) {
         this.expressions = expressions;
+        this.typeHandler = typeHandler;
+        this.outputHandler = outputHandler;
         this.globalStorage = globalStorage;
     }
 
@@ -54,7 +62,7 @@ public class KamiParser {
      * @return The result of the parsing.
      */
     public @NotNull TypeItem<String> parse(String input) {
-        return parse(input, null);
+        return parse(input, null, null);
     }
 
     /**
@@ -66,10 +74,43 @@ public class KamiParser {
      * @return The result of the parsing.
      */
     public @NotNull TypeItem<String> parse(String input, @Nullable Player p) {
+        return parse(input, p, null);
+    }
+
+    /**
+     * Parses the input.
+     * <br>
+     *
+     * @param input     The input to parse.
+     * @param p         The player to parse for.
+     * @param replacers A map of String to Object to replace in the input.
+     * @return The result of the parsing.
+     */
+    public @NotNull TypeItem<String> parse(String input, @Nullable Player p, Map<String, Object> replacers) {
         KamiState state = new KamiState(this, p);
-        state.getLocalStorage().put("input", new TypeItem<>(input));
+        if (replacers == null || replacers.isEmpty())
+            state.getLocalStorage().put("input", input);
+        else
+            state.getLocalStorage().put("inputNoReplacers", input);
+
         if (defaultStorage != null)
             state.getLocalStorage().getStorage().putAll(defaultStorage.getStorage());
+
+        if (replacers != null) {
+            for (Map.Entry<String, Object> entry : replacers.entrySet()) {
+                // Check if the object is a print type
+                if (printTypes.contains(entry.getValue().getClass())) {
+                    input = input.replace(entry.getKey(), entry.getValue().toString());
+                    continue;
+                }
+
+                UUID uuid = UUID.randomUUID();
+                state.getObjectStorage().put(uuid, entry.getValue());
+                input = input.replace(entry.getKey(), "obj:{" + uuid + "}");
+            }
+            state.getLocalStorage().put("input", input);
+        }
+
         state.setCurrentStr(input);
 
         expressions.sort(Comparator.comparing(exp -> exp.getPriority().getValue()));
