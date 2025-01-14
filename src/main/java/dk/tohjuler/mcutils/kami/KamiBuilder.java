@@ -84,6 +84,19 @@ public class KamiBuilder {
         return this;
     }
 
+    /**
+     * Set the output handler to use.
+     * Default is {@link DefaultOutputHandler}.
+     * <br>
+     *
+     * @param outputHandler The output handler.
+     * @return The builder.
+     */
+    public KamiBuilder useOutputHandler(IOutputHandler outputHandler) {
+        this.outputHandler = outputHandler;
+        return this;
+    }
+
     // Print types
     // ---
 
