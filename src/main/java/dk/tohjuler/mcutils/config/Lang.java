@@ -311,7 +311,11 @@ public class Lang {
         }
 
         public void play(Player... players) {
-            sound.soundPlayer().forPlayers(players).play();
+            try {
+                sound.soundPlayer().forPlayers(players).play();
+            } catch (Exception e) {
+                new RuntimeException("Failed to play sound: " + sound.toString(), e).printStackTrace();
+            }
         }
     }
 }

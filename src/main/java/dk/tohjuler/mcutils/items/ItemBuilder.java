@@ -269,9 +269,9 @@ public class ItemBuilder {
             setLore(
                     getLore().stream()
                             .map(s -> Replacer.replaceInString(s, regex, func))
+                            .filter(s -> !s.startsWith("/**")) // Ignore lines starting with /**
                             .flatMap(s -> Arrays.stream(s.split("\\n")))
                             .flatMap(s -> Arrays.stream(s.split("%nl%")))
-                            .filter(s -> !s.startsWith("/**")) // Ignore lines starting with /**
                             .collect(Collectors.toList())
             );
 
@@ -532,6 +532,16 @@ public class ItemBuilder {
     }
 
     /**
+     * Make the item glow
+     * This is a visual effect
+     * <br/>
+     * @return the itembuilder
+     */
+    public ItemBuilder glow() {
+        return addEnchantment(Enchantment.LUCK, 1).hideEnchantment();
+    }
+
+    /**
      * Set a NBT tag on the item
      *
      * @param keu   the key
@@ -637,6 +647,7 @@ public class ItemBuilder {
      * @since 1.17.0
      */
     public static ItemBuilder fromString(String mat) {
+        if (mat == null || mat.isEmpty()) return new ItemBuilder("");
         if (mat.startsWith("adv:")) mat = mat.substring(4);
         try {
             return new ItemBuilder(UUID.fromString(mat));

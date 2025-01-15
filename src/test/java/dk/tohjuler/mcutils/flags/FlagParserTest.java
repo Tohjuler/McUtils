@@ -45,6 +45,21 @@ public class FlagParserTest {
     }
 
     @Test
+    public void testParser4() {
+        new TestParser2().parse("-v=HERE");
+    }
+
+    @Test
+    public void testParser5() {
+        new TestParser2().parse("-v HERE");
+    }
+
+    @Test
+    public void testParser6() {
+        new TestParser3().parse("-v HERE --help");
+    }
+
+    @Test
     public void testParserSingle() {
         Flag testFlag = new Flag(
                 "test",

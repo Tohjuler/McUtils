@@ -7,7 +7,10 @@ import dev.triumphteam.gui.guis.GuiItem;
 import dk.tohjuler.mcutils.config.ConfigurationFile;
 import dk.tohjuler.mcutils.gui.ConfigBasedGuiBase;
 import dk.tohjuler.mcutils.gui.handler.ItemEventHandler;
-import dk.tohjuler.mcutils.gui.utils.*;
+import dk.tohjuler.mcutils.gui.utils.AsList;
+import dk.tohjuler.mcutils.gui.utils.IStorage;
+import dk.tohjuler.mcutils.gui.utils.Replacer;
+import dk.tohjuler.mcutils.gui.utils.SlotParser;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import dk.tohjuler.mcutils.items.SkullCreator;
 import dk.tohjuler.mcutils.items.YamlItem;
@@ -26,7 +29,7 @@ import java.util.function.Predicate;
 
 @Getter
 public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> {
-    private final ConfigBasedGuiBase<T, S> gui;
+    private final ConfigBasedGuiBase<T, S> guiConfig;
     private final String id;
 
     @Setter
@@ -36,9 +39,9 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
     @Setter
     private @Nullable ItemBuilder fallbackItem;
     private boolean callClickOnFallback = false;
-    protected Predicate<Player> show;
-    protected BiPredicate<Player, S> showWithStorage;
-    protected AsList<?, T, S> asList;
+    protected @Nullable Predicate<Player> show;
+    protected @Nullable BiPredicate<Player, S> showWithStorage;
+    protected @Nullable AsList<?, T, S> asList;
 
     @Setter
     private @Nullable String stringMaterial;
@@ -47,15 +50,15 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
     protected Replacer<S> replacer;
     protected ItemEventHandler<T, S> eventHandler;
 
-    public Item(ConfigBasedGuiBase<T, S> gui, String id, int slot, ItemBuilder item) {
-        this.gui = gui;
+    public Item(ConfigBasedGuiBase<T, S> guiConfig, String id, int slot, ItemBuilder item) {
+        this.guiConfig = guiConfig;
         this.id = id;
         this.slot = slot + "";
         this.item = item;
     }
 
-    public Item(ConfigBasedGuiBase<T, S> gui, String id, String slot, ItemBuilder item) {
-        this.gui = gui;
+    public Item(ConfigBasedGuiBase<T, S> guiConfig, String id, String slot, ItemBuilder item) {
+        this.guiConfig = guiConfig;
         this.id = id;
         this.slot = slot;
         this.item = item;
@@ -242,7 +245,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
      * @since 1.5
      */
     public void add() {
-        gui.setItem(this);
+        guiConfig.setItem(this);
     }
 
     /**
@@ -257,7 +260,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
      */
     public void call(Player player, T gui, InventoryClickEvent event, S localStorage) {
         if (clickAction != null)
-            clickAction.accept(player, new WrappedInventoryClickEvent<>(gui, event, this, localStorage));
+            clickAction.accept(player, new WrappedInventoryClickEvent<>(this.guiConfig, gui, event, this, localStorage));
     }
 
     /**
@@ -284,6 +287,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
         if (eventHandler != null)
             call = e -> eventHandler.onClick(player, new WrappedInventoryClickEvent<>(
+                    guiConfig,
                     gui,
                     e,
                     this,
@@ -293,17 +297,22 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
         if (stringMaterial == null)
             guiItem = newItem.buildAsGuiItem(call);
         else {
-            String mat = replacer != null ? replacer.replaceCall(storage, stringMaterial, player) : stringMaterial;
             try {
-                UUID uuid = UUID.fromString(mat);
-                guiItem = newItem.applyType(SkullCreator.skullFromUuid(uuid)).buildAsGuiItem(call);
-            } catch (IllegalArgumentException ignore) {
+                String mat = replacer != null ? replacer.replaceCall(storage, stringMaterial, player) : stringMaterial;
+                try {
+                    UUID uuid = UUID.fromString(mat);
+                    guiItem = newItem.applyType(SkullCreator.skullFromUuid(uuid)).buildAsGuiItem(call);
+                } catch (IllegalArgumentException ignore) {
 
-                Optional<XMaterial> xMat = XMaterial.matchXMaterial(mat);
-                if (xMat.isPresent())
-                    guiItem = newItem.applyType(xMat.get().parseItem()).buildAsGuiItem(call);
-                else
-                    guiItem = newItem.applyType(SkullCreator.skullFromBase64(mat)).buildAsGuiItem(call);
+                    Optional<XMaterial> xMat = XMaterial.matchXMaterial(mat);
+                    if (xMat.isPresent())
+                        guiItem = newItem.applyType(xMat.get().parseItem()).buildAsGuiItem(call);
+                    else
+                        guiItem = newItem.applyType(SkullCreator.skullFromBase64(mat)).buildAsGuiItem(call);
+                }
+            } catch (Exception e) {
+                new RuntimeException("Failed to apply stringMat. Invalid string material: " + stringMaterial, e).printStackTrace();
+                guiItem = newItem.buildAsGuiItem(call);
             }
         }
 
@@ -359,33 +368,46 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
     }
 
     protected void handleAsList(T gui, Player p, S localStorage) {
+        handleAsList(gui, p, localStorage, false);
+    }
+
+    protected void handleAsList(T gui, Player p, S localStorage, boolean update) {
         List<AsList.Holder<T, S>> items = asList.call(p, localStorage);
+        List<Integer> slots = parseSlot();
+
         for (AsList.Holder<T, S> listItem : items) {
             if (!listItem.isShow() && fallbackItem == null) continue;
-            gui.addItem(
-                    build(
-                            localStorage,
-                            listItem.getReplacer().getPlayer() != null
-                                    ? listItem.getReplacer().getPlayer()
-                                    : p,
-                            e -> {
-                                if (!listItem.isShow()) return; // Uses fallback
+            GuiItem item = build(
+                    localStorage,
+                    listItem.getReplacer().getPlayer() != null
+                            ? listItem.getReplacer().getPlayer()
+                            : p,
+                    e -> {
+                        if (!listItem.isShow()) return; // Uses fallback
 
-                                listItem.getCallback().accept(
-                                        p,
-                                        new Item.WrappedInventoryClickEvent<>(
-                                                gui,
-                                                e,
-                                                this,
-                                                localStorage,
-                                                listItem
-                                        )
-                                );
-                            },
-                            listItem.getReplacer(),
-                            gui,
-                            !listItem.isShow()
-                    ));
+                        listItem.getCallback().accept(
+                                p,
+                                new Item.WrappedInventoryClickEvent<>(
+                                        guiConfig,
+                                        gui,
+                                        e,
+                                        this,
+                                        localStorage,
+                                        listItem
+                                )
+                        );
+                    },
+                    listItem.getReplacer(),
+                    gui,
+                    !listItem.isShow()
+            );
+
+            if (slots.get(0) == -1)
+                gui.addItem(item);
+            else if (update)
+                gui.updateItem(slots.get(items.indexOf(listItem)), item);
+            else
+                gui.setItem(slots.get(items.indexOf(listItem)), item);
         }
     }
 
@@ -467,6 +489,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
      * @since 1.5
      */
     public static class WrappedInventoryClickEvent<T extends BaseGui, S extends IStorage> {
+        private final ConfigBasedGuiBase<T, S> guiConfig;
         private final Item<T, S> item;
         @Getter
         private final T gui;
@@ -477,14 +500,16 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
         private AsList.Holder<T, S> holder;
 
-        public WrappedInventoryClickEvent(T gui, InventoryClickEvent event, Item<T, S> item, S localStorage) {
+        public WrappedInventoryClickEvent(ConfigBasedGuiBase<T, S> guiConfig, T gui, InventoryClickEvent event, Item<T, S> item, S localStorage) {
+            this.guiConfig = guiConfig;
             this.gui = gui;
             this.event = event;
             this.localStorage = localStorage;
             this.item = item;
         }
 
-        public WrappedInventoryClickEvent(T gui, InventoryClickEvent event, Item<T, S> item, S localStorage, AsList.Holder<T, S> holder) {
+        public WrappedInventoryClickEvent(ConfigBasedGuiBase<T, S> guiConfig, T gui, InventoryClickEvent event, Item<T, S> item, S localStorage, AsList.Holder<T, S> holder) {
+            this.guiConfig = guiConfig;
             this.gui = gui;
             this.event = event;
             this.localStorage = localStorage;
@@ -510,6 +535,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
                                     holder.getCallback().accept(
                                             (Player) e.getWhoClicked(),
                                             new WrappedInventoryClickEvent<>(
+                                                    guiConfig,
                                                     gui,
                                                     e,
                                                     item,
@@ -527,6 +553,43 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
                             false
                     )
             );
+        }
+
+        /**
+         * Refreshes an item in the gui by id.
+         * AsList item and items with no slot can't be refreshed.
+         * <br/>
+         * @param id The id of the item to refresh
+         * @throws IllegalArgumentException If the item can't be refreshed
+         */
+        public void refreshItem(String id) {
+            Item<T, S> item = guiConfig.getItems()
+                    .stream()
+                    .filter(item2 -> item2.getId().equals(id))
+                    .findFirst()
+                    .orElse(null);
+
+            if (item == null) return;
+
+
+            if (item.getAsList() != null || item.parseSlotFirst() == -1)
+                throw new IllegalArgumentException("Items with AsList or no slot can't be refreshed");
+
+            for (int slot : item.parseSlot())
+                gui.updateItem(slot, item.build(localStorage, (Player) event.getWhoClicked(),
+                        e -> item.call((Player) event.getWhoClicked(), gui, e, localStorage),
+                        gui
+                ));
+        }
+
+        /**
+         * Reopen the gui for the player.
+         * Does not refresh the gui.
+         *
+         * @since 1.22.0
+         */
+        public void reopenGui() {
+            event.getWhoClicked().openInventory(gui.getInventory());
         }
     }
 }

@@ -74,6 +74,7 @@ public class ItemStackBase64 {
 
             // Read the serialized inventory
             for (int i = 0; i < items.length; i++) {
+                if (dataInput.available() == 0) break;
                 items[i] = (ItemStack) dataInput.readObject();
             }
 

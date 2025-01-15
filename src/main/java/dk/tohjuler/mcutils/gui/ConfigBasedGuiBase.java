@@ -75,6 +75,8 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
         this.fillType = fillType;
         this.fillItem = fillItem;
         this.category = category;
+
+        if (storage == null) throw new NullPointerException("Storage cannot be null");
         init();
     }
 
@@ -95,6 +97,8 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
         this.fillType = fillType;
         this.fillItem = fillItem;
         this.category = null;
+
+        if (storage == null) throw new NullPointerException("Storage cannot be null");
         init();
     }
 
@@ -113,6 +117,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     /**
      * Load the gui from a file.
      * This will clear the item and load the item from the config.
+     * If the gui has a category, it will be loaded from a folder with the category name.
      * <br/>
      *
      * @param folder The folder to load the gui from
@@ -157,7 +162,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
                                 .stringMaterial(mat.startsWith("adv:") ? mat.substring(4) : null)
                                 .add();
                 } catch (Exception ex) {
-                    new RuntimeException("Could not load item: " + key, ex).printStackTrace();
+                    new RuntimeException("Could not load item: " + key + " in " + id, ex).printStackTrace();
                 }
             });
 
@@ -177,7 +182,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
                                 .stringMaterial(mat.startsWith("adv:") ? mat.substring(4) : null)
                                 .add();
                 } catch (Exception ex) {
-                    new RuntimeException("Could not load item: " + key, ex).printStackTrace();
+                    new RuntimeException("Could not load item: " + key + " in " + id, ex).printStackTrace();
                 }
             });
 
@@ -189,6 +194,8 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     /**
      * Save the gui to a file.
+     * Will overwrite the file if it already exists.
+     * If the gui has a category, it will be saved in a folder with the category name.
      * <br/>
      *
      * @param folder The folder to save the gui to
@@ -196,9 +203,11 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void save(File folder) {
+        if (category != null) folder = new File(folder, category);
         File file = new File(folder, id + ".yml");
         try {
             file.getParentFile().mkdirs();
+            if (file.exists()) file.delete();
             file.createNewFile();
         } catch (IOException ex) {
             new RuntimeException("Could not create file: " + file.getAbsolutePath(), ex).printStackTrace();

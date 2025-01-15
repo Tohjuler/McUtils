@@ -32,7 +32,7 @@ public class HeadFonts {
      * @since 1.8.0
      */
     public static ItemStack getChar(String type, char c) {
-        return chars.get(type.toLowerCase()+" "+c);
+        return chars.get((type.toLowerCase()+" "+c).toLowerCase());
     }
 
     /**
@@ -43,7 +43,7 @@ public class HeadFonts {
      * @return The base64 of the itemstack
      */
     public static String getCharBase64(String type, char c) {
-        return charsBase64.get(type.toLowerCase()+" "+c);
+        return charsBase64.get((type+" "+c).toLowerCase());
     }
 
     /**

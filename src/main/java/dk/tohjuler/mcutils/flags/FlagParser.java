@@ -36,6 +36,8 @@ public abstract class FlagParser {
         return this;
     }
 
+    private static final List<Class<?>> FLAG_CLASSES = Arrays.asList(Flag.class, ValueFlag.class, HelpFlag.class);
+
     /**
      * Get all flags declared in the class
      * <br/>
@@ -45,7 +47,7 @@ public abstract class FlagParser {
      */
     public List<Flag> getFlags() {
         return Arrays.stream(getClass().getDeclaredFields())
-                .filter(field -> field.getType().isAssignableFrom(Flag.class))
+                .filter(field -> FLAG_CLASSES.stream().anyMatch(c -> c.isAssignableFrom(field.getType())))
                 .map(f -> {
                     try {
                         f.setAccessible(true);
@@ -77,11 +79,21 @@ public abstract class FlagParser {
         String flagPrefix = "";
         for (char c : toParse.toCharArray()) {
             if (c == ' ' && flag.length() > 0) {
-                foundFlags.add(flagPrefix + flag);
-                flags.forEach(f -> f.parse(flag.toString()));
-                flag.delete(0, flag.length() - 1); // Clear the flag
-                lastChar = ' ';
-                continue;
+                boolean isValueFlag = false;
+                for (Flag f : flags) {
+                    if (f.isFlag(flag.toString())) {
+                        isValueFlag = f instanceof ValueFlag;
+                        break;
+                    }
+                }
+                if (!isValueFlag || flag.toString().contains(" ")) {
+                    flags.forEach(f -> f.parse(flag.toString()));
+                    foundFlags.add(flagPrefix + flag);
+                    flag.delete(0, flag.length()); // Clear the flag
+                    lastChar = ' ';
+                    flagPrefix = "";
+                    continue;
+                }
             }
             if (c == '-' && lastChar == '-') {
                 flagPrefix += "-";

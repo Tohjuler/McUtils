@@ -23,7 +23,11 @@ public class JsonModel<T> extends DataModel<T, T> {
     private Function<Object, T> serializer = null;
     private Type type;
 
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().create();
+    private final Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .disableHtmlEscaping()
+            .serializeNulls()
+            .create();
 
     public JsonModel(String id, int timeToSave, TimeUnit timeUnit, JavaPlugin plugin) {
         super(id, timeToSave, timeUnit, plugin);

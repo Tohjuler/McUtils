@@ -8,13 +8,13 @@ public class Flag {
      * Used to describe the flag.
      * Can be used to enable the flag with --
      */
-    private final String fullName;
+    protected final String fullName;
     /**
      * Used as a alias for the flag.
      * Can be used with the prefix -
      */
-    private final String shortAlias;
-    private final String description;
+    protected final String shortAlias;
+    protected final String description;
 
     /**
      * Whether the flag is present in the parsed string
@@ -27,8 +27,13 @@ public class Flag {
         this.description = description;
     }
 
-    public void parse(String str) {
-        if (enabled) return;
+    public boolean parse(String str) {
+        if (enabled) return false;
         enabled = str.equalsIgnoreCase(fullName) || str.equalsIgnoreCase(shortAlias);
+        return enabled;
+    }
+
+    public boolean isFlag(String str) {
+        return str.equalsIgnoreCase(fullName) || str.equalsIgnoreCase(shortAlias);
     }
 }

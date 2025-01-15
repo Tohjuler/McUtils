@@ -26,10 +26,14 @@ public abstract class Replacer<S extends IStorage> {
      * @param func  The function to replace the string with
      */
     protected void replace(String regex, Function<String, String> func) {
-        if (item != null)
-            item = item.replaceAllFromGui(regex, func);
-        else if (str != null)
-            str = replaceInString(str, regex, func);
+        try {
+            if (item != null)
+                item = item.replaceAllFromGui(regex, func);
+            else if (str != null)
+                str = replaceInString(str, regex, func);
+        } catch (Exception e) {
+            new RuntimeException("Error replacing in Replacer: regex: "+regex, e).printStackTrace();
+        }
     }
 
     /**
@@ -97,11 +101,12 @@ public abstract class Replacer<S extends IStorage> {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(str);
 
-        if (!matcher.find()) return str;
-        String matchedPart = matcher.group();
-        String res = func.apply(matchedPart);
-        if (res == null) res = "REPLACE_ERROR";
-
-        return str.replace(matchedPart, res);
+        while (matcher.find()) {
+            String matchedPart = matcher.group();
+            String res = func.apply(matchedPart);
+            if (res == null) res = "REPLACE_ERROR";
+            str = str.replace(matchedPart, res);
+        }
+        return str;
     }
 }
