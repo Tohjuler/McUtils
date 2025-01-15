@@ -34,17 +34,22 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     private final @Nullable String category;
 
     @Setter
+    @Getter
     protected @NotNull String title;
     @Setter
+    @Getter
     protected int rows;
     @Setter
+    @Getter
     protected @NotNull FillType fillType;
     @Setter
-    protected ItemBuilder fillItem;
+    @Getter
+    protected @Nullable ItemBuilder fillItem;
 
     @Setter
-    private Replacer<S> titleReplacer;
+    private @Nullable Replacer<S> titleReplacer;
 
+    @Getter
     private final S storage = createStorage(null);
     @Getter
     private final GuiEventHandler<T, S> guiEventHandler = new GuiEventHandler<>();
@@ -63,7 +68,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * @param fillItem The fill item of the gui.
      * @param category The category of the gui.
      */
-    public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem, String category) {
+    public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem, @Nullable String category) {
         this.id = id;
         this.title = title;
         this.rows = rows;
@@ -83,7 +88,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * @param fillType The fill type of the gui.
      * @param fillItem The fill item of the gui.
      */
-    public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem) {
+    public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, @Nullable ItemBuilder fillItem) {
         this.id = id;
         this.title = title;
         this.rows = rows;
@@ -189,6 +194,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * @param folder The folder to save the gui to
      * @since 1.5
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void save(File folder) {
         File file = new File(folder, id + ".yml");
         try {
@@ -462,6 +468,11 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     // Internal Utils
 
     protected void fillGui(BaseGui gui) {
+        if (fillType != FillType.NONE && fillItem == null) {
+            new IllegalStateException("Fill item is null, but fill type is not NONE. GUI: "+getId()).printStackTrace();
+            return;
+        }
+
         switch (fillType) {
             case ALL:
                 gui.getFiller().fill(fillItem.buildAsGuiItem());
