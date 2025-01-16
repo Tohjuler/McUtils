@@ -44,7 +44,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
     protected @Nullable AsList<?, T, S> asList;
 
     @Setter
-    private String stringMaterial;
+    private @Nullable String stringMaterial;
 
     protected BiConsumer<Player, WrappedInventoryClickEvent<T, S>> clickAction;
     protected Replacer<S> replacer;
@@ -75,7 +75,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
      * @return The item
      * @since 1.5
      */
-    public Item<T, S> stringMaterial(String stringMaterial) {
+    public Item<T, S> stringMaterial(@Nullable String stringMaterial) {
         this.stringMaterial = stringMaterial;
         return this;
     }
