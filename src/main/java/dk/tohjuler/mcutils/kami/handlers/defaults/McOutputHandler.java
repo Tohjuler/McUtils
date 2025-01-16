@@ -34,21 +34,28 @@ public class McOutputHandler implements IOutputHandler {
         TextComponent msg = new TextComponent(
                 ColorUtils.colorize(
                         PREFIX + "&c" +
-                                (error instanceof KamiPanicError ? "panic error parser canceled " : "")
+                                (error instanceof KamiPanicError ? "panic error parser canceled: " : "")
                 )
         );
 
         TextComponent errorComponent = new TextComponent(ColorUtils.colorize(error.getMessage()));
         List<String> hoverMsg = new ArrayList<>();
         hoverMsg.add("&c&lError:");
-        hoverMsg.add(" &7Message: &f" + error.getMessage());
+
+        hoverMsg.add(" &7Message: &f" + (error.getException().getMessage() != null ? error.getException().getMessage() : "None"));
+        hoverMsg.add(" &7Class: &f" + error.getException().getClass().getSimpleName());
+
+        Throwable cause = error.getException().getCause();
+        while (cause != null) {
+            hoverMsg.add(" &7Cause:");
+            hoverMsg.add("  &7Message: &f" + error.getException().getCause().getMessage());
+            hoverMsg.add("  &7Class: &f" + error.getException().getCause().getClass().getSimpleName());
+
+            cause = cause.getCause();
+        }
+
         hoverMsg.add(" &7Debug details: &f" + (error.getDebugDetails().isEmpty() ? "None" : ""));
         error.getDebugDetails().forEach((key, value) -> hoverMsg.add("  &7" + key + ": &f" + value));
-        if (error.getException() != null && error.getException().getMessage() != null) {
-            hoverMsg.add(" &7Exception:");
-            hoverMsg.add("  &7Message: &f" + error.getException().getMessage());
-            hoverMsg.add("  &7Class: &f" + error.getException().getClass().getSimpleName());
-        }
         if (error.getExp() != null) {
             hoverMsg.add(" ");
             hoverMsg.add("&e&lExpression:");

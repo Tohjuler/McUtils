@@ -17,7 +17,7 @@ public class TypeHandler {
     private final Map<Class<?>, TypeAdapter<?>> typeAdapters = new HashMap<>();
 
     public TypeHandler() {
-        registerTypeAdapter(String.class, Pattern.compile("\".*\""), str -> "\"" + str + "\"", str -> str.substring(1, str.length() - 1));
+        registerTypeAdapter(String.class, Pattern.compile("\"[^\"]*\""), str -> "\"" + str + "\"", str -> str.substring(1, str.length() - 1));
         registerTypeAdapter(Integer.class, Pattern.compile("-?\\d+"), Object::toString, Integer::parseInt);
         registerTypeAdapter(Long.class, Pattern.compile("-?\\d+"), Object::toString, Long::parseLong);
         registerTypeAdapter(Double.class, Pattern.compile("-?\\d+(\\.\\d+)?"), Object::toString, Double::parseDouble);
@@ -83,6 +83,22 @@ public class TypeHandler {
     }
 
     /**
+     * Serialize an object to a string.
+     * <br>
+     *
+     * @param obj The object to serialize.
+     * @return The serialized string.
+     */
+    @SuppressWarnings("unchecked")
+    public String serialize(Object obj) {
+        if (getTypeAdapter(obj.getClass()) == null) return obj.toString();
+
+        TypeAdapter<Object> adapter = (TypeAdapter<Object>) getTypeAdapter(obj.getClass());
+        if (adapter == null) return null;
+        return adapter.serialize(obj);
+    }
+
+    /**
      * Deserialize a string to an object.
      * <br>
      *
@@ -120,6 +136,7 @@ public class TypeHandler {
      * @return The deserialized object.
      */
     public @Nullable Object deserialize(String str) {
+        str = str.trim();
         for (TypeAdapter<?> adapter : typeAdapters.values())
             if (adapter.isType(str)) return adapter.deserialize(str);
         return null;

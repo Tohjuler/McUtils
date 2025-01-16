@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Getter
 public class FunctionHandler implements IHandler {
@@ -18,6 +19,7 @@ public class FunctionHandler implements IHandler {
     /**
      * Create a new function handler with the given functions.
      * <br>
+     *
      * @param functions The functions to use.
      */
     public FunctionHandler(@NotNull List<Func<?>> functions) {
@@ -41,6 +43,14 @@ public class FunctionHandler implements IHandler {
                     return builder.toString();
                 }
         ));
+
+        addFunction(new SimpleFunc<>(
+                "testError",
+                "Just a test function that throws an error.",
+                () -> {
+                    throw new RuntimeException("Test error, with cause.", new IllegalArgumentException("Test cause."));
+                }
+        ));
     }
 
     /**
@@ -59,6 +69,17 @@ public class FunctionHandler implements IHandler {
             }
         }
         return false;
+    }
+
+    /**
+     * Get functions with the given name.
+     * <br>
+     *
+     * @param name The name of the function.
+     * @return The functions with the given name.
+     */
+    public List<Func<?>> getFunctionByName(String name) {
+        return functions.stream().filter(func -> func.getName().equals(name)).collect(Collectors.toList());
     }
 
     /**

@@ -4,6 +4,7 @@ import dk.tohjuler.mcutils.kami.KamiExp;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class KamiError {
      * The message of the error.
      * Should be user-friendly, keep technical details in debug details or exception.
      */
-    private final String message;
+    private final @NotNull String message;
 
     /**
      * Debug details.
@@ -38,7 +39,7 @@ public class KamiError {
      * If not provided, a new exception will be created.
      * Used for stack trace.
      */
-    private final @Nullable Exception exception;
+    private final @NotNull Exception exception;
 
     /**
      * Creates a new Kami error.
@@ -48,7 +49,7 @@ public class KamiError {
      * @param message   The message of the error.
      * @param exception The exception that caused the error.
      */
-    public KamiError(@Nullable KamiExp exp, String message, @Nullable Exception exception) {
+    public KamiError(@Nullable KamiExp exp, @NotNull String message, @NotNull Exception exception) {
         this.exp = exp;
         this.message = message;
         this.exception = exception;
@@ -61,7 +62,7 @@ public class KamiError {
      * @param exp     The expression that caused the error.
      * @param message The message of the error.
      */
-    public KamiError(@Nullable KamiExp exp, String message) {
+    public KamiError(@Nullable KamiExp exp, @NotNull String message) {
         this(exp, message, new Exception());
     }
 
@@ -72,7 +73,7 @@ public class KamiError {
      * @param message   The message of the error.
      * @param exception The exception that caused the error.
      */
-    public KamiError(String message, @Nullable Exception exception) {
+    public KamiError(@NotNull String message, @NotNull Exception exception) {
         this(null, message, exception);
     }
 
@@ -82,7 +83,7 @@ public class KamiError {
      *
      * @param message The message of the error.
      */
-    public KamiError(String message) {
+    public KamiError(@NotNull String message) {
         this(null, message, new Exception());
     }
 
@@ -125,9 +126,7 @@ public class KamiError {
             logger.log(Level.SEVERE, "Debug details:");
             debugDetails.forEach((key, value) -> logger.log(Level.SEVERE, key + ": " + value));
         }
-        if (exception != null) {
-            logger.log(Level.SEVERE, "Exception:");
-            exception.printStackTrace();
-        }
+        logger.log(Level.SEVERE, "Exception:");
+        exception.printStackTrace();
     }
 }

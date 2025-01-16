@@ -54,7 +54,7 @@ public class McGlobalStorage implements IGlobalStorage {
     @Override
     public @NotNull TypeItem<Object> get(String key) {
         if (storage == null) return new TypeItem<>(null);
-        return storage.get().get(key);
+        return storage.get().getOrDefault(key, new TypeItem<>(null));
     }
 
     @Override

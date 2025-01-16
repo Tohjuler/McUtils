@@ -81,6 +81,18 @@ public class Lang {
     }
 
     /**
+     * Check if a key is present in the lang file
+     * This will only check the current file, not the default.
+     * <br/>
+     *
+     * @param key The key to check
+     * @return If the key is present
+     */
+    public boolean isPresent(String key) {
+        return langFile.cf().contains(key);
+    }
+
+    /**
      * Get a string from the lang file
      * If the key doesn't exist, it will be created with the default value
      *
@@ -91,6 +103,11 @@ public class Lang {
      */
     public String get(String key, Map<String, String> replace) {
         if (!langFile.cf().contains(key)) {
+            if (!defaultLang.cf().contains(key)) {
+                Bukkit.getServer().getLogger().warning("Missing key in lang file and default lang file. Key: " + key);
+                return "NULL";
+            }
+
             langFile.cf().set(key, defaultLang.cf().get(key));
             langFile.save();
             Bukkit.getServer().getLogger().warning("Missing key in lang file, setting it with the default. Key: " + key);

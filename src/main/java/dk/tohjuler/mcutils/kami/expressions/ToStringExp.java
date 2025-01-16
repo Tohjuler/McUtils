@@ -38,7 +38,7 @@ public class ToStringExp extends KamiExp {
                     Object obj = state.getObjFromRef(ref);
                     if (obj != null) {
                         state.writeDebug("Found object: " + ref + " -> " + obj);
-                        replace.put(ref, obj.toString());
+                        replace.put(ref, state.getTypeHandler().serialize(obj));
                     }
                 });
 
