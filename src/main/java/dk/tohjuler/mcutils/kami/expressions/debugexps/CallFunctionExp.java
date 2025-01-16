@@ -69,7 +69,7 @@ public class CallFunctionExp extends KamiExp {
 
         Object res;
         try {
-            res = func.run();
+            res = func.run(state, paramsObjs);
         } catch (Exception e) {
             return result.error(new KamiError("Failed to call function: " + functionName, e));
         }

@@ -1,5 +1,6 @@
 package dk.tohjuler.mcutils.kami.handlers.defaults;
 
+import dk.tohjuler.mcutils.kami.KamiState;
 import dk.tohjuler.mcutils.kami.handlers.IHandler;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -58,13 +59,14 @@ public class FunctionHandler implements IHandler {
      * <br>
      *
      * @param name The name of the function.
+     * @param state The state to run the function with.
      * @param args The arguments to run the function with.
      * @return If the function was found and ran.
      */
-    public boolean runFunction(String name, Object... args) {
+    public boolean runFunction(String name, KamiState state, Object... args) {
         for (Func<?> func : functions) {
             if (func.getName().equals(name) && func.matchParams(args)) {
-                func.run(args);
+                func.run(state, args);
                 return true;
             }
         }
@@ -122,10 +124,11 @@ public class FunctionHandler implements IHandler {
          * Run the function with the given arguments.
          * <br>
          *
-         * @param args The arguments to run the function with.
+         * @param state The state to run the function with.
+         * @param args  The arguments to run the function with.
          * @return The result of the function.
          */
-        public abstract RETURN run(Object... args);
+        public abstract RETURN run(KamiState state, Object... args);
 
         public abstract List<Class<?>> getParameterTypes();
 
@@ -140,7 +143,7 @@ public class FunctionHandler implements IHandler {
             List<Class<?>> types = getParameterTypes();
             if (types.size() != args.length) return false;
             for (int i = 0; i < args.length; i++)
-                if (!types.get(i).isInstance(args[i])) return false;
+                if (!args[i].getClass().isAssignableFrom(types.get(i))) return false;
             return true;
         }
 
@@ -168,7 +171,7 @@ public class FunctionHandler implements IHandler {
 
         @Override
         @SuppressWarnings("unchecked")
-        public R run(Object... args) {
+        public R run(KamiState state, Object... args) {
             return function.apply((I) args[0]);
         }
 
@@ -193,7 +196,7 @@ public class FunctionHandler implements IHandler {
         }
 
         @Override
-        public I run(Object... args) {
+        public I run(KamiState state, Object... args) {
             return supplier.get();
         }
 

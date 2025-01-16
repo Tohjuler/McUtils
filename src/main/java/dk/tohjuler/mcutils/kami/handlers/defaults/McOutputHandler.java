@@ -19,12 +19,32 @@ public class McOutputHandler implements IOutputHandler {
 
     @Override
     public void out(String message, @Nullable Player p) {
-        LogLevel level = LogLevel.valueOf(message.split(":", 2)[0]);
+        LogLevel level;
+        try {
+            level = LogLevel.valueOf(message.split(":", 2)[0]);
+        } catch (IllegalArgumentException e) {
+            level = LogLevel.INFO;
+        }
         message = message.substring(message.indexOf(":") + 1).trim();
+
+        String color;
+        switch (level) {
+            case WARNING:
+                color = "&e";
+                break;
+            case ERROR:
+                color = "&c";
+                break;
+            case DEBUG:
+                color = "&b";
+                break;
+            default:
+                color = "&f";
+        }
 
         Message.sendNoPrefix(
                 p,
-                PREFIX + message
+                PREFIX + color + message
         );
     }
 
