@@ -17,13 +17,12 @@ public class TypeHandler {
     private final Map<Class<?>, TypeAdapter<?>> typeAdapters = new HashMap<>();
 
     public TypeHandler() {
-        registerTypeAdapter(String.class, Pattern.compile("\"[^\"]*\""), str -> "\"" + str + "\"", str -> str.substring(1, str.length() - 1));
-        registerTypeAdapter(Integer.class, Pattern.compile("-?\\d+"), Object::toString, Integer::parseInt);
-        registerTypeAdapter(Long.class, Pattern.compile("-?\\d+"), Object::toString, Long::parseLong);
-        registerTypeAdapter(Double.class, Pattern.compile("-?\\d+(\\.\\d+)?"), Object::toString, Double::parseDouble);
-        registerTypeAdapter(Boolean.class, Pattern.compile("true|false"), Object::toString, Boolean::parseBoolean);
+        registerTypeAdapter(String.class, Pattern.compile("^\"[^\"]*\"$"), str -> "\"" + str + "\"", str -> str.substring(1, str.length() - 1));
+        registerTypeAdapter(Integer.class, Pattern.compile("^-?\\d+$"), Object::toString, Integer::parseInt);
+        registerTypeAdapter(Double.class, Pattern.compile("^-?\\d+(\\.\\d+)?$"), Object::toString, Double::parseDouble);
+        registerTypeAdapter(Boolean.class, Pattern.compile("^true|false$"), Object::toString, Boolean::parseBoolean);
         registerTypeAdapter(List.class,
-                Pattern.compile("\\[.*]"),
+                Pattern.compile("^\\[.*]$"),
                 list -> "[" + list.stream().map(Object::toString).collect(Collectors.joining(", ")) + "]",
                 str -> Arrays.stream(str.substring(1, str.length() - 1).split(",")).map(this::deserialize).collect(Collectors.toList())
         );
