@@ -4,6 +4,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class TypeItem<BASE> {
+    private static final TypeItem<?> EMPTY = new TypeItem<>(null);
+
     private final BASE value;
 
     public TypeItem(BASE value) {
@@ -202,5 +204,19 @@ public class TypeItem<BASE> {
      */
     public boolean isPresent() {
         return value != null;
+    }
+
+    // Statics
+
+    /**
+     * Get an empty type item.
+     * <br>
+     *
+     * @param <T> The type of the type item.
+     * @return The empty type item.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> TypeItem<T> empty() {
+        return (TypeItem<T>) EMPTY;
     }
 }

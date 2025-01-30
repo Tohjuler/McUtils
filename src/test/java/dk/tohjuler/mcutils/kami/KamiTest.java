@@ -11,6 +11,11 @@ public class KamiTest {
             .useDebugExps()
             .build();
 
+    private final KamiParser defaultMathParser = new KamiBuilder()
+            .useDefaultStorage(st -> st.set("logLevel", LogLevel.DEBUG.name()))
+            .useMathExps()
+            .build();
+
     @Test
     public void testEmpty() {
         KamiParser parser = new KamiBuilder()
@@ -52,6 +57,13 @@ public class KamiTest {
     public void testToStringExp() {
         defaultDebugParser.getGlobalStorage().set("var:test", "Hello, World!");
         assertEquals("Hello, World!", defaultDebugParser.parse("#test").asString());
+    }
+
+    @Test
+    public void testCheckExp() {
+        assertEquals("true", defaultMathParser.parse("5 == 5").asString());
+        assertEquals("false", defaultMathParser.parse("5 != 5").asString());
+        assertEquals("true", defaultMathParser.parse("10 > 5").asString());
     }
 
 }

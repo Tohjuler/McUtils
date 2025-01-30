@@ -1,11 +1,13 @@
 package dk.tohjuler.mcutils.kami;
 
+import dk.tohjuler.mcutils.kami.expressions.CheckExp;
 import dk.tohjuler.mcutils.kami.expressions.HelpExp;
 import dk.tohjuler.mcutils.kami.expressions.ToStringExp;
 import dk.tohjuler.mcutils.kami.expressions.debugexps.CallFunctionExp;
 import dk.tohjuler.mcutils.kami.expressions.debugexps.CallMethodExp;
 import dk.tohjuler.mcutils.kami.expressions.debugexps.CallMethodFromRefExp;
 import dk.tohjuler.mcutils.kami.expressions.debugexps.SetExp;
+import dk.tohjuler.mcutils.kami.expressions.math.AndOrExp;
 import dk.tohjuler.mcutils.kami.handlers.IGlobalStorage;
 import dk.tohjuler.mcutils.kami.handlers.IHandler;
 import dk.tohjuler.mcutils.kami.handlers.IOutputHandler;
@@ -168,9 +170,10 @@ public class KamiBuilder {
      * @return The builder.
      */
     public KamiBuilder useMathExps() {
-        throw new UnsupportedOperationException("Not implemented yet");
-        // TODO: Implement
-        //return this;
+        return addExpression(
+                new CheckExp(),
+                new AndOrExp()
+        );
     }
 
     /**

@@ -222,4 +222,17 @@ public class KamiState {
         return null;
     }
 
+    /**
+     * A wrapper for {@link #parseObject(String)} with a default value.
+     * <br>
+     *
+     * @param input The input to parse.
+     * @param def   The default value.
+     * @return The parsed object if found, else the default value.
+     */
+    public Object parseObject(String input, Object def) {
+        Object res = parseObject(input);
+        return res != null ? res : def;
+    }
+
 }
