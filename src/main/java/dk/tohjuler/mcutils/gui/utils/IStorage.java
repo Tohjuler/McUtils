@@ -25,4 +25,14 @@ public interface IStorage {
      * @since 1.18.0
      */
     void load(ConfigurationFile cf, String path);
+
+    /**
+     * Transfer the persisted fields from the current storage to the storage.
+     * <br/>
+     *
+     * @param storage The storage to transfer the fields to.
+     */
+    default void transferPersistedFields(IStorage storage) {
+        StoragePersistenceUtils.setPersistentFields(storage, StoragePersistenceUtils.getPersistentFields(this));
+    }
 }

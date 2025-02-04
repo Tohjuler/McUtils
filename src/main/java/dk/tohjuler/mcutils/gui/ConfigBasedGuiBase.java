@@ -68,7 +68,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * @param fillItem The fill item of the gui.
      * @param category The category of the gui.
      */
-    public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem, @Nullable String category) {
+    public ConfigBasedGuiBase(String id, @NotNull String title, int rows, @NotNull FillType fillType, @Nullable ItemBuilder fillItem, @Nullable String category) {
         this.id = id;
         this.title = title;
         this.rows = rows;
@@ -250,6 +250,18 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     public abstract void init();
 
     /**
+     * Opens the gui with a parent storage to transfer the persisted fields from.
+     * <br/>
+     *
+     * @param p             The player to open the gui for
+     * @param parentStorage The parent storage to transfer the persisted fields from
+     * @since 1.23.0
+     */
+    public void open(Player p, IStorage parentStorage) {
+        open(p, parentStorage::transferPersistedFields);
+    }
+
+    /**
      * What do you think this does?
      * <br/>
      *
@@ -269,7 +281,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      * @param initStorage A callback to set up the local storage
      * @since 1.11.0
      */
-    public void open(Player p, Consumer<S> initStorage) {
+    public void open(Player p, @NotNull Consumer<S> initStorage) {
         S localStorage = createStorage(storage);
         initStorage.accept(localStorage);
         T gui = createGui(p, localStorage);
@@ -478,7 +490,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
 
     protected void fillGui(BaseGui gui) {
         if (fillType != FillType.NONE && fillItem == null) {
-            new IllegalStateException("Fill item is null, but fill type is not NONE. GUI: "+getId()).printStackTrace();
+            new IllegalStateException("Fill item is null, but fill type is not NONE. GUI: " + getId()).printStackTrace();
             return;
         }
 

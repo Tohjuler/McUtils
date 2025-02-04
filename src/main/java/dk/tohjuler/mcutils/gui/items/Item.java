@@ -559,6 +559,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
          * Refreshes an item in the gui by id.
          * AsList item and items with no slot can't be refreshed.
          * <br/>
+         *
          * @param id The id of the item to refresh
          * @throws IllegalArgumentException If the item can't be refreshed
          */
@@ -570,7 +571,6 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
                     .orElse(null);
 
             if (item == null) return;
-
 
             if (item.getAsList() != null || item.parseSlotFirst() == -1)
                 throw new IllegalArgumentException("Items with AsList or no slot can't be refreshed");
@@ -590,6 +590,16 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
          */
         public void reopenGui() {
             event.getWhoClicked().openInventory(gui.getInventory());
+        }
+
+        /**
+         * Refresh the gui for the player.
+         * This will call open on gui and transfer the persisted fields.
+         *
+         * @since 1.23.0
+         */
+        public void refreshGui() {
+            guiConfig.open((Player) event.getWhoClicked(), localStorage::transferPersistedFields);
         }
     }
 }

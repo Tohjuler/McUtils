@@ -59,6 +59,38 @@ public class InventoryUtils {
     }
 
     /**
+     * Removes a certain amount of the specified itemStack from an inventory.
+     * <br>
+     *
+     * @param inventory Inventory to remove from
+     * @param item      The item to remove
+     * @param amount    The amount to remove, or {@link Integer#MAX_VALUE} to remove all
+     * @return The amount of items that could not be removed, 0 for success, or -1 for failures
+     * @since 1.23.0
+     */
+    public static int removeItems(Inventory inventory, ItemStack item, int amount) {
+        if (item == null || inventory == null)
+            return -1;
+        if (amount <= 0)
+            return -1;
+
+        item.setAmount(amount);
+
+        if (amount == Integer.MAX_VALUE) {
+            inventory.remove(item);
+            return 0;
+        }
+
+        HashMap<Integer, ItemStack> retVal = inventory.removeItem(item);
+
+        int notRemoved = 0;
+        for (ItemStack i : retVal.values()) {
+            notRemoved += i.getAmount();
+        }
+        return notRemoved;
+    }
+
+    /**
      * Get the amount of items of a certain type in an inventory.
      * <br>
      *

@@ -70,11 +70,12 @@ public class ItemBuilder {
 
     /**
      * Create a new ItemBuilder, from a {@link Material}
+     * Default amount is 1
      *
      * @param material the material
      */
     public ItemBuilder(Material material) {
-        this(material, material.getMaxStackSize());
+        this(material, 1);
     }
 
     /**
@@ -258,8 +259,8 @@ public class ItemBuilder {
      * This should only be used by the GUI API
      * <br/>
      *
-     * @param regex   the regex to replace
-     * @param func    the function to replace with
+     * @param regex the regex to replace
+     * @param func  the function to replace with
      * @return the itembuilder
      */
     public ItemBuilder replaceAllFromGui(String regex, Function<String, String> func) {
@@ -330,6 +331,9 @@ public class ItemBuilder {
         ItemMeta itemMeta = this.item.getItemMeta();
         if (itemMeta == null) return this;
         ArrayList<String> arrayList = new ArrayList<>();
+
+        // Allows for using \n and %nl% in lore to create new lines
+        lore = lore.stream().map(str -> str.split("\n|%nl%")).flatMap(Arrays::stream).collect(Collectors.toList());
         for (String str : lore)
             arrayList.add(colorize(str));
         itemMeta.setLore(arrayList);
@@ -354,7 +358,10 @@ public class ItemBuilder {
             arrayList.add(colorize(str));
             b = (byte) (b + 1);
         }
-        itemMeta.setLore(arrayList);
+        // Allows for using \n and %nl% in lore to create new lines
+        itemMeta.setLore(
+                arrayList.stream().map(str -> str.split("\n|%nl%")).flatMap(Arrays::stream).collect(Collectors.toList())
+        );
         this.item.setItemMeta(itemMeta);
         return this;
     }
@@ -452,6 +459,8 @@ public class ItemBuilder {
         if (itemMeta.getLore() == null)
             itemMeta.setLore(new ArrayList<>());
         List<String> list = itemMeta.getLore();
+        // Allows for using \n and %nl% in lore to create new lines
+        lines = lines.stream().map(str -> str.split("\n|%nl%")).flatMap(Arrays::stream).collect(Collectors.toList());
         for (String str : lines)
             list.add(colorize(str));
         itemMeta.setLore(list);
@@ -479,7 +488,10 @@ public class ItemBuilder {
             list.add(colorize(str));
             b = (byte) (b + 1);
         }
-        itemMeta.setLore(list);
+        // Allows for using \n and %nl% in lore to create new lines
+        itemMeta.setLore(
+                list.stream().map(str -> str.split("\n|%nl%")).flatMap(Arrays::stream).collect(Collectors.toList())
+        );
         this.item.setItemMeta(itemMeta);
         return this;
     }
@@ -532,9 +544,19 @@ public class ItemBuilder {
     }
 
     /**
+     * Make the item unstackable
+     *
+     * @return the itembuilder
+     */
+    public ItemBuilder unstackable() {
+        return nonStackable();
+    }
+
+    /**
      * Make the item glow
      * This is a visual effect
      * <br/>
+     *
      * @return the itembuilder
      */
     public ItemBuilder glow() {
@@ -642,6 +664,7 @@ public class ItemBuilder {
      * - Base64 skull value
      * - UUID of a player
      * <br/>
+     *
      * @param mat the string
      * @return the itembuilder
      * @since 1.17.0
