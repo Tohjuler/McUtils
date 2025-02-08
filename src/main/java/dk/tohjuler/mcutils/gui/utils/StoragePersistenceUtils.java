@@ -22,6 +22,14 @@ public class StoragePersistenceUtils {
                 .filter(f -> f.isAnnotationPresent(StoragePersistent.class))
                 .collect(Collectors.toList());
 
+        // Check parent class if not IStorage
+        if (storage.getClass().getSuperclass() != IStorage.class)
+            fields.addAll(Arrays.stream(storage.getClass()
+                            .getSuperclass()
+                            .getDeclaredFields())
+                    .filter(f -> f.isAnnotationPresent(StoragePersistent.class))
+                    .collect(Collectors.toList()));
+
         Map<String, Object> map = new HashMap<>();
         for (Field f : fields) {
             try {
@@ -50,11 +58,21 @@ public class StoragePersistenceUtils {
                 .filter(f -> f.isAnnotationPresent(StoragePersistent.class))
                 .collect(Collectors.toList());
 
+        // Check parent class if not IStorage
+        if (storage.getClass().getSuperclass() != IStorage.class)
+            fields.addAll(Arrays.stream(storage.getClass()
+                            .getSuperclass()
+                            .getDeclaredFields())
+                    .filter(f -> f.isAnnotationPresent(StoragePersistent.class))
+                    .collect(Collectors.toList()));
+
         for (Field f : fields) {
             try {
                 StoragePersistent sp = f.getAnnotation(StoragePersistent.class);
                 String name = sp.target().isEmpty() ? f.getName() : sp.target();
-                if (!map.containsKey(name)) continue;
+                if (!map.containsKey(name)) {
+                    continue;
+                }
 
                 f.setAccessible(true);
                 f.set(storage, map.get(name));

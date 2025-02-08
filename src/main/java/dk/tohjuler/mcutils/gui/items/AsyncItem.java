@@ -66,6 +66,7 @@ public class AsyncItem<T extends BaseGui, S extends IStorage> extends Item<T, S>
      * @return The item.
      * @since 1.18.0
      */
+    // TODO: Possibility for loader in specific slot, when using asList
     public AsyncItem<T, S> loader(ItemBuilder loader) {
         this.loader = loader;
         return this;
@@ -75,6 +76,7 @@ public class AsyncItem<T extends BaseGui, S extends IStorage> extends Item<T, S>
         if (checkShow(p, localStorage)) {
             if (asList != null) {
                 handleAsList(gui, p, localStorage, true);
+                gui.update();
             } else if (parseSlotFirst() == -1)
                 gui.addItem(build(localStorage, p,
                         e -> call(p, gui, e, localStorage),

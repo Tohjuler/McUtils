@@ -14,6 +14,7 @@ public class TypeStorage implements IStorage {
     private final Map<String, TypeItem<Object>> vars = new HashMap<>();
 
     public TypeStorage(TypeStorage storage) {
+        if (storage == null || storage.vars.isEmpty()) return;
         vars.putAll(storage.vars);
     }
 
@@ -28,8 +29,8 @@ public class TypeStorage implements IStorage {
      * @param value The value of the variable
      * @since 1.5.0
      */
-    public void set(String key, TypeItem<Object> value) {
-        vars.put(key, value);
+    public void set(String key, Object value) {
+        vars.put(key, new TypeItem<>(value));
     }
 
     /**
@@ -99,7 +100,7 @@ public class TypeStorage implements IStorage {
      * @since 1.5.0
      */
     public void save(ConfigurationFile cf, String path) {
-        vars.forEach((key, value) -> cf.cf().set(path + "." + key, value));
+        vars.forEach((key, value) -> cf.cf().set(path + "." + key, value.getPlane()));
     }
 
     /**

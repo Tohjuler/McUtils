@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
  * @param <S> The type of the storage
  */
 public interface IItem<T extends BaseGui, S extends IStorage> {
+
     /**
      * Set up the gui, with the item.
      * <br/>
@@ -42,4 +43,9 @@ public interface IItem<T extends BaseGui, S extends IStorage> {
      * @since 1.18.0
      */
     void loadExtra(ConfigurationFile cf, String basePath);
+
+    /**
+     * Add the item to the gui
+     */
+    void add();
 }
