@@ -5,6 +5,7 @@ import dk.tohjuler.mcutils.config.ConfigurationFile;
 import dk.tohjuler.mcutils.enums.FillType;
 import dk.tohjuler.mcutils.gui.handler.GuiEventHandler;
 import dk.tohjuler.mcutils.gui.items.AsyncItem;
+import dk.tohjuler.mcutils.gui.items.IItem;
 import dk.tohjuler.mcutils.gui.items.Item;
 import dk.tohjuler.mcutils.gui.items.StaticItem;
 import dk.tohjuler.mcutils.gui.utils.IStorage;
@@ -55,7 +56,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     private final GuiEventHandler<T, S> guiEventHandler = new GuiEventHandler<>();
 
     @Getter
-    private final List<Item<T, S>> items = new ArrayList<>();
+    private final List<IItem<T, S>> items = new ArrayList<>();
 
     /**
      * Create a new ConfigBasedGui.
@@ -146,26 +147,24 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
             cf.cf().getConfigurationSection("items").getKeys(false).forEach(key -> {
                 try {
                     keys.add(key);
-                    ItemBuilder item = YamlItem.loadItem(cf, "items." + key);
-                    String slot = cf.cf().getString("items." + key + ".slot");
-                    String mat = cf.cf().getString("items." + key + ".material");
 
-                    Item<T, S> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
+                    IItem<T, S> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
                     if (i != null) {
-                        if (mat.startsWith("adv:")) i.setStringMaterial(mat.substring(4));
-                        i.setItem(item);
-                        i.setSlot(slot);
-
-                        i.loadExtra(cf, "items." + key);
-                    } else
+                        i.load(cf, "items." + key);
+                    } else {
+                        ItemBuilder item = YamlItem.loadItem(cf, "items." + key);
+                        String slot = cf.cf().getString("items." + key + ".slot");
+                        String mat = cf.cf().getString("items." + key + ".material");
                         item(key, slot, item)
                                 .stringMaterial(mat.startsWith("adv:") ? mat.substring(4) : null)
                                 .add();
+                    }
                 } catch (Exception ex) {
                     new RuntimeException("Could not load item: " + key + " in " + id, ex).printStackTrace();
                 }
             });
 
+        // TODO: Remove noSlot-items, insted use -1 slot
         if (cf.cf().isSet("noSlot-items"))
             cf.cf().getConfigurationSection("noSlot-items").getKeys(false).forEach(key -> {
                 try {
@@ -173,10 +172,10 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
                     ItemBuilder item = YamlItem.loadItem(cf, "noSlot-items." + key);
                     String mat = cf.cf().getString("noSlot-items." + key + ".material");
 
-                    Item<T, S> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
-                    if (i != null) {
-                        if (mat.startsWith("adv:")) i.setStringMaterial(mat.substring(4));
-                        i.setItem(item);
+                    IItem<T, S> i = items.stream().filter(i2 -> i2.getId().equals(key)).findFirst().orElse(null);
+                    if (i instanceof Item<?, ?>) { // TODO: Remove this, as it only supports Item. It's fine for now as asSlot-items is gonna be removed.
+                        if (mat.startsWith("adv:")) ((Item<?, ?>) i).setStringMaterial(mat.substring(4));
+                        ((Item<?, ?>) i).setItem(item);
                     } else
                         item(key, item)
                                 .stringMaterial(mat.startsWith("adv:") ? mat.substring(4) : null)
@@ -223,7 +222,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
         if (fillItem != null)
             YamlItem.saveItem(cf, fillItem, "fillItem");
 
-        for (Item<T, S> item : items)
+        for (IItem<T, S> item : items)
             item.save(cf);
 
         storage.save(cf, "vars");

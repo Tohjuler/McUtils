@@ -474,7 +474,15 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
     }
 
     @Override
-    public void loadExtra(ConfigurationFile cf, String basePath) {
+    public void load(ConfigurationFile cf, String basePath) {
+        ItemBuilder item = YamlItem.loadItem(cf, basePath);
+        String slot = cf.cf().getString(basePath + ".slot");
+        String mat = cf.cf().getString(basePath + ".material");
+
+        if (mat.startsWith("adv:")) setStringMaterial(mat.substring(4));
+        setItem(item);
+        setSlot(slot);
+
         if (cf.cf().isSet(basePath + ".fallback"))
             setFallbackItem(YamlItem.loadItem(cf, basePath + ".fallback"));
     }
@@ -566,7 +574,8 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
         public void refreshItem(String id) {
             Item<T, S> item = guiConfig.getItems()
                     .stream()
-                    .filter(item2 -> item2.getId().equals(id))
+                    .filter(item2 -> item2.getId().equals(id) && item2 instanceof Item)
+                    .map(item2 -> (Item<T, S>) item2)
                     .findFirst()
                     .orElse(null);
 

@@ -35,14 +35,22 @@ public interface IItem<T extends BaseGui, S extends IStorage> {
     void save(ConfigurationFile cf);
 
     /**
-     * Load extra data from the config
+     * Load the item from the config
      * <br/>
      *
      * @param cf       The config file
      * @param basePath The base path
      * @since 1.18.0
      */
-    void loadExtra(ConfigurationFile cf, String basePath);
+    void load(ConfigurationFile cf, String basePath);
+
+    /**
+     * Get the item id.
+     * <br/>
+     *
+     * @return The item id.
+     */
+    String getId();
 
     /**
      * Add the item to the gui

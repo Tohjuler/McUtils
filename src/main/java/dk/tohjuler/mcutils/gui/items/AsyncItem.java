@@ -134,8 +134,8 @@ public class AsyncItem<T extends BaseGui, S extends IStorage> extends Item<T, S>
     }
 
     @Override
-    public void loadExtra(ConfigurationFile cf, String basePath) {
-        super.loadExtra(cf, basePath);
+    public void load(ConfigurationFile cf, String basePath) {
+        super.load(cf, basePath);
 
         if (cf.cf().isSet(basePath + ".loader"))
             loader = YamlItem.loadItem(cf, basePath + ".loader");
