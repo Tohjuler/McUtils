@@ -57,8 +57,4 @@ public class StaticItem<T extends BaseGui, S extends IStorage> extends Item<T, S
     @Override
     public void save(ConfigurationFile cf) {
     }
-
-    @Override
-    public void loadExtra(ConfigurationFile cf, String basePath) {
-    }
 }
