@@ -5,11 +5,13 @@ import dev.triumphteam.gui.components.GuiAction;
 import dev.triumphteam.gui.components.util.ItemNbt;
 import dev.triumphteam.gui.guis.GuiItem;
 import dk.tohjuler.mcutils.gui.utils.Replacer;
+import dk.tohjuler.mcutils.placeholder.PlaceholderHandler;
 import dk.tohjuler.mcutils.strings.ColorUtils;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -276,6 +278,31 @@ public class ItemBuilder {
                             .collect(Collectors.toList())
             );
 
+        return this;
+    }
+
+    /**
+     * Apply a placeholder handler to the item.
+     * This will apply the placeholder handler to the display name and lore.
+     * <br/>
+     *
+     * @param handler the placeholder handler
+     * @param player  the player to apply the placeholders for
+     * @return the itembuilder
+     * @since 1.23.0
+     */
+    public ItemBuilder applyPlaceholderHandler(PlaceholderHandler handler, @Nullable OfflinePlayer player) {
+        if (getDisplayName() != null)
+            setDisplayName(handler.apply(getDisplayName(), player));
+        if (getLore() != null)
+            setLore(
+                    getLore().stream()
+                            .map(s -> handler.apply(s, player))
+                            .filter(s -> !s.startsWith("/**")) // Ignore lines starting with /**
+                            .flatMap(s -> Arrays.stream(s.split("\\n")))
+                            .flatMap(s -> Arrays.stream(s.split("%nl%")))
+                            .collect(Collectors.toList())
+            );
         return this;
     }
 

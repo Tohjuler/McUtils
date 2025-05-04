@@ -1,6 +1,7 @@
 package dk.tohjuler.mcutils.gui.utils;
 
 import dk.tohjuler.mcutils.items.ItemBuilder;
+import dk.tohjuler.mcutils.placeholder.PlaceholderHandler;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
@@ -33,6 +34,23 @@ public abstract class Replacer<S extends IStorage> {
                 str = replaceInString(str, regex, func);
         } catch (Exception e) {
             new RuntimeException("Error replacing in Replacer: regex: "+regex, e).printStackTrace();
+        }
+    }
+
+    /**
+     * Apply a placeholder handler to the item or string.
+     * <br/>
+     * @param ph The placeholder handler to apply
+     * @since 1.23.0
+     */
+    protected void applyPlaceholderHandler(PlaceholderHandler ph) {
+        try {
+            if (item != null)
+                item = item.applyPlaceholderHandler(ph, player);
+            else if (str != null)
+                str = ph.apply(str, player);
+        } catch (Exception e) {
+            new RuntimeException("Error applying placeholder handler", e).printStackTrace();
         }
     }
 

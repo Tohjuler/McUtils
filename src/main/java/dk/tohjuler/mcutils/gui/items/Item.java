@@ -14,6 +14,7 @@ import dk.tohjuler.mcutils.gui.utils.SlotParser;
 import dk.tohjuler.mcutils.items.ItemBuilder;
 import dk.tohjuler.mcutils.items.SkullCreator;
 import dk.tohjuler.mcutils.items.YamlItem;
+import dk.tohjuler.mcutils.placeholder.PlaceholderHandler;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
@@ -168,6 +169,37 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
      */
     public Item<T, S> replacer(Replacer<S> replacer) {
         this.replacer = replacer;
+        return this;
+    }
+
+    /**
+     * Apply a placeholder handler to the item.
+     * Alias for {@link #applyPlaceholderHandler(PlaceholderHandler)}
+     * <br/>
+     *
+     * @param ph The placeholder handler to apply
+     * @return The item
+     * @since 1.23.0
+     */
+    public Item<T, S> replacer(PlaceholderHandler ph) {
+        return applyPlaceholderHandler(ph);
+    }
+
+    /**
+     * Apply a placeholder handler to the item.
+     * <br/>
+     *
+     * @param ph The placeholder handler to apply
+     * @return The item
+     * @since 1.23.0
+     */
+    public Item<T, S> applyPlaceholderHandler(PlaceholderHandler ph) {
+        this.replacer = new Replacer<S>() {
+            @Override
+            public void replace(Player p, S localStorage) {
+                applyPlaceholderHandler(ph);
+            }
+        };
         return this;
     }
 
