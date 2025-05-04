@@ -36,7 +36,7 @@ public class PlaceholderHandler {
      * <br/>
      *
      * @param input              The input string to apply the placeholders to.
-     * @param placeholderObjects Object to apply placeholders from the class must be a subclass of IPlaceholder or be registered in
+     * @param placeholderObjects Object to apply placeholders from the class must be a subclass of IPlaceholder or be registered in the registry.
      * @return The input string with the placeholders applied.
      */
     public String apply(String input, Object... placeholderObjects) {
@@ -49,7 +49,7 @@ public class PlaceholderHandler {
      *
      * @param input              The input string to apply the placeholders to.
      * @param player             The player to apply the placeholders to.
-     * @param placeholderObjects Object to apply placeholders from the class must be a subclass of IPlaceholder or be registered in
+     * @param placeholderObjects Object to apply placeholders from the class must be a subclass of IPlaceholder or be registered in the registry.
      * @return The input string with the placeholders applied.
      */
     public String apply(String input, @Nullable OfflinePlayer player, Object... placeholderObjects) {
@@ -130,5 +130,32 @@ public class PlaceholderHandler {
     public PlaceholderHandler usePlaceholderRegistry(@NotNull PlaceholderRegistry registry) {
         this.registry = registry;
         return this;
+    }
+
+    // Static methods
+
+    /**
+     * Apply the placeholders to the input string, with a list of objects.
+     * <br/>
+     *
+     * @param input              The input string to apply the placeholders to.
+     * @param placeholderObjects Object to apply placeholders from the class must be a subclass of IPlaceholder or be registered in the registry.
+     * @return The input string with the placeholders applied.
+     */
+    public static String applyFromObjs(String input, Object... placeholderObjects) {
+        return new PlaceholderHandler().apply(input, null, placeholderObjects);
+    }
+
+    /**
+     * Apply the placeholders to the input string, with a list of objects.
+     * <br/>
+     *
+     * @param input              The input string to apply the placeholders to.
+     * @param player             The player to apply the placeholders to.
+     * @param placeholderObjects Object to apply placeholders from the class must be a subclass of IPlaceholder or be registered in the registry.
+     * @return The input string with the placeholders applied.
+     */
+    public static String applyFromObjs(String input, OfflinePlayer player, Object... placeholderObjects) {
+        return new PlaceholderHandler().apply(input, player, placeholderObjects);
     }
 }
