@@ -13,6 +13,7 @@ import java.nio.file.Files;
 /**
  * A class to handle configuration files.
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class ConfigurationFile {
 
     private final YamlConfiguration yamlConfiguration;
@@ -166,6 +167,7 @@ public class ConfigurationFile {
                         in.close();
                     }
                 } catch (IOException e) {
+                    //noinspection CallToPrintStackTrace
                     new RuntimeException("Could not save " + outFile.getName() + " to " + outFile, e).printStackTrace();
                 }
 

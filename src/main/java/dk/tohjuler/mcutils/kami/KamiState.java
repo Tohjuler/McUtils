@@ -55,7 +55,7 @@ public class KamiState {
     /**
      * Writes to output handler.
      * If error is not null, it will be written to the error channel.
-     * else it will be written to the out channel.
+     * Else it will be written to the out channel.
      * <br>
      *
      * @param level   The level of the message.
@@ -88,7 +88,7 @@ public class KamiState {
     }
 
     /**
-     * Write an info message to out channel.
+     * Write an info message to the out channel.
      * Level filter is applied, use {@link #write(String...)} to bypass.
      * <br>
      *
@@ -99,7 +99,7 @@ public class KamiState {
     }
 
     /**
-     * Write a warning message to out channel.
+     * Write a warning message to the out channel.
      * Level filter is applied, use {@link #write(String...)} to bypass.
      * <br>
      *
@@ -110,7 +110,7 @@ public class KamiState {
     }
 
     /**
-     * Write a debug message to out channel.
+     * Write a debug message to the out channel.
      * Level filter is applied, use {@link #write(String...)} to bypass.
      * <br>
      *
@@ -121,7 +121,7 @@ public class KamiState {
     }
 
     /**
-     * Write an error message to err channel.
+     * Write an error message to the err channel.
      * <br>
      *
      * @param error The error to log.
@@ -131,7 +131,7 @@ public class KamiState {
     }
 
     /**
-     * Write an error message to err channel.
+     * Write an error message to the err channel.
      * Alias for {@link #writeError(KamiError)}.
      * <br>
      *

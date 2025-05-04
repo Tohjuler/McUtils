@@ -68,8 +68,8 @@ public enum ChestPatterns {
      * All patternes will be takes as the gui has 6 rows.
      * <br/>
      *
-     * @param rows       The amount of free rows to use.
-     * @param itemAmount The amount of items to use.
+     * @param rows       The number of free rows to use.
+     * @param itemAmount The number of items to use.
      * @return The pattern.
      * @since 1.21.0
      */
@@ -83,11 +83,11 @@ public enum ChestPatterns {
 
     /**
      * Get a pattern by rows and item amount with an offset.
-     * All patternes will be takes as the gui has 6 rows.
+     * All patternes will be taken as the gui has 6 rows.
      * <br/>
      *
-     * @param rows       The amount of free rows to use.
-     * @param itemAmount The amount of items to use.
+     * @param rows       The number of free rows to use.
+     * @param itemAmount The number of items to use.
      * @param offset     The offset to add to the slots.
      * @return The pattern with the offset.
      * @since 1.21.0
@@ -99,11 +99,11 @@ public enum ChestPatterns {
 
     /**
      * Get a pattern by rows and item amount as a string.
-     * All patternes will be takes as the gui has 6 rows.
+     * All patternes will be taken as the gui has 6 rows.
      * <br/>
      *
-     * @param rows       The amount of free rows to use.
-     * @param itemAmount The amount of items to use.
+     * @param rows       The number of free rows to use.
+     * @param itemAmount The number of items to use.
      * @return The string pattern.
      * @since 1.21.0
      */
@@ -117,11 +117,11 @@ public enum ChestPatterns {
 
     /**
      * Get a pattern by rows and item amount with an offset as a string.
-     * All patternes will be takes as the gui has 6 rows.
+     * All patternes will be taken as the gui has 6 rows.
      * <br/>
      *
-     * @param rows       The amount of free rows to use.
-     * @param itemAmount The amount of items to use.
+     * @param rows       The number of free rows to use.
+     * @param itemAmount The number of items to use.
      * @param offset     The offset to add to the slots.
      * @return The string pattern with the offset.
      * @since 1.21.0

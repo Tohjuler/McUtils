@@ -3,7 +3,10 @@ package dk.tohjuler.mcutils.kami;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -59,7 +62,7 @@ public class KamiUtils {
      *
      * @param clazz      The class to check the method for.
      * @param methodName The name of the method to check.
-     * @param input      The input to check the method with. First element is the object, the rest are the parameters.
+     * @param input      The input to check the method with. The First element is the object, the rest are the parameters.
      * @return The overridden method, or null if not overridden.
      */
     public static @Nullable Object runMethodOverride(Class<?> clazz, String methodName, Object... input) {

@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@SuppressWarnings("UnusedReturnValue")
 @Getter
 public class Talk {
     private final TalkManager talkManager;
@@ -45,7 +46,7 @@ public class Talk {
 
     /**
      * Adds a message to the talk.
-     * Messages are send before the choices.
+     * Messages are sent before the choices.
      * <br>
      *
      * @param message The message to add.
@@ -58,7 +59,7 @@ public class Talk {
 
     /**
      * Adds a message to the talk.
-     * Messages are send before the choices.
+     * Messages are sent before the choices.
      * <br>
      *
      * @param message The message to add.
@@ -72,7 +73,7 @@ public class Talk {
 
     /**
      * Adds a message to the talk.
-     * Messages are send before the choices.
+     * Messages are sent before the choices.
      * <br>
      *
      * @param message The message to add.

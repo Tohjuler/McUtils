@@ -91,6 +91,7 @@ public abstract class AsList<T, GUI extends BaseGui, S extends IStorage> {
      * @return If the item should be shown
      * @since 1.19.0
      */
+    @SuppressWarnings("SameReturnValue")
     public boolean show(Player player, S localStorage, T value) {
         return true;
     }

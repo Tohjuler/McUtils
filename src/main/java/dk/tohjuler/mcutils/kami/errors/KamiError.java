@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 /**
  * Represents a Kami error.
  */
+@SuppressWarnings("CallToPrintStackTrace")
 @Getter
 public class KamiError {
     /**

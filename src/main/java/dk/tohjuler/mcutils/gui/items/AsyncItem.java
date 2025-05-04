@@ -59,7 +59,7 @@ public class AsyncItem<T extends BaseGui, S extends IStorage> extends Item<T, S>
 
     /**
      * Set the loader item for this item.
-     * The loader item is the item that is shown while the item is loading.
+     * The loader item is the item shown while the item is loading.
      * <br/>
      *
      * @param loader The loader item.

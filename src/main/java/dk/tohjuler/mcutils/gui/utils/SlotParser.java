@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public class SlotParser {
     public static List<Integer> parseSlotString(String str) {
         return parseSlotString(str, null);

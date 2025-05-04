@@ -13,11 +13,11 @@ import java.util.HashMap;
  */
 public class InventoryUtils {
     /**
-     * Get the amount of empty slots in a player's inventory.
+     * Get the number of empty slots in a player's inventory.
      * <br>
      *
      * @param p Player to check
-     * @return The amount of empty slots in the player's inventory
+     * @return The number of empty slots in the player's inventory
      */
     public static int getEmptySlots(Player p) {
         int count = 0;
@@ -35,7 +35,7 @@ public class InventoryUtils {
      * @param inventory Inventory to modify
      * @param type      The type of Material to remove
      * @param amount    The amount to remove, or {@link Integer#MAX_VALUE} to remove all
-     * @return The amount of items that could not be removed, 0 for success, or -1 for failures
+     * @return The number of items that could not be removed, 0 for success, or -1 for failures
      */
     public static int removeItems(Inventory inventory, Material type, int amount) {
 
@@ -65,7 +65,7 @@ public class InventoryUtils {
      * @param inventory Inventory to remove from
      * @param item      The item to remove
      * @param amount    The amount to remove, or {@link Integer#MAX_VALUE} to remove all
-     * @return The amount of items that could not be removed, 0 for success, or -1 for failures
+     * @return The number of items that could not be removed, 0 for success, or -1 for failures
      * @since 1.23.0
      */
     public static int removeItems(Inventory inventory, ItemStack item, int amount) {
@@ -91,12 +91,12 @@ public class InventoryUtils {
     }
 
     /**
-     * Get the amount of items of a certain type in an inventory.
+     * Get the number of items with a certain type in an inventory.
      * <br>
      *
      * @param inventory Inventory to check
      * @param type      The type of Material to check for
-     * @return The amount of items of the type in the inventory
+     * @return The number of items with the type in the inventory
      */
     public static int getAmountOf(Inventory inventory, Material type) {
         int amount = 0;

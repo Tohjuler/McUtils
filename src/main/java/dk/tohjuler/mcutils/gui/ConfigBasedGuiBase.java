@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@SuppressWarnings({"CallToPrintStackTrace", "EmptyMethod"})
 public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> {
     @Getter
     private final String id;
@@ -64,7 +65,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      *
      * @param id       The id of the gui.
      * @param title    The title of the gui.
-     * @param rows     The amount of rows in the gui.
+     * @param rows     The number of rows in the gui.
      * @param fillType The fill type of the gui.
      * @param fillItem The fill item of the gui.
      * @param category The category of the gui.
@@ -87,7 +88,7 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
      *
      * @param id       The id of the gui.
      * @param title    The title of the gui.
-     * @param rows     The amount of rows in the gui.
+     * @param rows     The number of rows in the gui.
      * @param fillType The fill type of the gui.
      * @param fillItem The fill item of the gui.
      */

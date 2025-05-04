@@ -51,6 +51,9 @@ public class McOutputHandler implements IOutputHandler {
     @Override
     public void err(KamiError error, @Nullable Player p) {
         error.printToConsole();
+
+        if (p == null) return;
+
         TextComponent msg = new TextComponent(
                 ColorUtils.colorize(
                         PREFIX + "&c" +

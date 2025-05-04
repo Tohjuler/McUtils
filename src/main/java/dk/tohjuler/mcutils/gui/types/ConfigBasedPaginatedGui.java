@@ -25,10 +25,10 @@ public abstract class ConfigBasedPaginatedGui extends ConfigBasedGuiBase<Paginat
      *
      * @param id       The id of the gui.
      * @param title    The title of the gui.
-     * @param rows     The amount of rows in the gui.
+     * @param rows     The number of rows in the gui.
      * @param fillType The fill type of the gui.
      * @param fillItem The fill item of the gui.
-     * @param pageSize The amount of items per page.
+     * @param pageSize The number of items per page.
      */
     public ConfigBasedPaginatedGui(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem, int pageSize) {
         super(id, title, rows, fillType, fillItem);
@@ -41,11 +41,11 @@ public abstract class ConfigBasedPaginatedGui extends ConfigBasedGuiBase<Paginat
      *
      * @param id       The id of the gui.
      * @param title    The title of the gui.
-     * @param rows     The amount of rows in the gui.
+     * @param rows     The number of rows in the gui.
      * @param fillType The fill type of the gui.
      * @param fillItem The fill item of the gui.
      * @param category The category of the gui.
-     * @param pageSize The amount of items per page.
+     * @param pageSize The number of items per page.
      */
     public ConfigBasedPaginatedGui(String id, @NotNull String title, int rows, @NotNull FillType fillType, ItemBuilder fillItem, String category, int pageSize) {
         super(id, title, rows, fillType, fillItem, category);

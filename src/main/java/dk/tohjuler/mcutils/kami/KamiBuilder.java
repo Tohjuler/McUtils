@@ -144,8 +144,8 @@ public class KamiBuilder {
 
     /**
      * Use the default debug expressions.
-     * The default debug expressions are focused for debugging.
-     * Allowing you to access variables, methods and classes.
+     * The default debug expressions are focused on debugging.
+     * Allowing you to access variables, methods, and classes.
      * To debug your code.
      * <br>
      *
@@ -163,7 +163,7 @@ public class KamiBuilder {
 
     /**
      * Use the default math expressions.
-     * The default math expressions are focused for math.
+     * The default math expressions are focused on math.
      * Allowing you to do math operations.
      * <br>
      *
@@ -200,7 +200,7 @@ public class KamiBuilder {
     }
 
     /**
-     * Disable an expression from specific class.
+     * Disable an expression from a specific class.
      * <br>
      *
      * @param expClass The expression class.

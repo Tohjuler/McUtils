@@ -165,6 +165,7 @@ public class KamiParser {
 
     // Tests methods
 
+    @SuppressWarnings("SameReturnValue")
     public static String staticTest() {
         return "Hello, World!";
     }

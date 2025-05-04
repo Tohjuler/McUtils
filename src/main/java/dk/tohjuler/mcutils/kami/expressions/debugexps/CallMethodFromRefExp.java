@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ public class CallMethodFromRefExp extends KamiExp {
         String methodName = matcher.group(2);
         String params = matcher.group(3);
 
-        // Get object
+        // Get an object
         Object obj = state.getObjFromRef(objRef);
         if (obj == null) return result.error(new KamiError("Object not found: " + objRef));
 
@@ -42,7 +43,7 @@ public class CallMethodFromRefExp extends KamiExp {
                 methodName,
                 !params.isEmpty() ? Arrays.stream(params.split(",")).map(str -> {
                     if (KamiUtils.OBJECT_REF_PATTERN.matcher(str).matches() && state.getObjFromRef(str) != null)
-                        return state.getObjFromRef(str).getClass();
+                        return Objects.requireNonNull(state.getObjFromRef(str)).getClass();
                     return state.getTypeHandler().detectClass(str);
                 }).toArray(Class[]::new) : new Class[0]
         );
@@ -58,6 +59,7 @@ public class CallMethodFromRefExp extends KamiExp {
                 paramsList.add(0, obj);
                 res = KamiUtils.runMethodOverride(obj.getClass(), methodName, paramsList.toArray());
             } else {
+                assert method != null : "Method should not be null here";
                 if (!method.isAccessible()) method.setAccessible(true);
                 res = method.invoke(obj, Arrays.stream(params.split(",")).map(state::parseObject).toArray());
             }

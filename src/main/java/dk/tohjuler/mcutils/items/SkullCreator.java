@@ -45,7 +45,7 @@ public class SkullCreator {
     }
 
     /**
-     * Create a player skull from an url
+     * Create a player skull from a url
      * @param url the url of the player skin
      * @return the head of the player
      */
@@ -55,7 +55,7 @@ public class SkullCreator {
     }
 
     /**
-     * Set the skull owner of the item from an url
+     * Set the skull owner of the item from a url
      * @param itemStack the item
      * @param url the url of the player skin
      * @return the item
@@ -106,7 +106,7 @@ public class SkullCreator {
     }
 
     /**
-     * Set the skull owner of the block from an url
+     * Set the skull owner of the block from a url
      *
      * @param block the block
      * @param url the url of the player skin
@@ -127,9 +127,9 @@ public class SkullCreator {
         notNull(block, "block");
         notNull(base64, "base64");
         UUID uUID = new UUID(base64.hashCode(), base64.hashCode());
-        String str = String.format("%d %d %d %s", Integer.valueOf(block.getX()),
-                Integer.valueOf(block.getY()),
-                Integer.valueOf(block.getZ()), "{Owner:{Id:\"" + uUID + "\",Properties:{textures:[{Value:\"" + base64 + "\"}]}}}");
+        String str = String.format("%d %d %d %s", block.getX(),
+                block.getY(),
+                block.getZ(), "{Owner:{Id:\"" + uUID + "\",Properties:{textures:[{Value:\"" + base64 + "\"}]}}}");
     }
 
     private static ItemStack getPlayerSkullItem() {

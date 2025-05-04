@@ -1,3 +1,4 @@
+<!--suppress HtmlDeprecatedAttribute -->
 <h1 align="center">McUtils</h1>
 <p align="center">Just a collection of utils for minecraft development </p>
 <br/><br/>
@@ -39,7 +40,7 @@ Here is a list of external libraries that comes with this library:
 
 ## JavaDocs
 
-You can find the JavaDocs for this library [here](https://tohjuler.github.io/McUtils/).
+You can find the Javadocs for this library [here](https://tohjuler.github.io/McUtils/).
 
 ## Maven
 
@@ -124,7 +125,7 @@ public class ExampleGui extends ConfigBasedGui {
                 }
         ).clickAction((p, e) -> {
             p.sendMessage("You clicked the player info item!");
-            e.getEvent().setCancelled(false); // Event is cancelled by default
+          e.getEvent().setCancelled(false); // Event is canceled by default
             e.getGui(); // Access the gui, used for getting items in the gui or updating the gui
         }).add();
 

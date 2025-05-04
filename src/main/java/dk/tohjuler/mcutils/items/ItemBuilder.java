@@ -81,7 +81,7 @@ public class ItemBuilder {
     }
 
     /**
-     * Create a new ItemBuilder, from a {@link Material}, an amount and a durability
+     * Create a new ItemBuilder, from a {@link Material}, an amount and durability
      *
      * @param material   the material
      * @param amount     the amount
@@ -229,6 +229,7 @@ public class ItemBuilder {
      * @param durability the item durability
      * @return the itembuilder
      */
+    @SuppressWarnings("UnusedReturnValue")
     public ItemBuilder setDurability(short durability) {
         this.item.setDurability(durability);
         return this;
@@ -357,13 +358,15 @@ public class ItemBuilder {
     public ItemBuilder setLore(Collection<String> lore) {
         ItemMeta itemMeta = this.item.getItemMeta();
         if (itemMeta == null) return this;
-        ArrayList<String> arrayList = new ArrayList<>();
 
         // Allows for using \n and %nl% in lore to create new lines
-        lore = lore.stream().map(str -> str.split("\n|%nl%")).flatMap(Arrays::stream).collect(Collectors.toList());
-        for (String str : lore)
-            arrayList.add(colorize(str));
-        itemMeta.setLore(arrayList);
+        itemMeta.setLore(
+                lore.stream()
+                        .map(this::colorize)
+                        .map(str -> str.split("\n|%nl%"))
+                        .flatMap(Arrays::stream)
+                        .collect(Collectors.toList())
+        );
         this.item.setItemMeta(itemMeta);
         return this;
     }
@@ -377,17 +380,12 @@ public class ItemBuilder {
     public ItemBuilder setLore(String... lore) {
         ItemMeta itemMeta = this.item.getItemMeta();
         if (itemMeta == null) return this;
-        ArrayList<String> arrayList = new ArrayList<>();
-        byte b = 0;
-        String[] arrayOfString;
-        for (int i = (arrayOfString = lore).length; b < i; ) {
-            String str = arrayOfString[b];
-            arrayList.add(colorize(str));
-            b = (byte) (b + 1);
-        }
         // Allows for using \n and %nl% in lore to create new lines
         itemMeta.setLore(
-                arrayList.stream().map(str -> str.split("\n|%nl%")).flatMap(Arrays::stream).collect(Collectors.toList())
+                Arrays.stream(lore)
+                        .map(this::colorize)
+                        .map(str -> str.split("\n|%nl%"))
+                        .flatMap(Arrays::stream).collect(Collectors.toList())
         );
         this.item.setItemMeta(itemMeta);
         return this;
@@ -481,18 +479,7 @@ public class ItemBuilder {
      * @return the itembuilder
      */
     public ItemBuilder addLore(Collection<String> lines) {
-        ItemMeta itemMeta = this.item.getItemMeta();
-        if (itemMeta == null) return this;
-        if (itemMeta.getLore() == null)
-            itemMeta.setLore(new ArrayList<>());
-        List<String> list = itemMeta.getLore();
-        // Allows for using \n and %nl% in lore to create new lines
-        lines = lines.stream().map(str -> str.split("\n|%nl%")).flatMap(Arrays::stream).collect(Collectors.toList());
-        for (String str : lines)
-            list.add(colorize(str));
-        itemMeta.setLore(list);
-        this.item.setItemMeta(itemMeta);
-        return this;
+        return addLore(lines.toArray(new String[0]));
     }
 
     /**
@@ -508,13 +495,9 @@ public class ItemBuilder {
             itemMeta.setLore(new ArrayList<>());
         List<String> list = itemMeta.getLore();
         if (list == null) list = new ArrayList<>();
-        byte b = 0;
-        String[] arrayOfString;
-        for (int i = (arrayOfString = lore).length; b < i; ) {
-            String str = arrayOfString[b];
-            list.add(colorize(str));
-            b = (byte) (b + 1);
-        }
+        list.addAll(
+                Arrays.stream(lore).map(this::colorize).collect(Collectors.toList())
+        );
         // Allows for using \n and %nl% in lore to create new lines
         itemMeta.setLore(
                 list.stream().map(str -> str.split("\n|%nl%")).flatMap(Arrays::stream).collect(Collectors.toList())
@@ -710,7 +693,13 @@ public class ItemBuilder {
     }
 
     public ItemBuilder clone() {
-        return new ItemBuilder(this.item.clone(), this.headBase64);
+        try {
+            ItemBuilder itemBuilder = (ItemBuilder) super.clone();
+            itemBuilder.item = this.item.clone();
+            return itemBuilder;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Getters

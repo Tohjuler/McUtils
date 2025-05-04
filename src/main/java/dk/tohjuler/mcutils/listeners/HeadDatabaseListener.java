@@ -13,7 +13,7 @@ import java.util.*;
 public class HeadDatabaseListener implements Listener {
 
     /**
-     * Special characters to chars map
+     * Special characters to char
      */
     private static final Map<String, Character> charNameMap = new HashMap<>();
 

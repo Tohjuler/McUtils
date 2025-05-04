@@ -28,6 +28,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
+@SuppressWarnings("CallToPrintStackTrace")
 @Getter
 public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> {
     private final ConfigBasedGuiBase<T, S> guiConfig;
@@ -404,6 +405,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
     }
 
     protected void handleAsList(T gui, Player p, S localStorage, boolean update) {
+        assert asList != null : "asList is null, this should not happen";
         List<AsList.Holder<T, S>> items = asList.call(p, localStorage);
         List<Integer> slots = parseSlot();
 
@@ -521,7 +523,7 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
 
     /**
      * Wrapped event for the InventoryClickEvent.
-     * Adding access to the gui, local storage and some utils.
+     * Adding access to the gui, local storage, and some utils.
      * <br/>
      *
      * @param <T> The type of the gui

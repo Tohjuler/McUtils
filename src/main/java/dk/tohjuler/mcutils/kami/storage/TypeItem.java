@@ -42,7 +42,7 @@ public class TypeItem<BASE> {
      *
      * @param type The type to cast to.
      * @param <T>  The type to cast to.
-     * @return The casted value.
+     * @return The cast value.
      */
     public <T> T cast(Class<T> type) {
         return type.cast(value);

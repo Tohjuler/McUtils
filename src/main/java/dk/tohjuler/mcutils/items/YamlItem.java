@@ -15,7 +15,7 @@ import static dk.tohjuler.mcutils.data.ConfigUtils.*;
 
 public class YamlItem {
     /**
-     * Save an {@link ItemBuilder} to a yaml configuration file
+     * Save an {@link ItemBuilder} to a YAML configuration file
      *
      * @param cf      The configuration file to save to
      * @param item    The item to save
@@ -26,7 +26,7 @@ public class YamlItem {
     }
 
     /**
-     * Save an {@link ItemBuilder} to a yaml configuration section
+     * Save an {@link ItemBuilder} to a YAML configuration section
      *
      * @param cf      The configuration section to save to
      * @param item    The item to save
@@ -52,7 +52,7 @@ public class YamlItem {
     }
 
     /**
-     * Load an {@link ItemBuilder} from a yaml configuration file
+     * Load an {@link ItemBuilder} from a YAML configuration file
      *
      * @param cf      The configuration file to load from
      * @param baseKey The base key to load the item from
@@ -63,7 +63,7 @@ public class YamlItem {
     }
 
     /**
-     * Load an {@link ItemBuilder} from a yaml configuration section
+     * Load an {@link ItemBuilder} from a YAML configuration section
      *
      * @param cf      The configuration section to load from
      * @param baseKey The base key to load the item from
@@ -83,9 +83,9 @@ public class YamlItem {
                     .forEach(
                             enchantment ->
                                     item.addEnchantment(
-                                            XEnchantment.matchXEnchantment(enchantment)
+                                            XEnchantment.of(enchantment)
                                                     .orElse(XEnchantment.AQUA_AFFINITY)
-                                                    .getEnchant()
+                                                    .get()
                                             ,
                                             cf.getInt(baseKey + ".enchantments." + enchantment)
                                     )

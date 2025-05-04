@@ -10,8 +10,8 @@ public class Flag {
      */
     protected final String fullName;
     /**
-     * Used as a alias for the flag.
-     * Can be used with the prefix -
+     * Used as an alias for the flag.
+     * Can be used with the prefix '-'
      */
     protected final String shortAlias;
     protected final String description;
@@ -27,6 +27,7 @@ public class Flag {
         this.description = description;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public boolean parse(String str) {
         if (enabled) return false;
         enabled = str.equalsIgnoreCase(fullName) || str.equalsIgnoreCase(shortAlias);

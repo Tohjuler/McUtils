@@ -20,7 +20,7 @@ public abstract class Replacer<S extends IStorage> {
     private @Nullable Player player;
 
     /**
-     * Replace a string in the lore and display name
+     * Replace a string in the lore and display the name
      * <br/>
      *
      * @param regex The string to replace
@@ -33,6 +33,7 @@ public abstract class Replacer<S extends IStorage> {
             else if (str != null)
                 str = replaceInString(str, regex, func);
         } catch (Exception e) {
+            //noinspection CallToPrintStackTrace
             new RuntimeException("Error replacing in Replacer: regex: "+regex, e).printStackTrace();
         }
     }
@@ -50,6 +51,7 @@ public abstract class Replacer<S extends IStorage> {
             else if (str != null)
                 str = ph.apply(str, player);
         } catch (Exception e) {
+            //noinspection CallToPrintStackTrace
             new RuntimeException("Error applying placeholder handler", e).printStackTrace();
         }
     }

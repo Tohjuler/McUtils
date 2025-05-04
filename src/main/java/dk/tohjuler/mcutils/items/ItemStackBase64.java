@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public class ItemStackBase64 {
     /**
      * A method to serialize a single {@link ItemStack} to Base64 String.

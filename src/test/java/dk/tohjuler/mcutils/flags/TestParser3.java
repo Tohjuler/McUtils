@@ -10,7 +10,7 @@ public class TestParser3 extends FlagParser {
     );
 
     private final ValueFlag<String> testFlag2 = new ValueFlag<>(
-            "valuetest",
+            "valueTest",
             "v",
             "Used to test2"
     );

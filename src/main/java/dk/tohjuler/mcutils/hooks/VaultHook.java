@@ -88,11 +88,11 @@ public class VaultHook {
     }
 
     /**
-     * Get the groups of a player
+     * Get the player's groups
      * <br/>
      *
      * @param player The player
-     * @return The groups of the player
+     * @return The player's groups
      * @since 1.0.0
      */
     public static String[] getPlayerGroups(Player player) {

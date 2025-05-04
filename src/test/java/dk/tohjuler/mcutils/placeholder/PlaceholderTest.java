@@ -1,5 +1,6 @@
 package dk.tohjuler.mcutils.placeholder;
 
+import lombok.Getter;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -22,6 +23,7 @@ public class PlaceholderTest {
     }
 
     private static class TestObj {
+        @Getter
         private final String name;
 
         public TestObj(String name) {

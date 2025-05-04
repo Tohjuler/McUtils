@@ -6,13 +6,11 @@ import dk.tohjuler.mcutils.gui.utils.IStorage;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.function.Function;
-
 /**
  * Abstract class for handling events for a gui item.
  * <br/>
  * Warning: Use of these events can override the item, meaning that it can bypas the config.
- * If there is an event handler in use then the click action on the item, will not be called.
+ * If there is an event handler in use, then the click action on the item will not be called.
  *
  * @param <T> The type of the gui.
  * @param <S> The type of the storage.
@@ -22,7 +20,7 @@ public abstract class ItemEventHandler<T extends BaseGui, S extends IStorage> {
 
     /**
      * Called when the item is created.
-     * If you want to modify the item, pls use {@link dk.tohjuler.mcutils.gui.utils.Replacer#modifyItem(Function)}
+     * If you want to modify the item, pls use {@see dk.tohjuler.mcutils.gui.utils.Replacer#modifyItem(Function)}
      * but remember that it bypasses the config.
      * <br/>
      *

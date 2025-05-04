@@ -35,7 +35,7 @@ public class TalkYaml {
 
         // Sound
         talk.msgSound(
-                XSound.matchXSound(
+                XSound.of(
                         ConfigUtils.get(cf, "", "ENTITY_EXPERIENCE_ORB_PICKUP", "sound", "msg-sound", "message-sound")
                 ).orElse(XSound.ENTITY_EXPERIENCE_ORB_PICKUP)
         );
@@ -61,27 +61,23 @@ public class TalkYaml {
 
         // Replacers
         if (cf.isSet("replacers")) {
-            cf.getConfigurationSection("replacers").getKeys(false).forEach(replace -> {
-                talk.replacer(
-                        replace,
-                        cf.getString("replacers." + replace)
-                );
-            });
+            cf.getConfigurationSection("replacers").getKeys(false).forEach(replace -> talk.replacer(
+                    replace,
+                    cf.getString("replacers." + replace)
+            ));
         }
 
         // Choices
         if (cf.isSet("choices")) {
-            cf.getConfigurationSection("choices").getKeys(false).forEach(choice -> {
-                talk.choice(
-                        choice,
-                        ConfigUtils.get(cf, "choices." + choice + ".", "HOVER TEXT NOT FOUND", "hover", "hover-text"),
-                        ch ->
-                                ch.talk(talk2 ->
-                                        load(talkManager, cf.getConfigurationSection("choices." + choice))
-                                                .useSettingsFrom(talk2)
-                                )
-                );
-            });
+            cf.getConfigurationSection("choices").getKeys(false).forEach(choice -> talk.choice(
+                    choice,
+                    ConfigUtils.get(cf, "choices." + choice + ".", "HOVER TEXT NOT FOUND", "hover", "hover-text"),
+                    ch ->
+                            ch.talk(talk2 ->
+                                    load(talkManager, cf.getConfigurationSection("choices." + choice))
+                                            .useSettingsFrom(talk2)
+                            )
+            ));
         }
 
         return talk;

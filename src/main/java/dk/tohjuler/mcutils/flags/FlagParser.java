@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public abstract class FlagParser {
     protected final Map<String, Flag> flags = new HashMap<>();
 
@@ -76,7 +77,7 @@ public abstract class FlagParser {
         List<String> foundFlags = new ArrayList<>();
         StringBuilder flag = new StringBuilder();
         char lastChar = ' ';
-        String flagPrefix = "";
+        StringBuilder flagPrefix = new StringBuilder();
         for (char c : toParse.toCharArray()) {
             if (c == ' ' && flag.length() > 0) {
                 boolean isValueFlag = false;
@@ -88,25 +89,25 @@ public abstract class FlagParser {
                 }
                 if (!isValueFlag || flag.toString().contains(" ")) {
                     flags.forEach(f -> f.parse(flag.toString()));
-                    foundFlags.add(flagPrefix + flag);
+                    foundFlags.add(flagPrefix.toString() + flag);
                     flag.delete(0, flag.length()); // Clear the flag
                     lastChar = ' ';
-                    flagPrefix = "";
+                    flagPrefix = new StringBuilder();
                     continue;
                 }
             }
             if (c == '-' && lastChar == '-') {
-                flagPrefix += "-";
+                flagPrefix.append("-");
                 continue;
             }
             if (lastChar == '-' || flag.length() > 0)
                 flag.append(c);
 
-            if (c == '-' && flag.length() == 0) flagPrefix = "-";
+            if (c == '-' && flag.length() == 0) flagPrefix = new StringBuilder("-");
             lastChar = c;
         }
         if (flag.length() > 0) {
-            foundFlags.add(flagPrefix + flag);
+            foundFlags.add(flagPrefix.toString() + flag);
             flags.forEach(f -> f.parse(flag.toString()));
         }
 

@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Level;
 
+@SuppressWarnings({"CallToPrintStackTrace", "ResultOfMethodCallIgnored"})
 public class JsonModel<T> extends DataModel<T, T> {
 
     private final JavaPlugin plugin;
@@ -64,6 +65,7 @@ public class JsonModel<T> extends DataModel<T, T> {
         try {
             if (!file.exists()) return false;
             BufferedReader reader = Files.newBufferedReader(file.toPath());
+            //noinspection UnstableApiUsage
             data = gson.fromJson(
                     reader,
                     type != null

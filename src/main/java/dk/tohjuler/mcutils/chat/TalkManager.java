@@ -19,6 +19,7 @@ import java.util.Map;
  * Where the player can choose between different options.
  * It can be used for NPC dialogues, quests, etc.
  */
+@SuppressWarnings("CallToPrintStackTrace")
 public class TalkManager {
     @Getter
     private final JavaPlugin plugin;

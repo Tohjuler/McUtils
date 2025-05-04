@@ -1,10 +1,14 @@
 package dk.tohjuler.mcutils.gui.utils;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /// Utils for handling storage persistence, in IStorage implementations.
+@SuppressWarnings({"DuplicatedCode", "CallToPrintStackTrace"})
 public class StoragePersistenceUtils {
 
     /**
@@ -36,6 +40,7 @@ public class StoragePersistenceUtils {
                 StoragePersistent sp = f.getAnnotation(StoragePersistent.class);
 
                 f.setAccessible(true);
+                assert sp != null : "StoragePersistent annotation is null";
                 map.put(sp.target().isEmpty() ? f.getName() : sp.target(), f.get(storage));
             } catch (Exception e) {
                 new RuntimeException("Failed to get field value", e).printStackTrace();
@@ -69,6 +74,7 @@ public class StoragePersistenceUtils {
         for (Field f : fields) {
             try {
                 StoragePersistent sp = f.getAnnotation(StoragePersistent.class);
+                assert sp != null : "StoragePersistent annotation is null";
                 String name = sp.target().isEmpty() ? f.getName() : sp.target();
                 if (!map.containsKey(name)) {
                     continue;

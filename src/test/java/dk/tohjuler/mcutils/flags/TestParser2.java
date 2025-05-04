@@ -1,6 +1,7 @@
 package dk.tohjuler.mcutils.flags;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class TestParser2 extends FlagParser {
     private final Flag testFlag = new Flag(
@@ -10,7 +11,7 @@ public class TestParser2 extends FlagParser {
     );
 
     private final ValueFlag<String> testFlag2 = new ValueFlag<>(
-            "valuetest",
+            "valueTest",
             "v",
             "Used to test2"
     );

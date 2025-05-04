@@ -6,7 +6,8 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 public class KamiTest {
     private final KamiParser defaultDebugParser = new KamiBuilder()
@@ -71,6 +72,7 @@ public class KamiTest {
 
     // Typehandler
 
+    @SuppressWarnings("DataFlowIssue")
     @Test
     public void testTypeHandler() {
         TypeHandler typeHandler = new TypeHandler();

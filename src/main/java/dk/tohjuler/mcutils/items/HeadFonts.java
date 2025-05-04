@@ -18,6 +18,7 @@ public class HeadFonts {
      * @param base64 The base64 of the itemstack
      * @since 1.8.0
      */
+    @SuppressWarnings("JavaExistingMethodCanBeUsed")
     public static void addChar(String type, char c, ItemStack value, String base64) {
         chars.put(type.toLowerCase()+" "+c, value);
         charsBase64.put(type.toLowerCase()+" "+c, base64);

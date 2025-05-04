@@ -20,6 +20,7 @@ import java.util.Arrays;
  *
  * @since 1.18.0
  */
+@SuppressWarnings({"EmptyMethod", "CanBeFinal", "CallToPrintStackTrace"})
 public abstract class GuisHolder {
     protected @Nullable XSound clickSound = XSound.UI_BUTTON_CLICK;
     /**
@@ -138,7 +139,7 @@ public abstract class GuisHolder {
 
     /**
      * Called right before opening the gui.
-     * Remember the onCreate event on the gui is call before this.
+     * Remember the onCreate event on the gui is called before this.
      * This is a global event for all guis.
      * <br/>
      *
@@ -152,7 +153,7 @@ public abstract class GuisHolder {
 
     /**
      * Called when the gui is closed.
-     * Remember the onClose event on the gui is call before this.
+     * Remember the onClose event on the gui is called before this.
      * This is a global event for all guis.
      * <br/>
      *

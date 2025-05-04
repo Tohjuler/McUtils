@@ -5,6 +5,7 @@ import dk.tohjuler.mcutils.kami.handlers.IOutputHandler;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public class DefaultOutputHandler implements IOutputHandler {
     @Override
     public void out(String message, @Nullable Player player) {

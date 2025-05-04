@@ -17,7 +17,7 @@ public class ToStringExp extends KamiExp {
     public ToStringExp() {
         super(
                 // Matches everything, so it always gets executed.
-                // It handles all the validation internal.
+                // It handles all the validation internally.
                 Pattern.compile("(.*?)"),
                 "",
                 "To String",

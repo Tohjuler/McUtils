@@ -30,6 +30,7 @@ public abstract class DataModel<T, S> {
     public abstract boolean load();
     public abstract boolean loadFrom(File path);
 
+    @SuppressWarnings("UnusedReturnValue")
     public abstract boolean save();
     public abstract boolean saveTo(File path);
 

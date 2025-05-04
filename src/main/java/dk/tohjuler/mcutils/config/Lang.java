@@ -157,15 +157,16 @@ public class Lang {
     }
 
     /**
-     * Replace from a map from the config
+     * Replace it from a map from the config
      *
-     * @param str the string replace in
+     * @param str the string replaces in
      * @param key the key of the map
      * @return the replaced string
      * @since 1.0.0
      */
     public String replaceFromCf(String str, String key) {
-        if (str == null) return str;
+        if (str == null) //noinspection ConstantValue
+            return str;
         if (!langFile.cf().isSet(key)) return str;
         for (String cfKey : langFile.cf().getConfigurationSection(key).getKeys(false))
             str = str.replace(cfKey, langFile.cf().getString(key + "." + cfKey, "NULL"));
@@ -219,7 +220,7 @@ public class Lang {
     // ---
 
     /**
-     * Play the set sound if the key has a sound set, or the default sound if it exists.
+     * Play the set sound if the key has a sound set, or the default sounds if it exists.
      * The sound order:
      * - Key sound
      * - Sound applyIf
@@ -273,25 +274,26 @@ public class Lang {
         return new Sound(langFile, key);
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     public static class Sound {
         private final XSound.Record sound;
         private final String applyIf;
 
         public Sound(ConfigurationFile cf, String basePath) {
             if (cf.cf().isString(basePath)) {
-                sound = XSound.matchXSound(cf.cf().getString(basePath)).orElse(XSound.BLOCK_STONE_BREAK).record();
+                sound = XSound.of(cf.cf().getString(basePath)).orElse(XSound.BLOCK_STONE_BREAK).record();
                 applyIf = null;
                 return;
             }
 
-            sound = XSound.matchXSound(cf.cf().getString(basePath + ".sound")).orElse(XSound.BLOCK_STONE_BREAK).record();
+            sound = XSound.of(cf.cf().getString(basePath + ".sound")).orElse(XSound.BLOCK_STONE_BREAK).record();
             sound.withVolume((float) cf.cf().getDouble(basePath + ".volume"));
             sound.withPitch((float) cf.cf().getDouble(basePath + ".pitch"));
             applyIf = cf.cf().getString(basePath + ".applyIf");
         }
 
         public Sound(String sound) {
-            this.sound = XSound.matchXSound(sound).orElse(XSound.BLOCK_STONE_BREAK).record();
+            this.sound = XSound.of(sound).orElse(XSound.BLOCK_STONE_BREAK).record();
             this.applyIf = null;
         }
 

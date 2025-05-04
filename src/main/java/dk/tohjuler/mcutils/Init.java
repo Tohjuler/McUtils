@@ -18,7 +18,7 @@ import java.util.Map;
 
 /**
  * This class is used to initialize the utils.
- * ChatInput and VaultHook needs to be initialized.
+ * ChatInput and VaultHook need to be initialized.
  */
 public class Init {
 

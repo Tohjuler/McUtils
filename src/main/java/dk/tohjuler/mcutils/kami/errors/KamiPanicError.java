@@ -5,17 +5,17 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a panic error.
- * A panic error is critical and means that the parsing was cancelled.
+ * A panic error is critical and means that the parsing was canceled.
  * <br>
  * There is no code difference between a panic error and a regular error.
- * There is only a class difference, to make it easier to identify the error.
+ * There is only a class difference to make it easier to identify the error.
  */
 public class KamiPanicError extends KamiError {
-    public KamiPanicError(@Nullable KamiExp exp, String message, @Nullable Exception exception) {
+    public KamiPanicError(@Nullable KamiExp exp, String message, Exception exception) {
         super(exp, message, exception);
     }
 
-    public KamiPanicError(String message, @Nullable Exception exception) {
+    public KamiPanicError(String message, Exception exception) {
         super(message, exception);
     }
 

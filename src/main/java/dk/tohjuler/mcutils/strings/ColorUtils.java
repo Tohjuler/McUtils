@@ -34,7 +34,9 @@ public class ColorUtils {
 
     static {
         try {
+            //noinspection JavaReflectionMemberAccess
             COLOR_FROM_CHAT_COLOR = ChatColor.class.getDeclaredMethod("getColor");
+            //noinspection JavaReflectionMemberAccess
             CHAT_COLOR_FROM_COLOR = ChatColor.class.getDeclaredMethod("of", Color.class);
         } catch (NoSuchMethodException e) {
             COLOR_FROM_CHAT_COLOR = null;

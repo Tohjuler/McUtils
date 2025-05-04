@@ -2,6 +2,7 @@ package dk.tohjuler.mcutils.flags;
 
 import lombok.Getter;
 
+@SuppressWarnings("CallToPrintStackTrace")
 @Getter
 public class ValueFlag<T> extends Flag {
     public ValueFlag(String fullName, String shortAlias, String description) {

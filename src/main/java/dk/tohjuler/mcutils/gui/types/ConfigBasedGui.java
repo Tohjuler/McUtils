@@ -22,7 +22,7 @@ public abstract class ConfigBasedGui extends ConfigBasedGuiBase<Gui, Storage> {
      *
      * @param id       The id of the gui.
      * @param title    The title of the gui.
-     * @param rows     The amount of rows in the gui.
+     * @param rows     The number of rows in the gui.
      * @param fillType The fill type of the gui.
      * @param fillItem The fill item of the gui.
      */
@@ -36,7 +36,7 @@ public abstract class ConfigBasedGui extends ConfigBasedGuiBase<Gui, Storage> {
      *
      * @param id       The id of the gui.
      * @param title    The title of the gui.
-     * @param rows     The amount of rows in the gui.
+     * @param rows     The number of rows in the gui.
      * @param fillType The fill type of the gui.
      * @param fillItem The fill item of the gui.
      * @param category The category of the gui.
