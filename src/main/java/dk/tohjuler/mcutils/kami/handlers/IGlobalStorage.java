@@ -17,7 +17,7 @@ public interface IGlobalStorage {
      * Loads the storage, with the provided id.
      * <br>
      *
-     * @param id     The id.
+     * @param id The id.
      */
     void load(String id);
 

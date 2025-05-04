@@ -18,7 +18,7 @@ public class ItemStackBase64 {
      * @return Base64 string of the item
      */
     public static String itemStackToBase64(ItemStack item) {
-        return itemStacksToBase64(new ItemStack[] {item});
+        return itemStacksToBase64(new ItemStack[]{item});
     }
 
     /**

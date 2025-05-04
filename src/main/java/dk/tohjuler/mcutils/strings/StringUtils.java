@@ -9,6 +9,7 @@ public class StringUtils {
      * Generates a random string of the given length.
      * Characters are picked from the set [A-Z][a-z][0-9].
      * <br>
+     *
      * @param length The length of the string to generate.
      * @return A random string of the given length.
      */
@@ -24,7 +25,8 @@ public class StringUtils {
     /**
      * Repeats a string a given number of times.
      * <br>
-     * @param str The string to repeat.
+     *
+     * @param str   The string to repeat.
      * @param times The number of times to repeat the string.
      * @return The repeated string.
      */

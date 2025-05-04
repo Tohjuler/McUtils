@@ -5,11 +5,11 @@ public class Progress {
     /**
      * Get a progress bar
      *
-     * @param num the current progress
-     * @param outOf the total progress
-     * @param bar the bar to use (20 characters long)
+     * @param num         the current progress
+     * @param outOf       the total progress
+     * @param bar         the bar to use (20 characters long)
      * @param noFillColor the color of the bar when not filled
-     * @param fillColor the color of the bar when filled
+     * @param fillColor   the color of the bar when filled
      * @return the progress bar
      */
     public static String getProgress(int num, int outOf, String bar, String noFillColor, String fillColor) {
@@ -29,18 +29,18 @@ public class Progress {
      * This method uses the default bar "▌▌▌▌▌▌▌▌▌▌▌▌▌▌▌▌▌▌▌▌"
      * and the default colors "§8" and "§a"
      *
-     * @param num the current progress
+     * @param num   the current progress
      * @param outOf the total progress
      * @return the progress bar
      */
-     public static String getProgress(int num, int outOf) {
+    public static String getProgress(int num, int outOf) {
         return getProgress(num, outOf, "▌▌▌▌▌▌▌▌▌▌▌▌▌▌▌▌▌▌▌▌", "§8", "§a");
-     }
+    }
 
     /**
      * Get the current progress in percent
      *
-     * @param num the current progress
+     * @param num   the current progress
      * @param outOf the total progress
      * @return the progress in percent
      */

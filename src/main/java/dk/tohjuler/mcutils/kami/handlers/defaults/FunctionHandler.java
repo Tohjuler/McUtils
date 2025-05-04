@@ -58,9 +58,9 @@ public class FunctionHandler implements IHandler {
      * Run a function with the given name and arguments.
      * <br>
      *
-     * @param name The name of the function.
+     * @param name  The name of the function.
      * @param state The state to run the function with.
-     * @param args The arguments to run the function with.
+     * @param args  The arguments to run the function with.
      * @return If the function was found and ran.
      */
     public boolean runFunction(String name, KamiState state, Object... args) {

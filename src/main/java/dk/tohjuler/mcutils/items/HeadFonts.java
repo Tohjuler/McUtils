@@ -12,75 +12,81 @@ public class HeadFonts {
     /**
      * Add a char to the font
      * <br/>
-     * @param type The type of the char
-     * @param c The char
-     * @param value The itemstack
+     *
+     * @param type   The type of the char
+     * @param c      The char
+     * @param value  The itemstack
      * @param base64 The base64 of the itemstack
      * @since 1.8.0
      */
     @SuppressWarnings("JavaExistingMethodCanBeUsed")
     public static void addChar(String type, char c, ItemStack value, String base64) {
-        chars.put(type.toLowerCase()+" "+c, value);
-        charsBase64.put(type.toLowerCase()+" "+c, base64);
+        chars.put(type.toLowerCase() + " " + c, value);
+        charsBase64.put(type.toLowerCase() + " " + c, base64);
     }
 
     /**
      * Get a char from the font
      * <br/>
+     *
      * @param type The type of the char
-     * @param c The char
+     * @param c    The char
      * @return The itemstack
      * @since 1.8.0
      */
     public static ItemStack getChar(String type, char c) {
-        return chars.get((type.toLowerCase()+" "+c).toLowerCase());
+        return chars.get((type.toLowerCase() + " " + c).toLowerCase());
     }
 
     /**
      * Get a char from the font
      * <br/>
+     *
      * @param type The type of the char
-     * @param c The char
+     * @param c    The char
      * @return The base64 of the itemstack
      */
     public static String getCharBase64(String type, char c) {
-        return charsBase64.get((type+" "+c).toLowerCase());
+        return charsBase64.get((type + " " + c).toLowerCase());
     }
 
     /**
      * Add a number to the font
      * <br/>
-     * @param type The type of the char
+     *
+     * @param type   The type of the char
      * @param number The number
-     * @param value The itemstack
+     * @param value  The itemstack
      * @param base64 The base64 of the itemstack
      * @since 1.8.0
      */
     public static void addNumber(String type, int number, ItemStack value, String base64) {
-        chars.put(type.toLowerCase()+" "+number, value);
-        charsBase64.put(type.toLowerCase()+" "+number, base64);
+        chars.put(type.toLowerCase() + " " + number, value);
+        charsBase64.put(type.toLowerCase() + " " + number, base64);
     }
 
     /**
      * Get a number from the font
      * <br/>
-     * @param type The type of the char
+     *
+     * @param type   The type of the char
      * @param number The number
      * @return The itemstack
      * @since 1.8.0
      */
     public static ItemStack getNumber(String type, int number) {
-        return chars.get(type.toLowerCase()+" "+number);
+        return chars.get(type.toLowerCase() + " " + number);
     }
 
     /**
      * Get a number from the font
      * <br/>
-     * @param type The type of the char
+     *
+     * @param type   The type of the char
      * @param number The number
      * @return The base64 of the itemstack
      */
     public static String getNumberBase64(String type, int number) {
-        return charsBase64.get(type.toLowerCase()+" "+number);
+        return charsBase64.get(type.toLowerCase() + " " + number);
     }
 }

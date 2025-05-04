@@ -409,9 +409,9 @@ public class Talk {
          * This is an internal method, and should not be used.
          * <br>
          *
-         * @param player  The player to get the component for.
-         * @param format  The format for the choice.
-         * @param timeout The timeout for the choice.
+         * @param player    The player to get the component for.
+         * @param format    The format for the choice.
+         * @param timeout   The timeout for the choice.
          * @param endAction The action to run when the choice ends.
          * @return The component for the choice.
          */

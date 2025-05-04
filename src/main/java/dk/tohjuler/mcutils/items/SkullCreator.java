@@ -37,7 +37,7 @@ public class SkullCreator {
      */
     public static ItemStack skullWithUuid(ItemStack item, UUID uuid) {
 
-        SkullMeta meta = (SkullMeta)item.getItemMeta();
+        SkullMeta meta = (SkullMeta) item.getItemMeta();
         meta.setOwner(Bukkit.getOfflinePlayer(uuid).getName());
         item.setItemMeta(meta);
 
@@ -46,6 +46,7 @@ public class SkullCreator {
 
     /**
      * Create a player skull from a url
+     *
      * @param url the url of the player skin
      * @return the head of the player
      */
@@ -56,8 +57,9 @@ public class SkullCreator {
 
     /**
      * Set the skull owner of the item from a url
+     *
      * @param itemStack the item
-     * @param url the url of the player skin
+     * @param url       the url of the player skin
      * @return the item
      */
     public static ItemStack skullWithUrl(ItemStack itemStack, String url) {
@@ -81,7 +83,7 @@ public class SkullCreator {
      * Set the skull owner of the item from a base64 string
      *
      * @param itemStack the item
-     * @param base64 the base64 string
+     * @param base64    the base64 string
      * @return the item
      */
     public static ItemStack skullWithBase64(ItemStack itemStack, String base64) {
@@ -96,20 +98,20 @@ public class SkullCreator {
      * Set the skull owner of the block
      *
      * @param block the block
-     * @param uuid the uuid of the player
+     * @param uuid  the uuid of the player
      */
     public static void blockWithUuid(Block block, UUID uuid) {
         notNull(block, "block");
         notNull(uuid, "id");
         setBlockType(block);
-        ((Skull)block.getState()).setOwner(Bukkit.getOfflinePlayer(uuid).getName());
+        ((Skull) block.getState()).setOwner(Bukkit.getOfflinePlayer(uuid).getName());
     }
 
     /**
      * Set the skull owner of the block from a url
      *
      * @param block the block
-     * @param url the url of the player skin
+     * @param url   the url of the player skin
      */
     public static void blockWithUrl(Block block, String url) {
         notNull(block, "block");
@@ -120,7 +122,7 @@ public class SkullCreator {
     /**
      * Set the skull owner of the block from a base64 string
      *
-     * @param block the block
+     * @param block  the block
      * @param base64 the base64 string
      */
     public static void blockWithBase64(Block block, String base64) {

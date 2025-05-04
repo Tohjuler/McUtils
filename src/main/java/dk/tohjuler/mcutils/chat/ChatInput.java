@@ -38,11 +38,11 @@ public class ChatInput implements Listener {
      * There will be no default messages
      * The default cancel words are "cancel" and "exit"
      *
-     * @param p The player to add the input to
+     * @param p          The player to add the input to
      * @param onComplete The consumer to run when the player has completed the input
-     * @param onCancel The consumer to run when the player has canceled the input
-     * @deprecated Use {@link #add(Player, Consumer, Runnable)} instead
+     * @param onCancel   The consumer to run when the player has canceled the input
      * @since 1.0
+     * @deprecated Use {@link #add(Player, Consumer, Runnable)} instead
      */
     @Deprecated
     public static void add(Player p, Consumer<String> onComplete, Consumer<Player> onCancel) {
@@ -57,9 +57,9 @@ public class ChatInput implements Listener {
      * There will be no default messages
      * The default cancel words are "cancel" and "exit"
      *
-     * @param p The player to add the input to
+     * @param p          The player to add the input to
      * @param onComplete The consumer to run when the player has completed the input
-     * @param onCancel The runnable to run when the player has canceled the input
+     * @param onCancel   The runnable to run when the player has canceled the input
      * @since 1.13.0
      */
     public static void add(Player p, Consumer<String> onComplete, Runnable onCancel) {

@@ -70,6 +70,7 @@ public class TalkManager {
     /**
      * Creates a new talk.
      * <br>
+     *
      * @return The created talk.
      */
     public Talk createTalk() {
@@ -91,6 +92,7 @@ public class TalkManager {
      * Run a choice.
      * This is an internal method, and should not be used.
      * <br>
+     *
      * @param runnable The runnable to run.
      * @param expireIn The time in milliseconds before the choice expires.
      * @return The id of the choice.

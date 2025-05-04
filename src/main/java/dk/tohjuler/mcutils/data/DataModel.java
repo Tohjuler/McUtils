@@ -26,12 +26,16 @@ public abstract class DataModel<T, S> {
     }
 
     public abstract T get();
+
     public abstract void set(S data);
+
     public abstract boolean load();
+
     public abstract boolean loadFrom(File path);
 
     @SuppressWarnings("UnusedReturnValue")
     public abstract boolean save();
+
     public abstract boolean saveTo(File path);
 
     public abstract boolean delete();

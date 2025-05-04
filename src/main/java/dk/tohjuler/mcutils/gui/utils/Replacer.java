@@ -34,13 +34,14 @@ public abstract class Replacer<S extends IStorage> {
                 str = replaceInString(str, regex, func);
         } catch (Exception e) {
             //noinspection CallToPrintStackTrace
-            new RuntimeException("Error replacing in Replacer: regex: "+regex, e).printStackTrace();
+            new RuntimeException("Error replacing in Replacer: regex: " + regex, e).printStackTrace();
         }
     }
 
     /**
      * Apply a placeholder handler to the item or string.
      * <br/>
+     *
      * @param ph The placeholder handler to apply
      * @since 1.23.0
      */
@@ -111,9 +112,9 @@ public abstract class Replacer<S extends IStorage> {
      * Replace a regex in a string.
      * <br/>
      *
-     * @param str     The string to replace in
-     * @param regex   The regex to replace
-     * @param func    The function to replace the string with
+     * @param str   The string to replace in
+     * @param regex The regex to replace
+     * @param func  The function to replace the string with
      * @return The string with the replaced regex
      * @since 1.5.0
      */

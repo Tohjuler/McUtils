@@ -40,6 +40,7 @@ public class TimeUtils {
      * Convert a formatted time string to ticks.
      * Formatted time strings are in the format [0-9]+[smhdwMy].
      * <br>
+     *
      * @param formattedTime The formatted time string to convert.
      * @return The time in ticks.
      */
