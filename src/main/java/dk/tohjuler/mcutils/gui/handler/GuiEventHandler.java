@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@SuppressWarnings("UnusedReturnValue")
 public class GuiEventHandler<T extends BaseGui, S extends IStorage> {
     private final List<TriConsumer<Player, T, S>> onCreate = new ArrayList<>();
     private final List<TriConsumer<Player, T, S>> onClose = new ArrayList<>();
