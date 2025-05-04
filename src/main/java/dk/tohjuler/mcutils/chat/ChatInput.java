@@ -74,7 +74,7 @@ public class ChatInput implements Listener {
 
         e.setCancelled(true);
 
-        if (e.getMessage().equalsIgnoreCase("cancel")) {
+        if (cancelWords.contains(e.getMessage().toLowerCase())) {
             inputMap.get(e.getPlayer().getUniqueId()).runOnCancel(e.getPlayer());
             inputMap.remove(e.getPlayer().getUniqueId());
             return;
