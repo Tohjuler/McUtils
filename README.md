@@ -9,6 +9,8 @@
 - Location Utils
 - Talk System - A simple way to have a conversation with a NPC
 - Flag System - Utils to handle flags in commands
+- Kami - A expression engine
+- Placeholder - Utils to handle placeholders
 - VaultHook
 - Item Utils
     - ItemBuilder
@@ -148,8 +150,8 @@ GuiManager guiManager = new GuiManager(
         // More guis can be added here
 );
         
-guiManager.open(player,"example-gui"); // Open the gui for the player, from a gui id
-guiManager.open(player,ExampleGui.class); // Open the gui for the player, from a gui class
+guiManager.open(player, "example-gui"); // Open the gui for the player, from a gui id
+guiManager.open(player, ExampleGui.class); // Open the gui for the player, from a gui class
 
 guiManager.reload(); // Reload all the guis
 ```
