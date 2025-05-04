@@ -4,6 +4,7 @@ import dk.tohjuler.mcutils.placeholder.impl.PHObjectRef;
 import dk.tohjuler.mcutils.placeholder.impl.PlaceholderAPIHelper;
 import dk.tohjuler.mcutils.placeholder.impl.SimplePlaceholder;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 
 public class PlaceholderHandler {
     private final List<IPlaceholder> placeholders;
+    private PlaceholderRegistry registry = PlaceholderRegistry.global();
 
     /**
      * Create a new PlaceholderHandler, with a list of placeholders.
@@ -66,8 +68,8 @@ public class PlaceholderHandler {
                 if (placeholderObject instanceof IPlaceholder) {
                     IPlaceholder placeholder = (IPlaceholder) placeholderObject;
                     result = placeholder.apply(result, player);
-                } else if (PlaceholderRegistry.hasPlaceholder(placeholderObject.getClass())) {
-                    result = PlaceholderRegistry.applyFromClass(placeholderObject, result, player);
+                } else if (registry.hasPlaceholder(placeholderObject.getClass())) {
+                    result = registry.applyFromClass(placeholderObject, result, player);
                 } else {
                     // No placeholder found, handle as object ref
                     result = new PHObjectRef().apply(placeholderObject, result, player);
@@ -114,6 +116,19 @@ public class PlaceholderHandler {
      */
     public PlaceholderHandler usePlaceholderAPI() {
         placeholders.add(new PlaceholderAPIHelper());
+        return this;
+    }
+
+    /**
+     * Change the placeholder registry to use a custom one.
+     * Default is the global registry.
+     * <br/>
+     *
+     * @param registry The registry to use.
+     * @return The PlaceholderHandler instance.
+     */
+    public PlaceholderHandler usePlaceholderRegistry(@NotNull PlaceholderRegistry registry) {
+        this.registry = registry;
         return this;
     }
 }

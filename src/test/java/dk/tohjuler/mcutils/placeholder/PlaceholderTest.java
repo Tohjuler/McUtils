@@ -31,7 +31,7 @@ public class PlaceholderTest {
 
     @Test
     public void testClassPlaceholder() {
-        PlaceholderRegistry.registerPlaceholder(String.class, (instance, input, player) -> input.replace("%str%", instance));
+        PlaceholderRegistry.global().registerPlaceholder(String.class, (instance, input, player) -> input.replace("%str%", instance));
 
         String res = new PlaceholderHandler()
                 .apply("Hello, %str%!", "test value");
@@ -39,8 +39,19 @@ public class PlaceholderTest {
     }
 
     @Test
+    public void testClassPlaceholderCustomRegistry() {
+        PlaceholderRegistry registry = new PlaceholderRegistry();
+        registry.registerPlaceholder(String.class, (instance, input, player) -> input.replace("%str%", instance));
+
+        String res = new PlaceholderHandler()
+                .usePlaceholderRegistry(registry)
+                .apply("Hello, %str%!", "test value");
+        assertEquals("Hello, test value!", res);
+    }
+
+    @Test
     public void testClassPlaceholder2() {
-        PlaceholderRegistry.registerPlaceholder(
+        PlaceholderRegistry.global().registerPlaceholder(
                 String.class,
                 new ClassPlaceholder<String>()
                         .register("%str.upper%", str -> str.toUpperCase())
