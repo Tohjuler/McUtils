@@ -1,9 +1,12 @@
 package dk.tohjuler.mcutils.kami;
 
 import dk.tohjuler.mcutils.kami.enums.LogLevel;
+import dk.tohjuler.mcutils.kami.handlers.TypeHandler;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import java.util.ArrayList;
+
+import static org.junit.Assert.*;
 
 public class KamiTest {
     private final KamiParser defaultDebugParser = new KamiBuilder()
@@ -64,6 +67,19 @@ public class KamiTest {
         assertEquals("true", defaultMathParser.parse("5 == 5").asString());
         assertEquals("false", defaultMathParser.parse("5 != 5").asString());
         assertEquals("true", defaultMathParser.parse("10 > 5").asString());
+    }
+
+    // Typehandler
+
+    @Test
+    public void testTypeHandler() {
+        TypeHandler typeHandler = new TypeHandler();
+
+        assertSame(Integer.class, typeHandler.deserialize("5").getClass());
+        assertSame(Double.class, typeHandler.deserialize("5.0").getClass());
+        assertSame(Boolean.class, typeHandler.deserialize("true").getClass());
+        assertSame(String.class, typeHandler.deserialize("\"Hello\"").getClass());
+        assertSame(ArrayList.class, typeHandler.deserialize("[1, 2, 3]").getClass());
     }
 
 }

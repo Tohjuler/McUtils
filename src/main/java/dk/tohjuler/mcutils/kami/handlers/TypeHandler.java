@@ -19,7 +19,7 @@ public class TypeHandler {
     public TypeHandler() {
         registerTypeAdapter(String.class, Pattern.compile("^\"[^\"]*\"$"), str -> "\"" + str + "\"", str -> str.substring(1, str.length() - 1));
         registerTypeAdapter(Integer.class, Pattern.compile("^-?\\d+$"), Object::toString, Integer::parseInt);
-        registerTypeAdapter(Double.class, Pattern.compile("^-?\\d+(\\.\\d+)?$"), Object::toString, Double::parseDouble);
+        registerTypeAdapter(Double.class, Pattern.compile("^-?\\d+(\\.\\d+)$"), Object::toString, Double::parseDouble);
         registerTypeAdapter(Boolean.class, Pattern.compile("^true|false$"), Object::toString, Boolean::parseBoolean);
         registerTypeAdapter(List.class,
                 Pattern.compile("^\\[.*]$"),
