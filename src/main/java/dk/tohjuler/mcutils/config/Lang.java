@@ -331,7 +331,10 @@ public class Lang {
 
         public void play(Player... players) {
             try {
-                sound.soundPlayer().forPlayers(players).play();
+                for (Player player : players) {
+                    if (player == null) continue;
+                    sound.soundPlayer().forPlayers(player).play();
+                }
             } catch (Exception e) {
                 new RuntimeException("Failed to play sound: " + sound.toString(), e).printStackTrace();
             }
