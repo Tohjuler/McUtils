@@ -693,13 +693,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder clone() {
-        try {
-            ItemBuilder itemBuilder = (ItemBuilder) super.clone();
-            itemBuilder.item = this.item.clone();
-            return itemBuilder;
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
+        return new ItemBuilder(this.item.clone(), this.headBase64);
     }
 
     // Getters
