@@ -644,6 +644,15 @@ public class ItemBuilder {
     }
 
     /**
+     * Serialize the item to a JSON string
+     *
+     * @return the JSON string
+     */
+    public String toJson() {
+        return JsonItemStack.toJson(this.item);
+    }
+
+    /**
      * Deserialize an item from a base64 itemstack
      * Skull values DOES NOT WORK, it needs to be serialized from {@link #serialize()} or {@link ItemStackBase64#itemStackToBase64(ItemStack)}
      *
@@ -665,6 +674,17 @@ public class ItemBuilder {
      */
     public static ItemBuilder fromBase64(String base64) {
         return new ItemBuilder(Material.AIR).deserialize(base64);
+    }
+
+    /**
+     * Deserialize an item from a JSON string
+     * The headBase64 will not be set, from this method, even if the item is a skull.
+     *
+     * @param json the JSON string
+     * @return the itembuilder
+     */
+    public static ItemBuilder fromJson(String json) {
+        return new ItemBuilder(JsonItemStack.fromJson(json));
     }
 
     /**

@@ -18,6 +18,7 @@
     - SkullCreator
     - InventoryUtils
     - YamlItem
+  - JsonItemStack
     - ItemStack Serializer to base64
     - HeadFonts
 - Progress Utils
