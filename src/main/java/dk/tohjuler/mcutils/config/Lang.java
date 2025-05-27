@@ -277,24 +277,28 @@ public class Lang {
     @SuppressWarnings("CallToPrintStackTrace")
     public static class Sound {
         @Getter
-        private final XSound.Record sound;
+        private final XSound sound;
+        private final XSound.Record record;
         private final String applyIf;
 
         public Sound(ConfigurationFile cf, String basePath) {
             if (cf.cf().isString(basePath)) {
-                sound = XSound.of(cf.cf().getString(basePath)).orElse(XSound.BLOCK_STONE_BREAK).record();
+                sound = XSound.of(cf.cf().getString(basePath)).orElse(XSound.BLOCK_STONE_BREAK);
+                record = sound.record();
                 applyIf = null;
                 return;
             }
 
-            sound = XSound.of(cf.cf().getString(basePath + ".sound")).orElse(XSound.BLOCK_STONE_BREAK).record();
-            sound.withVolume((float) cf.cf().getDouble(basePath + ".volume"));
-            sound.withPitch((float) cf.cf().getDouble(basePath + ".pitch"));
+            sound = XSound.of(cf.cf().getString(basePath + ".sound")).orElse(XSound.BLOCK_STONE_BREAK);
+            record = sound.record();
+            record.withVolume((float) cf.cf().getDouble(basePath + ".volume"));
+            record.withPitch((float) cf.cf().getDouble(basePath + ".pitch"));
             applyIf = cf.cf().getString(basePath + ".applyIf");
         }
 
-        public Sound(String sound) {
-            this.sound = XSound.of(sound).orElse(XSound.BLOCK_STONE_BREAK).record();
+        public Sound(String record) {
+            this.sound = XSound.of(record).orElse(XSound.BLOCK_STONE_BREAK);
+            this.record = sound.record();
             this.applyIf = null;
         }
 
@@ -334,10 +338,10 @@ public class Lang {
             try {
                 for (Player player : players) {
                     if (player == null) continue;
-                    sound.soundPlayer().forPlayers(player).play();
+                    record.soundPlayer().forPlayers(player).play();
                 }
             } catch (Exception e) {
-                new RuntimeException("Failed to play sound: " + sound.toString(), e).printStackTrace();
+                new RuntimeException("Failed to play sound: " + record.toString(), e).printStackTrace();
             }
         }
     }
