@@ -1,6 +1,7 @@
 package dk.tohjuler.mcutils.gui.utils;
 
 import com.cryptomorin.xseries.XSound;
+import dev.triumphteam.gui.components.util.ItemNbt;
 import dev.triumphteam.gui.guis.BaseGui;
 import dk.tohjuler.mcutils.gui.ConfigBasedGuiBase;
 import dk.tohjuler.mcutils.gui.GuiManager;
@@ -63,12 +64,11 @@ public abstract class GuisHolder {
                         gui.getGuiEventHandler().addOnClose(this::onClose);
                         gui.getGuiEventHandler().addDefaultClick(this::defaultClick);
 
-                        if (clickSound != null)
-                            gui.getGuiEventHandler().addDefaultClick((player, gui1, event, storage) -> {
-                                if (event.isCancelled()) return;
-                                if (clickSound == null) return;
-                                clickSound.play(player);
-                            });
+                        gui.getGuiEventHandler().addDefaultClick((player, gui1, event, storage) -> {
+                            if (clickSound == null) return;
+                            if (!ItemNbt.getString(event.getCurrentItem(), "gcf-call-ac").equals("true")) return;
+                            clickSound.play(player);
+                        });
 
                         if (development) gui.save(folder);
                         gui.load(folder);
