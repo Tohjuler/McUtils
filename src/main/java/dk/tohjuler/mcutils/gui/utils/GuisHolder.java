@@ -179,6 +179,5 @@ public abstract class GuisHolder {
      * @since 1.20.0
      */
     public void defaultClick(Player player, BaseGui gui, InventoryClickEvent event, IStorage localStorage) {
-        event.setCancelled(true);
     }
 }
