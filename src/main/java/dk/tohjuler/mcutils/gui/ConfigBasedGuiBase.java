@@ -59,6 +59,10 @@ public abstract class ConfigBasedGuiBase<T extends BaseGui, S extends IStorage> 
     @Getter
     private final List<IItem<T, S>> items = new ArrayList<>();
 
+    /// Weather to disable the gui config tags added to all items in the gui, the tags added are "gcf-id" and "gcf-call-ac"
+    @Getter
+    protected boolean disableItemGCFTags = false;
+
     /**
      * Create a new ConfigBasedGui.
      * <br/>

@@ -2,6 +2,7 @@ package dk.tohjuler.mcutils.gui.items;
 
 import com.cryptomorin.xseries.XMaterial;
 import dev.triumphteam.gui.components.GuiAction;
+import dev.triumphteam.gui.components.util.ItemNbt;
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dk.tohjuler.mcutils.config.ConfigurationFile;
@@ -19,6 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -347,6 +349,16 @@ public class Item<T extends BaseGui, S extends IStorage> implements IItem<T, S> 
                 new RuntimeException("Failed to apply stringMat. Invalid string material: " + stringMaterial, e).printStackTrace();
                 guiItem = newItem.buildAsGuiItem(call);
             }
+        }
+
+        // Add nbt tags
+        // ---
+
+        if (!guiConfig.isDisableItemGCFTags()) { // Check if item tags are disabled
+            ItemStack item = guiItem.getItemStack();
+            item = ItemNbt.setString(item, "gcf-id", getId());
+            if (call != null) item = ItemNbt.setString(item, "gcf-call-ac", "true");
+            guiItem.setItemStack(item);
         }
 
         if (eventHandler != null)
