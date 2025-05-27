@@ -276,6 +276,7 @@ public class Lang {
 
     @SuppressWarnings("CallToPrintStackTrace")
     public static class Sound {
+        @Getter
         private final XSound.Record sound;
         private final String applyIf;
 
