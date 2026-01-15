@@ -91,7 +91,7 @@ public class SkullCreator {
         notNull(base64, "base64");
         if (base64.isEmpty()) return itemStack;
 
-        return XSkull.of(itemStack).profile(Profileable.of(ProfileInputType.BASE64.getProfile(base64))).apply();
+        return XSkull.of(itemStack).profile(Profileable.of(ProfileInputType.BASE64.getProfile(base64), true)).apply();
     }
 
     /**
